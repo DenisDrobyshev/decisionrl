@@ -33,9 +33,12 @@ from .algorithms import (
 from .core.agent import BaseAgent
 from .core.env import Env
 from .envs import (
+    Acrobot,
     CartPole,
     GridWorld,
     InventoryManagement,
+    MountainCar,
+    MountainCarContinuous,
     MultiArmedBandit,
     Pendulum,
     PointMass,
@@ -74,6 +77,9 @@ ENVIRONMENTS: Dict[str, Callable[..., Env]] = {
     "CartPole": CartPole,
     "Pendulum": Pendulum,
     "PointMass": PointMass,
+    "MountainCar": MountainCar,
+    "MountainCarContinuous": MountainCarContinuous,
+    "Acrobot": Acrobot,
     "InventoryManagement": InventoryManagement,
     "Thermostat": Thermostat,
 }

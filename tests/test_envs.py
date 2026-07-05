@@ -3,9 +3,12 @@ import pytest
 
 from reinforce.core.spaces import is_discrete
 from reinforce.envs import (
+    Acrobot,
     CartPole,
     GridWorld,
     InventoryManagement,
+    MountainCar,
+    MountainCarContinuous,
     MultiArmedBandit,
     Pendulum,
     PointMass,
@@ -21,6 +24,9 @@ ENV_FACTORIES = [
     lambda: PointMass(),
     lambda: InventoryManagement(),
     lambda: Thermostat(),
+    lambda: MountainCar(),
+    lambda: MountainCarContinuous(),
+    lambda: Acrobot(),
 ]
 
 
