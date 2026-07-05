@@ -209,10 +209,13 @@ reinforce
 ├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass,
 │                 #   InventoryManagement, Thermostat (applied), make_gym
 ├── buffers      # ReplayBuffer, PrioritizedReplayBuffer (sum-tree), RolloutBuffer (GAE)
-├── networks     # build_mlp, QNetwork, DuelingQNetwork, Categorical/Gaussian/Squashed policies
+├── networks     # build_mlp, QNetwork, Dueling/CategoricalQNetwork (C51),
+│                 #   CNNFeatureExtractor + ImageQNetwork (pixels),
+│                 #   Categorical/Gaussian/Squashed policies
 ├── exploration  # Linear/Exponential schedules, Gaussian & Ornstein-Uhlenbeck noise
 ├── wrappers     # TimeLimit, NormalizeObservation, NormalizeReward,
-│                 #   SyncVectorEnv, AsyncVectorEnv (multiprocessing)
+│                 #   SyncVectorEnv, AsyncVectorEnv (multiprocessing),
+│                 #   FrameStack, FlattenObservation, OneHotObservation
 ├── utils        # set_seed, Logger (stdout/CSV/TensorBoard), RunningMeanStd, torch helpers
 ├── training     # evaluate_policy, Callback, EvalCallback, StopOnRewardThreshold
 └── algorithms   # the ten agents above

@@ -19,6 +19,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **AsyncVectorEnv**: subprocess-based vectorized env (spawn) with the same API
   as `SyncVectorEnv`, for parallel data collection; `maybe_compile` torch.compile
   helper.
+- **Pixel observations**: `CNNFeatureExtractor` + `ImageQNetwork`; DQN auto-uses a
+  CNN for image `(C, H, W)` observations. Observation wrappers `FrameStack`,
+  `FlattenObservation`, `OneHotObservation`.
 - `py.typed` marker, pre-commit config, PyPI publish workflow (trusted publishing).
 
 ## [0.1.0] - 2026-07-05

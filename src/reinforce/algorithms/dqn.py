@@ -20,6 +20,7 @@ from ..core.agent import BaseAgent
 from ..core.env import Env
 from ..core.spaces import is_discrete
 from ..exploration.schedules import LinearSchedule
+from ..networks.cnn import ImageQNetwork, is_image_space
 from ..networks.q_networks import DuelingQNetwork, QNetwork
 from ..utils.torch_utils import get_device, polyak_update, to_tensor
 
@@ -40,6 +41,7 @@ class DQN(BaseAgent):
         target_update_interval: int = 500,
         tau: float = 1.0,
         hidden_sizes: Sequence[int] = (128, 128),
+        features_dim: int = 256,
         exploration_fraction: float = 0.1,
         epsilon_start: float = 1.0,
         epsilon_end: float = 0.05,
@@ -79,8 +81,11 @@ class DQN(BaseAgent):
         self.per_beta_start = float(per_beta_start)
         self.n_step = int(n_step)
 
+        self.obs_shape = tuple(self.observation_space.shape)
+        self.is_image = is_image_space(self.observation_space)
         self.obs_dim = int(np.prod(self.observation_space.shape))
         self.n_actions = int(self.action_space.n)
+        self.features_dim = int(features_dim)
 
         self._build_networks(learning_rate)
 
@@ -98,9 +103,17 @@ class DQN(BaseAgent):
         self.epsilon = epsilon_start
 
     def _build_networks(self, learning_rate: float) -> None:
-        net_cls = DuelingQNetwork if self.dueling else QNetwork
-        self.q_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
-        self.target_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
+        if self.is_image:
+            def make():
+                return ImageQNetwork(self.obs_shape, self.n_actions, self.features_dim)
+        else:
+            net_cls = DuelingQNetwork if self.dueling else QNetwork
+
+            def make():
+                return net_cls(self.obs_dim, self.n_actions, self.hidden_sizes)
+
+        self.q_net = make().to(self.device)
+        self.target_net = make().to(self.device)
         self.target_net.load_state_dict(self.q_net.state_dict())
         self.target_net.eval()
         self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=learning_rate)
@@ -109,7 +122,7 @@ class DQN(BaseAgent):
     def predict(self, obs, deterministic: bool = True) -> int:
         if not deterministic and self.rng.random() < self.epsilon:
             return int(self.rng.integers(self.n_actions))
-        obs_t = to_tensor(np.asarray(obs).reshape(1, -1), self.device)
+        obs_t = to_tensor(np.asarray(obs).reshape(1, *self.obs_shape), self.device)
         return int(self.q_net(obs_t).argmax(dim=1).item())
 
     def _train_step(self, beta: float) -> float:
@@ -204,7 +217,8 @@ class DQN(BaseAgent):
             gamma=self.gamma, batch_size=self.batch_size, learning_starts=self.learning_starts,
             train_freq=self.train_freq, gradient_steps=self.gradient_steps,
             target_update_interval=self.target_update_interval, tau=self.tau,
-            hidden_sizes=self.hidden_sizes, double_q=self.double_q, dueling=self.dueling,
+            hidden_sizes=self.hidden_sizes, features_dim=self.features_dim,
+            double_q=self.double_q, dueling=self.dueling,
             prioritized=self.prioritized, n_step=self.n_step, max_grad_norm=self.max_grad_norm,
         )
 
