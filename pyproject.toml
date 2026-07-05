@@ -50,6 +50,7 @@ dev = [
     "matplotlib>=3.5",
     "mkdocs-material>=9.0",
     "tqdm>=4.60",
+    "optuna>=3.0",
 ]
 
 [project.scripts]
