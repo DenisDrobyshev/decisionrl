@@ -78,4 +78,4 @@ def make_gym(env_id: str, adapter: bool = True, **kwargs: Any) -> Env:
         ) from exc
 
     env = gym.make(env_id, **kwargs)
-    return GymAdapter(env) if adapter else env
+    return GymAdapter(env) if adapter else env  # type: ignore[return-value]

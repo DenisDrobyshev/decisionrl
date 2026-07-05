@@ -48,7 +48,7 @@ class OnPolicyAgent(BaseAgent):
             obs_space = env.single_observation_space
             act_space = env.single_action_space
         else:
-            self.venv = SyncVectorEnv([lambda e=env: e])
+            self.venv = SyncVectorEnv([lambda e=env: e])  # type: ignore[misc]
             self.num_envs = 1
             obs_space = env.observation_space
             act_space = env.action_space

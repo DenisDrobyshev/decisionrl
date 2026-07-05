@@ -27,6 +27,8 @@ jobs:
           pip install -e ".[dev]"
       - name: Ruff
         run: ruff check .
+      - name: Mypy
+        run: mypy
       - name: Fast tests
         run: pytest -m "not slow" -q
 

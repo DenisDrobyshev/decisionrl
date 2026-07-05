@@ -51,6 +51,7 @@ dev = [
     "mkdocs-material>=9.0",
     "tqdm>=4.60",
     "optuna>=3.0",
+    "mypy>=1.0",
 ]
 
 [project.scripts]
@@ -88,3 +89,19 @@ ignore = ["E501", "B008", "C401", "C408"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["reinforce"]
+
+[tool.mypy]
+python_version = "3.9"
+files = ["src/reinforce"]
+ignore_missing_imports = true
+implicit_optional = true
+# Categories dominated by PyTorch / duck-typed space false positives are muted;
+# name-resolution and structural checks stay on.
+disable_error_code = [
+    "arg-type",
+    "attr-defined",
+    "override",
+    "operator",
+    "index",
+    "assignment",
+]

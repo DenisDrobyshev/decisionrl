@@ -33,7 +33,8 @@ class SyncVectorEnv:
         return np.asarray(obs_list)
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
-        obs_list, infos = [], {}
+        obs_list: List[Any] = []
+        infos: Dict[str, Any] = {}
         for i, env in enumerate(self.envs):
             env_seed = None if seed is None else seed + i
             obs, _info = env.reset(seed=env_seed, options=options)

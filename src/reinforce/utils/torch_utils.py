@@ -60,7 +60,7 @@ def maybe_compile(module: nn.Module, enabled: bool = False, **kwargs) -> nn.Modu
     if not enabled or not hasattr(torch, "compile"):
         return module
     try:
-        return torch.compile(module, **kwargs)
+        return torch.compile(module, **kwargs)  # type: ignore[return-value]
     except Exception:  # pragma: no cover - backend/platform dependent
         return module
 
