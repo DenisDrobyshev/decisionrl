@@ -29,7 +29,7 @@ import numpy as np
 from reinforce.algorithms import DQN, PPO, SAC, QLearning
 from reinforce.envs import CartPole, GridWorld, Pendulum
 from reinforce.training import evaluate_policy
-from reinforce.utils import Logger, set_seed
+from reinforce.utils import HistoryLogger, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)
@@ -40,26 +40,6 @@ PALETTE = {
     "sac": "#db2777",
     "q": "#f59e0b",
 }
-
-
-class HistoryLogger(Logger):
-    """A silent logger that keeps every dumped scalar for later plotting."""
-
-    def __init__(self) -> None:
-        super().__init__(verbose=0)
-        self.history: dict[str, list] = {}
-
-    def dump(self, step: int) -> None:
-        for k, v in self._values.items():
-            self.history.setdefault(k, []).append((step, v))
-        self._values.clear()
-
-    def curve(self, key: str = "rollout/ep_return_mean"):
-        pts = self.history.get(key, [])
-        if not pts:
-            return np.array([]), np.array([])
-        xs, ys = zip(*pts)
-        return np.array(xs), np.array(ys)
 
 
 def train_ppo():
@@ -117,6 +97,7 @@ def plot_learning_curves(results) -> str:
     ]
     for ax, key, title, log, ylabel in panels:
         xs, ys = log.curve()
+        xs, ys = np.asarray(xs), np.asarray(ys)
         ax.plot(xs, ys, color=PALETTE[key], linewidth=2)
         ax.fill_between(xs, ys, ys.min() if len(ys) else 0, color=PALETTE[key], alpha=0.12)
         ax.set_title(title, fontsize=11, fontweight="bold")

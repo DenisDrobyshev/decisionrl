@@ -2,7 +2,15 @@ import numpy as np
 import pytest
 
 from reinforce.core.spaces import is_discrete
-from reinforce.envs import CartPole, GridWorld, MultiArmedBandit, Pendulum, PointMass
+from reinforce.envs import (
+    CartPole,
+    GridWorld,
+    InventoryManagement,
+    MultiArmedBandit,
+    Pendulum,
+    PointMass,
+    Thermostat,
+)
 
 ENV_FACTORIES = [
     lambda: GridWorld(),
@@ -11,6 +19,8 @@ ENV_FACTORIES = [
     lambda: CartPole(),
     lambda: Pendulum(),
     lambda: PointMass(),
+    lambda: InventoryManagement(),
+    lambda: Thermostat(),
 ]
 
 
@@ -97,6 +107,31 @@ def test_pointmass_dense_reward_and_termination():
     obs, reward, terminated, truncated, info = env.step(np.zeros(2, dtype=np.float32))
     assert reward == pytest.approx(-info["distance"])
     assert not terminated  # started away from origin (very likely)
+
+
+def test_inventory_truncates_and_bounds():
+    env = InventoryManagement(max_inventory=20, max_order=10, horizon=10)
+    env.reset(seed=0)
+    truncated = False
+    for _ in range(10):
+        obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
+        assert 0.0 <= obs[0] <= 1.0
+        assert 0 <= env._inventory <= env.max_inventory
+        assert {"demand", "sales", "lost_sales", "order"} <= set(info)
+        assert not terminated
+    assert truncated
+
+
+def test_thermostat_truncates_and_power_clip():
+    env = Thermostat(horizon=20)
+    env.reset(seed=0)
+    truncated = False
+    for _ in range(20):
+        obs, reward, terminated, truncated, info = env.step(np.array([5.0], np.float32))  # over-range
+        assert -1.0 <= info["power"] <= 1.0  # action was clipped
+        assert reward <= 0.0
+        assert not terminated
+    assert truncated
 
 
 def test_gym_adapter():

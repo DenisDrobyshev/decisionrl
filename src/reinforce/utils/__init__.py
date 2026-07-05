@@ -1,6 +1,6 @@
 """Utility helpers: seeding, logging, normalization and torch tooling."""
 
-from .logger import Logger
+from .logger import HistoryLogger, Logger
 from .running_mean_std import RunningMeanStd
 from .seeding import set_seed
 from .torch_utils import (
@@ -14,6 +14,7 @@ from .torch_utils import (
 
 __all__ = [
     "Logger",
+    "HistoryLogger",
     "RunningMeanStd",
     "set_seed",
     "get_device",

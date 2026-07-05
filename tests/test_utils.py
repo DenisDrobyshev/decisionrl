@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 
 from reinforce.utils import (
+    HistoryLogger,
     RunningMeanStd,
     explained_variance,
     hard_update,
@@ -45,6 +46,18 @@ def test_explained_variance():
     assert explained_variance(y_true.copy(), y_true) == 1.0
     # predicting the mean -> ev == 0
     assert explained_variance(np.full(4, y_true.mean()), y_true) == 0.0
+
+
+def test_history_logger_records_curve():
+    log = HistoryLogger()
+    for step, val in [(10, 1.0), (20, 2.0), (30, 3.0)]:
+        log.record("rollout/ep_return_mean", val)
+        log.dump(step)
+    xs, ys = log.curve()
+    assert xs == [10, 20, 30]
+    assert ys == [1.0, 2.0, 3.0]
+    # unknown key -> empty
+    assert log.curve("does/not/exist") == ([], [])
 
 
 def test_soft_and_hard_update():

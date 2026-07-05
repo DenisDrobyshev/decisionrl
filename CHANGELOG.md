@@ -11,9 +11,10 @@ Initial release.
 ### Added
 - **Core**: Gymnasium-compatible `Env`/`Wrapper`, dependency-free `Box`/`Discrete`
   spaces, `BaseAgent` with a unified `predict`/`learn`/`save`/`load` API.
-- **Environments** (no external deps): `GridWorld`, `MultiArmedBandit`,
-  `CartPole`, `Pendulum`, `PointMass`, plus optional Gymnasium interop
-  (`make_gym`, `GymAdapter`).
+- **Environments** (no external deps): classic control `GridWorld`,
+  `MultiArmedBandit`, `CartPole`, `Pendulum`, `PointMass`; **applied**
+  `InventoryManagement` (operations) and `Thermostat` (HVAC/energy); plus
+  optional Gymnasium interop (`make_gym`, `GymAdapter`).
 - **Algorithms**:
   - Tabular: `QLearning`, `SARSA`, `ExpectedSARSA`.
   - Value-based: `DQN` with Double, Dueling and Prioritized Replay options.
@@ -28,7 +29,8 @@ Initial release.
 - **Wrappers**: `TimeLimit`, `NormalizeObservation`, `NormalizeReward`,
   `SyncVectorEnv`.
 - **Utils**: `set_seed`, `Logger` (stdout/CSV/optional TensorBoard),
-  `RunningMeanStd`, polyak/hard updates, explained variance.
+  `HistoryLogger` (in-memory learning curves), `RunningMeanStd`, polyak/hard
+  updates, explained variance.
 - **Training**: `evaluate_policy`, callbacks (`EvalCallback`,
   `StopOnRewardThreshold`).
 - 92 tests (unit + learning) and GitHub Actions CI across Python 3.9–3.12.

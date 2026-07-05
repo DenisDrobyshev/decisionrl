@@ -38,6 +38,33 @@ The tabular agent recovers the optimal navigation policy (every arrow flows to t
 
 ---
 
+## Applied solutions
+
+Beyond classic control, `reinforce` ships two **applied** environments that mirror
+real decision problems. Reproduce everything below with
+[`python examples/applied_demo.py`](examples/applied_demo.py).
+
+### 📦 Inventory management (operations research)
+
+An agent sets weekly re-order quantities under stochastic (Poisson) demand,
+trading off holding cost, ordering cost and stockouts. **PPO recovers the optimal
+base-stock policy from scratch** — it matches a hand-tuned analytic heuristic
+(**≈ 197 vs 199** profit) and crushes a random policy (**≈ 160**), with zero
+domain knowledge.
+
+![Inventory management with PPO](docs/assets/applied_inventory.png)
+
+### 🌡️ Thermostat / HVAC control (energy)
+
+An agent modulates a heating/cooling unit to hold a room at its setpoint while the
+outdoor temperature swings on a daily cycle. **SAC tracks the setpoint smoothly
+using about ⅓ of the energy of a bang-bang thermostat** (return **≈ −40 vs −303**;
+energy **≈ 59 vs 200**).
+
+![Thermostat / HVAC control with SAC](docs/assets/applied_thermostat.png)
+
+---
+
 ## Why another RL library?
 
 Most RL code forces a trade-off: either it is a single readable file you cannot
@@ -157,7 +184,8 @@ agent.learn(total_steps=200_000)
 ```
 reinforce
 ├── core         # Env, Wrapper, Space (Box/Discrete), BaseAgent, Transition
-├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass, make_gym
+├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass,
+│                 #   InventoryManagement, Thermostat (applied), make_gym
 ├── buffers      # ReplayBuffer, PrioritizedReplayBuffer (sum-tree), RolloutBuffer (GAE)
 ├── networks     # build_mlp, QNetwork, DuelingQNetwork, Categorical/Gaussian/Squashed policies
 ├── exploration  # Linear/Exponential schedules, Gaussian & Ornstein-Uhlenbeck noise

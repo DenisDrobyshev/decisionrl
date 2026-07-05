@@ -10,9 +10,9 @@ from __future__ import annotations
 import csv
 import os
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
-__all__ = ["Logger"]
+__all__ = ["Logger", "HistoryLogger"]
 
 
 class Logger:
@@ -102,3 +102,31 @@ class Logger:
     def close(self) -> None:
         if self._tb_writer is not None:
             self._tb_writer.close()
+
+
+class HistoryLogger(Logger):
+    """A silent logger that also keeps every dumped scalar in memory.
+
+    Handy for plotting learning curves without parsing a CSV::
+
+        log = HistoryLogger()
+        agent = PPO(env, logger=log)
+        agent.learn(50_000)
+        steps, returns = log.curve("rollout/ep_return_mean")
+    """
+
+    def __init__(self, verbose: int = 0) -> None:
+        super().__init__(verbose=verbose)
+        self.history: Dict[str, List[Tuple[int, float]]] = {}
+
+    def dump(self, step: int) -> None:
+        for k, v in self._values.items():
+            self.history.setdefault(k, []).append((step, v))
+        super().dump(step)
+
+    def curve(self, key: str = "rollout/ep_return_mean") -> Tuple[List[int], List[float]]:
+        pts = self.history.get(key, [])
+        if not pts:
+            return [], []
+        xs, ys = zip(*pts)
+        return list(xs), list(ys)
