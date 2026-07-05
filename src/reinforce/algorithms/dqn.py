@@ -47,6 +47,7 @@ class DQN(BaseAgent):
         double_q: bool = True,
         dueling: bool = False,
         prioritized: bool = False,
+        n_step: int = 1,
         per_alpha: float = 0.6,
         per_beta_start: float = 0.4,
         device: str = "auto",
@@ -76,28 +77,33 @@ class DQN(BaseAgent):
         self.epsilon_end = float(epsilon_end)
         self.hidden_sizes = tuple(hidden_sizes)
         self.per_beta_start = float(per_beta_start)
+        self.n_step = int(n_step)
 
         self.obs_dim = int(np.prod(self.observation_space.shape))
         self.n_actions = int(self.action_space.n)
 
-        net_cls = DuelingQNetwork if dueling else QNetwork
-        self.q_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
-        self.target_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
-        self.target_net.load_state_dict(self.q_net.state_dict())
-        self.target_net.eval()
-        self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=learning_rate)
+        self._build_networks(learning_rate)
 
         if prioritized:
             self.buffer = PrioritizedReplayBuffer(
                 buffer_size, self.observation_space, self.action_space,
                 alpha=per_alpha, beta=per_beta_start, device=str(self.device), seed=seed,
+                n_step=self.n_step, gamma=self.gamma,
             )
         else:
             self.buffer = ReplayBuffer(
                 buffer_size, self.observation_space, self.action_space,
-                device=str(self.device), seed=seed,
+                device=str(self.device), seed=seed, n_step=self.n_step, gamma=self.gamma,
             )
         self.epsilon = epsilon_start
+
+    def _build_networks(self, learning_rate: float) -> None:
+        net_cls = DuelingQNetwork if self.dueling else QNetwork
+        self.q_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
+        self.target_net = net_cls(self.obs_dim, self.n_actions, self.hidden_sizes).to(self.device)
+        self.target_net.load_state_dict(self.q_net.state_dict())
+        self.target_net.eval()
+        self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=learning_rate)
 
     @torch.no_grad()
     def predict(self, obs, deterministic: bool = True) -> int:
@@ -118,7 +124,7 @@ class DQN(BaseAgent):
                 next_q = self.target_net(batch.next_obs).gather(1, next_actions).squeeze(1)
             else:
                 next_q = self.target_net(batch.next_obs).max(dim=1).values
-            target = batch.rewards + self.gamma * (1.0 - batch.dones) * next_q
+            target = batch.rewards + batch.discounts * (1.0 - batch.dones) * next_q
 
         current_q = self.q_net(batch.obs).gather(1, batch.actions.view(-1, 1)).squeeze(1)
         td_error = current_q - target
@@ -159,7 +165,8 @@ class DQN(BaseAgent):
                 action = self.predict(obs, deterministic=False)
 
             next_obs, reward, terminated, truncated, _ = self.env.step(action)
-            self.buffer.add(obs, action, reward, next_obs, terminated)
+            self.buffer.add(obs, action, reward, next_obs, terminated,
+                            episode_end=(terminated or truncated))
             obs = next_obs
             ep_return += reward
             ep_len += 1
@@ -198,7 +205,7 @@ class DQN(BaseAgent):
             train_freq=self.train_freq, gradient_steps=self.gradient_steps,
             target_update_interval=self.target_update_interval, tau=self.tau,
             hidden_sizes=self.hidden_sizes, double_q=self.double_q, dueling=self.dueling,
-            prioritized=self.prioritized, max_grad_norm=self.max_grad_norm,
+            prioritized=self.prioritized, n_step=self.n_step, max_grad_norm=self.max_grad_norm,
         )
 
     def save(self, path: str) -> None:

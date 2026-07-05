@@ -28,6 +28,7 @@ class OffPolicyContinuousAgent(BaseAgent):
         train_freq: int = 1,
         gradient_steps: int = 1,
         tau: float = 0.005,
+        n_step: int = 1,
         device: str = "auto",
         seed: Optional[int] = None,
         **kwargs,
@@ -47,9 +48,10 @@ class OffPolicyContinuousAgent(BaseAgent):
         self.action_low = np.asarray(self.action_space.low, dtype=np.float32)
         self.action_high = np.asarray(self.action_space.high, dtype=np.float32)
 
+        self.n_step = int(n_step)
         self.buffer = ReplayBuffer(
             buffer_size, self.observation_space, self.action_space,
-            device=str(self.device), seed=seed,
+            device=str(self.device), seed=seed, n_step=self.n_step, gamma=self.gamma,
         )
 
     # -- to be implemented by subclasses -----------------------------------
@@ -83,7 +85,8 @@ class OffPolicyContinuousAgent(BaseAgent):
                 action = self.act(obs, deterministic=False)
 
             next_obs, reward, terminated, truncated, _ = self.env.step(action)
-            self.buffer.add(obs, action, reward, next_obs, terminated)
+            self.buffer.add(obs, action, reward, next_obs, terminated,
+                            episode_end=(terminated or truncated))
             obs = next_obs
             ep_return += reward
             self.num_timesteps += 1

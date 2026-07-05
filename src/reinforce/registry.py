@@ -16,6 +16,7 @@ from typing import Callable, Dict
 
 from .algorithms import (
     A2C,
+    C51,
     DDPG,
     DQN,
     PPO,
@@ -52,6 +53,7 @@ ALGORITHMS: Dict[str, type] = {
     "sarsa": SARSA,
     "expected_sarsa": ExpectedSARSA,
     "dqn": DQN,
+    "c51": C51,
     "reinforce": REINFORCE,
     "a2c": A2C,
     "ppo": PPO,

@@ -69,18 +69,23 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         epsilon: float = 1e-6,
         device: str = "cpu",
         seed: Optional[int] = None,
+        n_step: int = 1,
+        gamma: float = 0.99,
     ) -> None:
-        super().__init__(capacity, observation_space, action_space, device=device, seed=seed)
+        super().__init__(
+            capacity, observation_space, action_space,
+            device=device, seed=seed, n_step=n_step, gamma=gamma,
+        )
         self.alpha = float(alpha)
         self.beta = float(beta)
         self.epsilon = float(epsilon)
         self.tree = SumTree(self.capacity)
         self.max_priority = 1.0
 
-    def add(self, obs, action, reward, next_obs, done) -> None:
-        idx = self.pos
-        super().add(obs, action, reward, next_obs, done)
+    def _store_transition(self, obs, action, reward, next_obs, done, discount) -> int:
+        idx = super()._store_transition(obs, action, reward, next_obs, done, discount)
         self.tree.update(idx, self.max_priority ** self.alpha)
+        return idx
 
     def sample(self, batch_size: int, beta: Optional[float] = None) -> ReplayBatch:
         assert self.size > 0, "cannot sample from an empty buffer"

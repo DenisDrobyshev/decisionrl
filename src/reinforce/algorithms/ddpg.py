@@ -79,7 +79,7 @@ class DDPG(OffPolicyContinuousAgent):
         with torch.no_grad():
             next_actions = self.actor_target(batch.next_obs)
             target_q = self.critic_target(batch.next_obs, next_actions)
-            y = batch.rewards + self.gamma * (1.0 - batch.dones) * target_q
+            y = batch.rewards + batch.discounts * (1.0 - batch.dones) * target_q
 
         current_q = self.critic(batch.obs, batch.actions)
         critic_loss = F.mse_loss(current_q, y)

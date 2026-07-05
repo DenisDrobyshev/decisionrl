@@ -111,7 +111,7 @@ class TD3(OffPolicyContinuousAgent):
                 self.critic1_target(batch.next_obs, next_actions),
                 self.critic2_target(batch.next_obs, next_actions),
             )
-            y = batch.rewards + self.gamma * (1.0 - batch.dones) * target_q
+            y = batch.rewards + batch.discounts * (1.0 - batch.dones) * target_q
 
         q1 = self.critic1(batch.obs, batch.actions)
         q2 = self.critic2(batch.obs, batch.actions)

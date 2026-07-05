@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import torch
 
 from reinforce.buffers import PrioritizedReplayBuffer, ReplayBuffer, RolloutBuffer, SumTree
 from reinforce.core.spaces import Box, Discrete
@@ -41,6 +42,41 @@ def test_replay_continuous_actions():
     batch = buf.sample(8)
     assert batch.actions.shape == (8, 2)
     assert batch.actions.dtype.is_floating_point
+
+
+def test_replay_has_discounts_field():
+    buf = make_replay(capacity=10)
+    for i in range(10):
+        buf.add(np.zeros(3, np.float32), i % 4, 1.0, np.zeros(3, np.float32), False)
+    batch = buf.sample(4)
+    assert batch.discounts.shape == (4,)
+    assert torch.allclose(batch.discounts, torch.full((4,), 0.99), atol=1e-6)
+
+
+def test_nstep_aggregation():
+    obs_space = Box(-10, 10, shape=(3,))
+    buf = ReplayBuffer(20, obs_space, Discrete(2), seed=0, n_step=3, gamma=0.9)
+    for i in range(5):
+        o = np.full(3, i, np.float32)
+        no = np.full(3, i + 1, np.float32)
+        buf.add(o, 0, 1.0, no, False, episode_end=(i == 4))
+    assert len(buf) == 5
+    # r = 1 + 0.9 + 0.81 for full 3-step windows; then 1.9 and 1.0 for the flush
+    np.testing.assert_allclose(buf.rewards[:5], [2.71, 2.71, 2.71, 1.9, 1.0], rtol=1e-5)
+    np.testing.assert_allclose(buf.discounts[:5], [0.729, 0.729, 0.729, 0.81, 0.9], rtol=1e-5)
+    # first stored transition starts at obs 0 and bootstraps from the 3rd next_obs (=3)
+    np.testing.assert_array_equal(buf.obs[0], [0, 0, 0])
+    np.testing.assert_array_equal(buf.next_obs[0], [3, 3, 3])
+
+
+def test_nstep_early_termination():
+    buf = ReplayBuffer(20, Box(-1, 1, shape=(2,)), Discrete(2), seed=0, n_step=3, gamma=0.9)
+    buf.add(np.zeros(2, np.float32), 0, 1.0, np.zeros(2, np.float32), False)
+    buf.add(np.zeros(2, np.float32), 0, 2.0, np.zeros(2, np.float32), True)  # terminal
+    assert len(buf) == 2
+    # window [t0,t1]: 1 + 0.9*2 = 2.8 (stops at terminal); then [t1]: 2.0
+    np.testing.assert_allclose(buf.rewards[:2], [2.8, 2.0], rtol=1e-5)
+    np.testing.assert_allclose(buf.dones[:2], [1.0, 1.0])
 
 
 def test_sumtree_total_and_get():

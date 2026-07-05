@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **n-step returns** in `ReplayBuffer`/`PrioritizedReplayBuffer` (per-sample
+  discount, correct across termination and truncation); `n_step` option on DQN
+  and the continuous off-policy agents.
+- **C51** distributional DQN (`CategoricalQNetwork` + categorical projection).
+- **Offline RL**: `TD3BC` (TD3 + behavior cloning) with `learn_offline`, plus a
+  `TransitionDataset` / `collect_dataset` data module.
+- **CLI**: `reinforce train|eval|list` console script and `python -m reinforce`.
+- **Registry & configs**: `make_agent` / `make_env`, per-(algo, env) tuned
+  hyperparameters.
+- `py.typed` marker, pre-commit config, PyPI publish workflow (trusted publishing).
+
 ## [0.1.0] - 2026-07-05
 
 Initial release.

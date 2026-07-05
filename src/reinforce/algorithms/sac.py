@@ -93,7 +93,7 @@ class SAC(OffPolicyContinuousAgent):
                 self.critic2_target(batch.next_obs, next_actions),
             )
             target_q = target_q - self.alpha * next_log_prob
-            y = batch.rewards + self.gamma * (1.0 - batch.dones) * target_q
+            y = batch.rewards + batch.discounts * (1.0 - batch.dones) * target_q
 
         q1 = self.critic1(batch.obs, batch.actions)
         q2 = self.critic2(batch.obs, batch.actions)

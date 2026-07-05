@@ -15,6 +15,7 @@ Every agent shares the same surface: ``predict`` / ``learn`` / ``save`` / ``load
 from . import algorithms, buffers, envs, exploration, networks, training, utils, wrappers
 from .algorithms import (
     A2C,
+    C51,
     DDPG,
     DQN,
     PPO,
@@ -22,10 +23,12 @@ from .algorithms import (
     SAC,
     SARSA,
     TD3,
+    TD3BC,
     ExpectedSARSA,
     QLearning,
 )
 from .core import Box, Discrete, Env, Space, Transition, Wrapper
+from .data import TransitionDataset, collect_dataset
 from .registry import list_algorithms, list_environments, make_agent, make_env
 from .training import evaluate_policy
 from .utils import set_seed
@@ -55,12 +58,17 @@ __all__ = [
     "SARSA",
     "ExpectedSARSA",
     "DQN",
+    "C51",
     "REINFORCE",
     "A2C",
     "PPO",
     "DDPG",
     "TD3",
     "SAC",
+    "TD3BC",
+    # offline data
+    "TransitionDataset",
+    "collect_dataset",
     # helpers
     "evaluate_policy",
     "set_seed",
