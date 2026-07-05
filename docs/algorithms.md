@@ -11,6 +11,7 @@
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability (POMDPs) |
 | Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
 | Continuous | DDPG | `DDPG` | Continuous | deterministic policy, action noise |
 | Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates, smoothing |

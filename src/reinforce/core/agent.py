@@ -43,6 +43,13 @@ class BaseAgent:
         """Return an action for ``obs`` (single, un-batched observation)."""
         raise NotImplementedError
 
+    def reset_states(self) -> None:
+        """Reset any per-episode internal state (e.g. an RNN's hidden state).
+
+        A no-op for memoryless agents; :func:`evaluate_policy` calls it at the
+        start of each evaluation episode.
+        """
+
     def learn(self, total_steps: int, callback: Optional[Any] = None, **kwargs) -> "BaseAgent":
         """Train the agent for ``total_steps`` environment steps."""
         raise NotImplementedError

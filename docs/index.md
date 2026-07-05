@@ -7,9 +7,10 @@ so it runs the moment you `pip install` it.
 
 ## Highlights
 
-- **13 algorithms** — tabular (Q-Learning, SARSA, Expected SARSA), value-based
-  (DQN with Double/Dueling/PER/n-step, C51), policy gradient (REINFORCE, A2C,
-  PPO), continuous control (DDPG, TD3, SAC) and offline (TD3+BC).
+- **18 algorithms** — tabular (Q-Learning, SARSA, Expected SARSA), value-based
+  (DQN with Double/Dueling/PER/n-step, C51, QR-DQN), policy gradient (REINFORCE,
+  A2C, PPO, Recurrent PPO, discrete SAC), continuous control (DDPG, TD3, SAC),
+  and offline (TD3+BC, IQL).
 - **Correctness-first** — proper `terminated`/`truncated` bootstrapping, GAE,
   target-policy smoothing, automatic entropy tuning, orthogonal init.
 - **Dependency-light** — only NumPy + PyTorch in the core; Gymnasium optional.

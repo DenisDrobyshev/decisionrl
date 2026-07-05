@@ -80,6 +80,7 @@ markers = [
 line-length = 100
 target-version = "py39"
 src = ["src", "tests"]
+extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 # UP (pyupgrade) is intentionally omitted: the library targets Python 3.9 and

@@ -28,6 +28,7 @@ from .algorithms import (
     TD3,
     ExpectedSARSA,
     QLearning,
+    RecurrentPPO,
     SACDiscrete,
 )
 from .core.agent import BaseAgent
@@ -66,6 +67,7 @@ ALGORITHMS: Dict[str, type] = {
     "reinforce": REINFORCE,
     "a2c": A2C,
     "ppo": PPO,
+    "recurrent_ppo": RecurrentPPO,
     "ddpg": DDPG,
     "td3": TD3,
     "sac": SAC,

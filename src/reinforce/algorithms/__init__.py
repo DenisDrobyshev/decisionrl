@@ -16,6 +16,7 @@ from .iql import IQL
 from .off_policy import OffPolicyContinuousAgent
 from .ppo import PPO
 from .qrdqn import QRDQN
+from .recurrent_ppo import RecurrentPPO
 from .reinforce import REINFORCE
 from .sac import SAC
 from .sac_discrete import SACDiscrete
@@ -33,6 +34,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "RecurrentPPO",
     "DDPG",
     "TD3",
     "SAC",

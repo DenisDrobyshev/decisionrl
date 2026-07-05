@@ -26,6 +26,7 @@ def evaluate_policy(
     for ep in range(n_episodes):
         ep_seed = None if seed is None else seed + ep
         obs, _ = env.reset(seed=ep_seed)
+        agent.reset_states()  # reset RNN hidden state (no-op for memoryless agents)
         done = False
         total = 0.0
         while not done:

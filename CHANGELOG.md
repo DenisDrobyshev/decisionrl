@@ -7,6 +7,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Recurrent PPO** (`RecurrentPPO`): LSTM actor-critic with proper hidden-state
+  reset masking and truncated BPTT (minibatched over environments) for partially
+  observable tasks; `BaseAgent.reset_states()` hook, called by `evaluate_policy`.
+- **Environments**: `MountainCar`, `MountainCarContinuous`, `Acrobot`.
+- **Dict observation spaces**: `core.spaces.Dict` + `flatten`/`flatdim` and the
+  `FlattenDictObservation` wrapper (multi-modal observations).
+- **Offline RL**: `IQL` (implicit Q-learning) in addition to TD3+BC.
+- **Optuna** hyperparameter search (`reinforce.tuning.optuna_search`).
+- **Weights & Biases** logging sink in `Logger`.
+- Static type checking with **mypy** (config, CI step, badge); **Colab/Jupyter
+  quickstart** notebook.
 - **Developer experience**: `ProgressBarCallback` (live tqdm bar), `CheckpointCallback`
   (periodic saves), `EvalCallback` now saves the best model (`best_model_save_path`),
   `make_vec_env(...)` one-line vectorization, `anneal_lr` linear LR decay for PPO/A2C,

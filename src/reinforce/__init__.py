@@ -28,6 +28,7 @@ from .algorithms import (
     TD3BC,
     ExpectedSARSA,
     QLearning,
+    RecurrentPPO,
     SACDiscrete,
 )
 from .core import Box, Dict, Discrete, Env, Space, Transition, Wrapper
@@ -68,6 +69,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "RecurrentPPO",
     "DDPG",
     "TD3",
     "SAC",

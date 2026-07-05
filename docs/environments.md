@@ -13,6 +13,9 @@ truncated, info)`) and need no external dependencies.
 | CartPole | `CartPole` | Box(4) | Discrete(2) |
 | Pendulum swing-up | `Pendulum` | Box(3) | Box(1) |
 | Point-mass reach | `PointMass` | Box(n) | Box(n) |
+| Mountain Car | `MountainCar` | Box(2) | Discrete(3) |
+| Mountain Car (continuous) | `MountainCarContinuous` | Box(2) | Box(1) |
+| Acrobot | `Acrobot` | Box(6) | Discrete(3) |
 
 ## Applied
 
