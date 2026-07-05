@@ -10,9 +10,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **n-step returns** in `ReplayBuffer`/`PrioritizedReplayBuffer` (per-sample
   discount, correct across termination and truncation); `n_step` option on DQN
   and the continuous off-policy agents.
-- **C51** distributional DQN (`CategoricalQNetwork` + categorical projection).
-- **Offline RL**: `TD3BC` (TD3 + behavior cloning) with `learn_offline`, plus a
-  `TransitionDataset` / `collect_dataset` data module.
+- **C51** and **QR-DQN** distributional value-based agents (`CategoricalQNetwork`,
+  `QuantileQNetwork`).
+- **Discrete SAC** (`SACDiscrete`): max-entropy off-policy for discrete actions.
+- **Offline RL**: `TD3BC` (TD3 + behavior cloning) and `IQL` (implicit Q-learning),
+  plus a `TransitionDataset` / `collect_dataset` data module.
+- **Benchmark suite** (`examples/benchmark_scores.py`) reproducing scores for
+  every algorithm; results table in `docs/benchmarks.md`.
 - **CLI**: `reinforce train|eval|list` console script and `python -m reinforce`.
 - **Registry & configs**: `make_agent` / `make_env`, per-(algo, env) tuned
   hyperparameters.

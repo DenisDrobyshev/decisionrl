@@ -20,12 +20,14 @@ from .algorithms import (
     DDPG,
     DQN,
     PPO,
+    QRDQN,
     REINFORCE,
     SAC,
     SARSA,
     TD3,
     ExpectedSARSA,
     QLearning,
+    SACDiscrete,
 )
 from .core.agent import BaseAgent
 from .core.env import Env
@@ -54,6 +56,8 @@ ALGORITHMS: Dict[str, type] = {
     "expected_sarsa": ExpectedSARSA,
     "dqn": DQN,
     "c51": C51,
+    "qrdqn": QRDQN,
+    "sac_discrete": SACDiscrete,
     "reinforce": REINFORCE,
     "a2c": A2C,
     "ppo": PPO,

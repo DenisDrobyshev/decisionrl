@@ -9,7 +9,7 @@ import torch.nn as nn
 
 from .mlp import build_mlp, layer_init
 
-__all__ = ["QNetwork", "DuelingQNetwork", "CategoricalQNetwork"]
+__all__ = ["QNetwork", "DuelingQNetwork", "CategoricalQNetwork", "QuantileQNetwork"]
 
 
 class QNetwork(nn.Module):
@@ -83,3 +83,25 @@ class CategoricalQNetwork(nn.Module):
 
     def forward(self, obs: torch.Tensor) -> torch.Tensor:
         return self.net(obs).view(-1, self.n_actions, self.n_atoms)
+
+
+class QuantileQNetwork(nn.Module):
+    """Quantile value network (QR-DQN): ``n_quantiles`` estimates of the return
+    distribution per action. Returns shape ``(batch, n_actions, n_quantiles)``.
+    """
+
+    def __init__(
+        self,
+        obs_dim: int,
+        n_actions: int,
+        n_quantiles: int = 200,
+        hidden_sizes: Sequence[int] = (128, 128),
+        activation: Type[nn.Module] = nn.ReLU,
+    ) -> None:
+        super().__init__()
+        self.n_actions = int(n_actions)
+        self.n_quantiles = int(n_quantiles)
+        self.net = build_mlp(obs_dim, self.n_actions * self.n_quantiles, hidden_sizes, activation=activation)
+
+    def forward(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.net(obs).view(-1, self.n_actions, self.n_quantiles)

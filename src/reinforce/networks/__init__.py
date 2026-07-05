@@ -8,7 +8,7 @@ from .policies import (
     GaussianActor,
     SquashedGaussianActor,
 )
-from .q_networks import CategoricalQNetwork, DuelingQNetwork, QNetwork
+from .q_networks import CategoricalQNetwork, DuelingQNetwork, QNetwork, QuantileQNetwork
 from .value import ContinuousQ, VNetwork
 
 __all__ = [
@@ -20,6 +20,7 @@ __all__ = [
     "QNetwork",
     "DuelingQNetwork",
     "CategoricalQNetwork",
+    "QuantileQNetwork",
     "CategoricalActor",
     "GaussianActor",
     "SquashedGaussianActor",

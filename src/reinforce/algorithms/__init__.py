@@ -12,10 +12,13 @@ from .base import OnPolicyAgent
 from .c51 import C51
 from .ddpg import DDPG
 from .dqn import DQN
+from .iql import IQL
 from .off_policy import OffPolicyContinuousAgent
 from .ppo import PPO
+from .qrdqn import QRDQN
 from .reinforce import REINFORCE
 from .sac import SAC
+from .sac_discrete import SACDiscrete
 from .tabular import SARSA, ExpectedSARSA, QLearning
 from .td3 import TD3
 from .td3bc import TD3BC
@@ -26,13 +29,16 @@ __all__ = [
     "ExpectedSARSA",
     "DQN",
     "C51",
+    "QRDQN",
     "REINFORCE",
     "A2C",
     "PPO",
     "DDPG",
     "TD3",
     "SAC",
+    "SACDiscrete",
     "TD3BC",
+    "IQL",
     "OnPolicyAgent",
     "OffPolicyContinuousAgent",
 ]

@@ -7,13 +7,18 @@
 | Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · n-step · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
+| Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
 | Continuous | DDPG | `DDPG` | Continuous | deterministic policy, action noise |
 | Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates, smoothing |
 | Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset |
+| Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
+
+See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 
 ## Correctness details
 

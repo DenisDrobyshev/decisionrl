@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import TD3BC
+from reinforce.algorithms import IQL, TD3BC
 from reinforce.data import TransitionDataset, collect_dataset
 from reinforce.envs import PointMass
 from reinforce.training import evaluate_policy
@@ -47,17 +47,46 @@ def test_td3bc_online_learn_disabled(quiet_logger):
         agent.learn(100)
 
 
-@pytest.mark.slow
-def test_td3bc_learns_offline(quiet_logger):
+def _behavior_dataset(n=15_000):
     rng = np.random.default_rng(0)
 
     def behavior(o):
         return np.clip(-np.asarray(o) * 3 + 0.3 * rng.standard_normal(2), -1, 1).astype(np.float32)
 
-    ds = collect_dataset(PointMass(), behavior, n_transitions=15_000, gamma=0.99, seed=0)
+    return collect_dataset(PointMass(), behavior, n_transitions=n, gamma=0.99, seed=0)
+
+
+def test_iql_online_learn_disabled(quiet_logger):
+    agent = IQL(PointMass(), batch_size=8, seed=0, logger=quiet_logger)
+    with pytest.raises(NotImplementedError):
+        agent.learn(100)
+
+
+def test_iql_predict_within_bounds(quiet_logger):
+    agent = IQL(PointMass(), batch_size=8, seed=0, logger=quiet_logger)
+    obs, _ = PointMass().reset(seed=0)
+    action = np.asarray(agent.predict(obs, deterministic=True))
+    assert action.shape == (2,)
+    assert np.all(action >= -1.0 - 1e-5) and np.all(action <= 1.0 + 1e-5)
+
+
+@pytest.mark.slow
+def test_td3bc_learns_offline(quiet_logger):
+    ds = _behavior_dataset()
     agent = TD3BC(PointMass(), alpha=2.5, batch_size=256, seed=0, logger=quiet_logger)
     agent.learn_offline(ds, total_steps=8_000)
 
     learned = evaluate_policy(agent, PointMass(), n_episodes=20, seed=1)[0]
     random_ret = _random_return(PointMass)
     assert learned > random_ret + 20, f"TD3BC offline: learned={learned:.2f} vs random={random_ret:.2f}"
+
+
+@pytest.mark.slow
+def test_iql_learns_offline(quiet_logger):
+    ds = _behavior_dataset()
+    agent = IQL(PointMass(), batch_size=256, expectile=0.7, beta=3.0, seed=0, logger=quiet_logger)
+    agent.learn_offline(ds, total_steps=8_000)
+
+    learned = evaluate_policy(agent, PointMass(), n_episodes=20, seed=1)[0]
+    random_ret = _random_return(PointMass)
+    assert learned > random_ret + 20, f"IQL offline: learned={learned:.2f} vs random={random_ret:.2f}"

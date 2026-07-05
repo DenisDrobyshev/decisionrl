@@ -18,7 +18,9 @@ from .algorithms import (
     C51,
     DDPG,
     DQN,
+    IQL,
     PPO,
+    QRDQN,
     REINFORCE,
     SAC,
     SARSA,
@@ -26,6 +28,7 @@ from .algorithms import (
     TD3BC,
     ExpectedSARSA,
     QLearning,
+    SACDiscrete,
 )
 from .core import Box, Discrete, Env, Space, Transition, Wrapper
 from .data import TransitionDataset, collect_dataset
@@ -59,13 +62,16 @@ __all__ = [
     "ExpectedSARSA",
     "DQN",
     "C51",
+    "QRDQN",
     "REINFORCE",
     "A2C",
     "PPO",
     "DDPG",
     "TD3",
     "SAC",
+    "SACDiscrete",
     "TD3BC",
+    "IQL",
     # offline data
     "TransitionDataset",
     "collect_dataset",

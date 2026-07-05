@@ -33,6 +33,7 @@ nav:
   - Home: index.md
   - Getting started: getting-started.md
   - Algorithms: algorithms.md
+  - Benchmarks: benchmarks.md
   - Environments: environments.md
   - Command-line interface: cli.md
 
