@@ -23,6 +23,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   CNN for image `(C, H, W)` observations. Observation wrappers `FrameStack`,
   `FlattenObservation`, `OneHotObservation`.
 - `py.typed` marker, pre-commit config, PyPI publish workflow (trusted publishing).
+- **Documentation site** (MkDocs Material) with a GitHub Pages deploy workflow.
 
 ## [0.1.0] - 2026-07-05
 

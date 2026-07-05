@@ -1,0 +1,35 @@
+# Algorithms
+
+| Family | Algorithm | Class | Action space | Key features |
+|---|---|---|---|---|
+| Tabular | Q-Learning | `QLearning` | Discrete | off-policy TD |
+| Tabular | SARSA | `SARSA` | Discrete | on-policy TD |
+| Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
+| Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · n-step · CNN |
+| Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
+| Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
+| Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
+| Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Continuous | DDPG | `DDPG` | Continuous | deterministic policy, action noise |
+| Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates, smoothing |
+| Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
+| Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset |
+
+## Correctness details
+
+- **terminated vs truncated.** Off-policy buffers store the `terminated` flag
+  only, so bootstrapping targets are correct on time-limit truncation. On-policy
+  rollouts augment the reward with `gamma * V(final_obs)` at truncated steps.
+- **n-step returns.** The replay buffer aggregates n-step transitions with a
+  per-sample discount, exact across termination and truncation.
+- **GAE** for advantage estimation, advantage normalization, orthogonal init,
+  gradient clipping and learning-rate-agnostic entropy tuning are on by default
+  where appropriate.
+
+## Choosing an algorithm
+
+- Discrete actions, sample-efficient → **DQN** (add `n_step`, `dueling`,
+  `prioritized`) or **C51**.
+- Discrete or continuous, robust default → **PPO**.
+- Continuous control, sample-efficient → **SAC** or **TD3**.
+- Learning from a fixed dataset → **TD3BC**.

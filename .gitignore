@@ -35,6 +35,9 @@ coverage.xml
 .ruff_cache/
 .mypy_cache/
 
+# Docs build
+site/
+
 # Experiment artifacts
 runs/
 logs/

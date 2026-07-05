@@ -9,6 +9,7 @@ Readable like [CleanRL](https://github.com/vwxyzjn/cleanrl), composable like
 batteries-included so it runs the moment you `pip install` it.
 
 [![CI](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/reinforce/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/lint-ruff-orange.svg)](https://github.com/astral-sh/ruff)
