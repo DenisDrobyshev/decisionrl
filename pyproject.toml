@@ -50,6 +50,9 @@ dev = [
     "matplotlib>=3.5",
 ]
 
+[project.scripts]
+reinforce = "reinforce.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/DenisDrobyshev/reinforce"
 Repository = "https://github.com/DenisDrobyshev/reinforce"

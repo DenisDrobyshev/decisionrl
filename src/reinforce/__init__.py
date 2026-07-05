@@ -26,6 +26,7 @@ from .algorithms import (
     QLearning,
 )
 from .core import Box, Discrete, Env, Space, Transition, Wrapper
+from .registry import list_algorithms, list_environments, make_agent, make_env
 from .training import evaluate_policy
 from .utils import set_seed
 
@@ -63,4 +64,8 @@ __all__ = [
     # helpers
     "evaluate_policy",
     "set_seed",
+    "make_agent",
+    "make_env",
+    "list_algorithms",
+    "list_environments",
 ]

@@ -1,0 +1,98 @@
+"""Registries and factories for algorithms and environments.
+
+Enables string-based construction (used by the CLI and configs)::
+
+    from reinforce import make_agent, make_env
+    env = make_env("CartPole")
+    agent = make_agent("ppo", env, seed=0)
+
+Environment names may also target Gymnasium via a ``"gym:"`` prefix, e.g.
+``make_env("gym:LunarLander-v2")``.
+"""
+
+from __future__ import annotations
+
+from typing import Callable, Dict
+
+from .algorithms import (
+    A2C,
+    DDPG,
+    DQN,
+    PPO,
+    REINFORCE,
+    SAC,
+    SARSA,
+    TD3,
+    ExpectedSARSA,
+    QLearning,
+)
+from .core.agent import BaseAgent
+from .core.env import Env
+from .envs import (
+    CartPole,
+    GridWorld,
+    InventoryManagement,
+    MultiArmedBandit,
+    Pendulum,
+    PointMass,
+    Thermostat,
+)
+
+__all__ = [
+    "ALGORITHMS",
+    "ENVIRONMENTS",
+    "make_agent",
+    "make_env",
+    "list_algorithms",
+    "list_environments",
+]
+
+ALGORITHMS: Dict[str, type] = {
+    "qlearning": QLearning,
+    "sarsa": SARSA,
+    "expected_sarsa": ExpectedSARSA,
+    "dqn": DQN,
+    "reinforce": REINFORCE,
+    "a2c": A2C,
+    "ppo": PPO,
+    "ddpg": DDPG,
+    "td3": TD3,
+    "sac": SAC,
+}
+
+ENVIRONMENTS: Dict[str, Callable[..., Env]] = {
+    "GridWorld": GridWorld,
+    "MultiArmedBandit": MultiArmedBandit,
+    "CartPole": CartPole,
+    "Pendulum": Pendulum,
+    "PointMass": PointMass,
+    "InventoryManagement": InventoryManagement,
+    "Thermostat": Thermostat,
+}
+
+
+def make_agent(name: str, env: Env, **kwargs) -> BaseAgent:
+    """Construct an agent by (case-insensitive) name."""
+    key = name.lower()
+    if key not in ALGORITHMS:
+        raise KeyError(f"unknown algorithm {name!r}; available: {sorted(ALGORITHMS)}")
+    return ALGORITHMS[key](env, **kwargs)
+
+
+def make_env(name: str, **kwargs) -> Env:
+    """Construct an environment by name, or a Gymnasium env via ``gym:<id>``."""
+    if name.startswith("gym:"):
+        from .envs import make_gym
+
+        return make_gym(name[len("gym:") :], **kwargs)
+    if name not in ENVIRONMENTS:
+        raise KeyError(f"unknown environment {name!r}; available: {sorted(ENVIRONMENTS)}")
+    return ENVIRONMENTS[name](**kwargs)
+
+
+def list_algorithms() -> list:
+    return sorted(ALGORITHMS)
+
+
+def list_environments() -> list:
+    return sorted(ENVIRONMENTS)

@@ -164,6 +164,26 @@ agent = PPO(venv, n_steps=256, seed=0)   # 8 x 256 = 2048 steps per update
 agent.learn(total_steps=200_000)
 ```
 
+## Command-line interface
+
+Train and evaluate without writing a script — tuned default hyperparameters are
+applied automatically per (algorithm, environment) and can be overridden:
+
+```bash
+reinforce list                                          # show algorithms & envs
+reinforce train ppo CartPole --steps 50000 --save ppo.pt
+reinforce train dqn CartPole --set learning_rate=5e-4 --set buffer_size=100000
+reinforce eval ppo --env CartPole --load ppo.pt --episodes 20
+reinforce train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
+```
+
+Programmatic equivalents via the registry:
+
+```python
+from reinforce import make_env, make_agent
+agent = make_agent("ppo", make_env("CartPole"), seed=0).learn(50_000)
+```
+
 ## Algorithms
 
 | Family | Algorithm | Class | Action space | Key features |
