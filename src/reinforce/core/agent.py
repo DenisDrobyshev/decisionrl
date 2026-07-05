@@ -54,5 +54,43 @@ class BaseAgent:
     def load(cls, path: str, env: Optional[Env] = None, **kwargs) -> "BaseAgent":
         raise NotImplementedError
 
+    # -- resume: model + optimizer (via save/load) plus training state --------
+    def save_checkpoint(self, path: str) -> None:
+        """Save a resumable checkpoint: the agent plus ``num_timesteps`` and RNG
+        state (written to ``path`` and ``path + ".state"``). Restore with
+        :meth:`load_checkpoint`. Note: replay buffers are not persisted.
+        """
+        import torch
+
+        self.save(path)
+        torch.save(
+            {
+                "num_timesteps": int(self.num_timesteps),
+                "agent_rng": self.rng.bit_generator.state,
+                "numpy_rng": np.random.get_state(),
+                "torch_rng": torch.get_rng_state(),
+            },
+            path + ".state",
+        )
+
+    @classmethod
+    def load_checkpoint(cls, path: str, env: Optional[Env] = None, **kwargs) -> "BaseAgent":
+        """Load an agent saved with :meth:`save_checkpoint` and restore its
+        training step count and RNG state, ready to continue training.
+        """
+        import os
+
+        import torch
+
+        agent = cls.load(path, env=env, **kwargs)
+        state_path = path + ".state"
+        if os.path.exists(state_path):
+            state = torch.load(state_path, weights_only=False)
+            agent.num_timesteps = int(state["num_timesteps"])
+            agent.rng.bit_generator.state = state["agent_rng"]
+            np.random.set_state(state["numpy_rng"])
+            torch.set_rng_state(state["torch_rng"])
+        return agent
+
     def __repr__(self) -> str:
         return f"{type(self).__name__}(env={type(self.env).__name__})"

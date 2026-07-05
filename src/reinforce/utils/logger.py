@@ -20,6 +20,9 @@ class Logger:
         self,
         csv_path: Optional[str] = None,
         tensorboard_dir: Optional[str] = None,
+        wandb_project: Optional[str] = None,
+        wandb_run_name: Optional[str] = None,
+        wandb_config: Optional[dict] = None,
         verbose: int = 1,
     ) -> None:
         self.verbose = verbose
@@ -41,6 +44,17 @@ class Logger:
                 if verbose:
                     print("[reinforce] tensorboard not installed; skipping TB logging.")
 
+        self._wandb = None
+        if wandb_project is not None:
+            try:
+                import wandb
+
+                self._wandb = wandb
+                wandb.init(project=wandb_project, name=wandb_run_name, config=wandb_config or {})
+            except ImportError:  # pragma: no cover - optional dependency
+                if verbose:
+                    print("[reinforce] wandb not installed; skipping W&B logging.")
+
     def record(self, key: str, value: float) -> None:
         """Stage a scalar value under ``key`` for the next :meth:`dump`."""
         self._values[key] = value
@@ -57,6 +71,9 @@ class Logger:
         if self._tb_writer is not None:
             for k, v in self._values.items():
                 self._tb_writer.add_scalar(k, v, step)
+
+        if self._wandb is not None:
+            self._wandb.log(dict(self._values), step=step)
 
         if self._csv_path is not None:
             self._write_csv(step)
@@ -102,6 +119,8 @@ class Logger:
     def close(self) -> None:
         if self._tb_writer is not None:
             self._tb_writer.close()
+        if self._wandb is not None:
+            self._wandb.finish()
 
 
 class HistoryLogger(Logger):
