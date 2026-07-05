@@ -1,0 +1,214 @@
+<div align="center">
+
+# reinforce
+
+**A dependency-light, correctness-first reinforcement learning foundation.**
+
+Readable like [CleanRL](https://github.com/vwxyzjn/cleanrl), composable like
+[Stable-Baselines3](https://github.com/DLR-RM/stable-baselines3), and
+batteries-included so it runs the moment you `pip install` it.
+
+[![CI](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/lint-ruff-orange.svg)](https://github.com/astral-sh/ruff)
+
+</div>
+
+---
+
+## See it learn
+
+Every figure below is produced by a **single command** —
+[`python examples/benchmark.py`](examples/benchmark.py) — which trains four agents
+on four applied tasks *from scratch on CPU* in a few minutes and renders the plots.
+
+![Agents learning applied tasks](docs/assets/learning_curves.png)
+
+| Task | Algorithm | Result |
+|---|---|---|
+| CartPole (balance) | PPO | solved — return **500 / 500** |
+| GridWorld 5×5 (navigate) | DQN (Double + Dueling) | near-optimal — return **≈ 0.93** |
+| Pendulum (swing-up) | SAC | improves from ≈ −1300 to ≈ −420 |
+| GridWorld 4×4 (navigate) | Q-Learning | optimal — return **≈ 0.95** |
+
+The tabular agent recovers the optimal navigation policy (every arrow flows to the goal):
+
+<p align="center"><img src="docs/assets/gridworld_policy.png" width="360" alt="Learned GridWorld policy"></p>
+
+---
+
+## Why another RL library?
+
+Most RL code forces a trade-off: either it is a single readable file you cannot
+reuse, or it is a powerful framework you cannot read. `reinforce` aims for the
+middle: **every algorithm is short and legible, but built from shared,
+swappable components** (buffers, networks, policies, schedules, wrappers).
+
+Three principles guide it:
+
+1. **Correctness-first.** The subtle things that quietly break RL agents are
+   handled properly — most notably the Gymnasium `terminated` vs `truncated`
+   distinction, which is bootstrapped correctly everywhere (time-limit
+   truncation bootstraps from the final observation; true termination does not).
+   It also ships GAE, target-policy smoothing, automatic entropy tuning,
+   orthogonal init, advantage normalization and observation/reward normalization.
+2. **Dependency-light & batteries-included.** The core needs only **NumPy + PyTorch**.
+   Built-in environments (GridWorld, bandit, CartPole, Pendulum, PointMass) mean
+   you can train an agent end-to-end with *zero* extra installs. Gymnasium is an
+   optional extra, not a requirement.
+3. **One API for everything.** Tabular or deep, discrete or continuous,
+   on-policy or off-policy — every agent exposes the same four methods:
+   `predict` · `learn` · `save` · `load`.
+
+## Installation
+
+```bash
+# core (numpy + torch only)
+pip install git+https://github.com/DenisDrobyshev/reinforce.git
+
+# with Gymnasium environments
+pip install "reinforce[gym] @ git+https://github.com/DenisDrobyshev/reinforce.git"
+
+# local dev install
+git clone https://github.com/DenisDrobyshev/reinforce.git
+cd reinforce
+pip install -e ".[dev]"
+```
+
+## Quick start
+
+```python
+from reinforce.algorithms import PPO
+from reinforce.envs import CartPole
+from reinforce.training import evaluate_policy
+from reinforce.utils import set_seed
+
+set_seed(0)
+agent = PPO(CartPole(), n_steps=1024, seed=0)
+agent.learn(total_steps=50_000)
+
+mean, std = evaluate_policy(agent, CartPole(), n_episodes=20)
+print(f"return = {mean:.1f} +/- {std:.1f}")
+
+agent.save("ppo_cartpole.pt")
+agent = PPO.load("ppo_cartpole.pt", env=CartPole())
+```
+
+Tabular control is just as simple:
+
+```python
+from reinforce.algorithms import QLearning
+from reinforce.envs import GridWorld
+
+agent = QLearning(GridWorld(rows=5, cols=5), seed=0)
+agent.learn(total_steps=20_000)
+```
+
+Continuous control with SAC:
+
+```python
+from reinforce.algorithms import SAC
+from reinforce.envs import Pendulum
+
+agent = SAC(Pendulum(), seed=0)
+agent.learn(total_steps=20_000)
+```
+
+Use a Gymnasium environment (optional extra):
+
+```python
+from reinforce.algorithms import PPO
+from reinforce.envs import make_gym
+
+agent = PPO(make_gym("CartPole-v1"), seed=0)
+agent.learn(total_steps=100_000)
+```
+
+Scale on-policy training with vectorized environments:
+
+```python
+from reinforce.algorithms import PPO
+from reinforce.envs import CartPole
+from reinforce.wrappers import SyncVectorEnv
+
+venv = SyncVectorEnv([lambda: CartPole() for _ in range(8)])
+agent = PPO(venv, n_steps=256, seed=0)   # 8 x 256 = 2048 steps per update
+agent.learn(total_steps=200_000)
+```
+
+## Algorithms
+
+| Family | Algorithm | Class | Action space | Key features |
+|---|---|---|---|---|
+| Tabular | Q-Learning | `QLearning` | Discrete | off-policy TD |
+| Tabular | SARSA | `SARSA` | Discrete | on-policy TD |
+| Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
+| Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · Huber loss |
+| Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
+| Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
+| Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Continuous | DDPG | `DDPG` | Continuous | deterministic policy, OU/Gaussian noise |
+| Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates, smoothing |
+| Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
+
+## Components you can reuse
+
+```
+reinforce
+├── core         # Env, Wrapper, Space (Box/Discrete), BaseAgent, Transition
+├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass, make_gym
+├── buffers      # ReplayBuffer, PrioritizedReplayBuffer (sum-tree), RolloutBuffer (GAE)
+├── networks     # build_mlp, QNetwork, DuelingQNetwork, Categorical/Gaussian/Squashed policies
+├── exploration  # Linear/Exponential schedules, Gaussian & Ornstein-Uhlenbeck noise
+├── wrappers     # TimeLimit, NormalizeObservation, NormalizeReward, SyncVectorEnv
+├── utils        # set_seed, Logger (stdout/CSV/TensorBoard), RunningMeanStd, torch helpers
+├── training     # evaluate_policy, Callback, EvalCallback, StopOnRewardThreshold
+└── algorithms   # the ten agents above
+```
+
+Everything is duck-typed against the Gymnasium API, so `reinforce` components and
+Gymnasium environments interoperate freely in either direction.
+
+## Reproducibility
+
+```python
+from reinforce.utils import set_seed
+set_seed(42, deterministic=True)   # seeds Python, NumPy, PyTorch (+ deterministic kernels)
+```
+
+Every agent accepts a `seed=` argument, every environment accepts `reset(seed=...)`,
+and every buffer/space has its own seedable RNG.
+
+## Development & testing
+
+```bash
+pip install -e ".[dev]"
+pytest              # full suite (unit + integration "does it actually learn?" tests)
+ruff check .        # lint
+```
+
+The test suite covers component correctness (spaces, buffers, sum-tree,
+schedules, GAE, normalization, save/load round-trips) **and** learning behaviour:
+tabular methods reach the optimal policy on GridWorld, DQN/PPO learn CartPole,
+and SAC/TD3/DDPG solve the PointMass reaching task.
+
+## Design notes
+
+- **terminated vs truncated.** Off-policy buffers store the `terminated` flag
+  only, so bootstrapping targets are correct on time-limit truncation. On-policy
+  rollouts augment the reward with `gamma * V(final_obs)` at truncated steps and
+  mark the episode boundary — the Stable-Baselines3 approach.
+- **No hidden global state.** No registries, no config magic; you construct
+  objects and call methods.
+- **Small surface, deep correctness.** The goal is a foundation you can read in
+  an afternoon and trust in a paper.
+
+## License
+
+[MIT](LICENSE) © 2026 Denis Drobyshev
+
+## Acknowledgements
+
+Inspired by the clarity of CleanRL, the API design of Stable-Baselines3, the
+modularity of Tianshou, and the Farama Foundation's Gymnasium standard.
