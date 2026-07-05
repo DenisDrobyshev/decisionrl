@@ -36,6 +36,7 @@ class OnPolicyAgent(BaseAgent):
         learning_rate: float = 3e-4,
         hidden_sizes: Sequence[int] = (64, 64),
         activation: str = "tanh",
+        anneal_lr: bool = False,
         device: str = "auto",
         seed: Optional[int] = None,
         **kwargs,
@@ -82,6 +83,8 @@ class OnPolicyAgent(BaseAgent):
         self.optimizer = torch.optim.Adam(
             list(self.actor.parameters()) + list(self.critic.parameters()), lr=learning_rate
         )
+        self.initial_lr = float(learning_rate)
+        self.anneal_lr = bool(anneal_lr)
         self.buffer = RolloutBuffer(
             self.n_steps, self.num_envs, obs_space, act_space,
             gamma=gamma, gae_lambda=gae_lambda, device=str(self.device),
@@ -186,6 +189,7 @@ class OnPolicyAgent(BaseAgent):
         raise NotImplementedError
 
     def learn(self, total_steps: int, callback=None, log_interval: int = 1) -> "OnPolicyAgent":
+        self._total_timesteps = total_steps  # on-policy loop runs until num_timesteps >= total_steps
         if callback is not None:
             callback.on_training_start(self)
         if self._last_obs is None:
@@ -194,6 +198,10 @@ class OnPolicyAgent(BaseAgent):
 
         iteration = 0
         while self.num_timesteps < total_steps:
+            if self.anneal_lr:
+                frac = max(0.0, 1.0 - self.num_timesteps / total_steps)
+                for group in self.optimizer.param_groups:
+                    group["lr"] = frac * self.initial_lr
             if not self.collect_rollouts(callback):
                 break
             metrics = self._update()

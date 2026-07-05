@@ -14,9 +14,17 @@ from __future__ import annotations
 import argparse
 from typing import Any, Dict, List
 
+from . import __version__
 from .configs import get_hyperparams
-from .registry import ALGORITHMS, list_algorithms, list_environments, make_agent, make_env
-from .training import evaluate_policy
+from .registry import (
+    ALGORITHMS,
+    list_algorithms,
+    list_environments,
+    make_agent,
+    make_env,
+    make_vec_env,
+)
+from .training import ProgressBarCallback, evaluate_policy
 from .utils import set_seed
 
 
@@ -57,17 +65,22 @@ def _cmd_list(_: argparse.Namespace) -> int:
 
 def _cmd_train(args: argparse.Namespace) -> int:
     set_seed(args.seed)
-    env = make_env(args.env)
+    if args.n_envs > 1:
+        env = make_vec_env(args.env, n_envs=args.n_envs, asynchronous=args.asynchronous)
+    else:
+        env = make_env(args.env)
 
     kwargs: Dict[str, Any] = {} if args.no_tuned else get_hyperparams(args.algo, args.env)
     kwargs.update(_parse_overrides(args.set))
     kwargs.setdefault("seed", args.seed)
 
-    print(f"Training {args.algo} on {args.env} for {args.steps} steps")
+    print(f"Training {args.algo} on {args.env} for {args.steps} steps"
+          + (f" ({args.n_envs} envs)" if args.n_envs > 1 else ""))
     if kwargs:
         print(f"Hyperparameters: {kwargs}")
     agent = make_agent(args.algo, env, **kwargs)
-    agent.learn(args.steps)
+    callback = ProgressBarCallback() if args.progress else None
+    agent.learn(args.steps, callback=callback)
 
     eval_env = make_env(args.env)
     mean, std = evaluate_policy(agent, eval_env, n_episodes=args.eval_episodes)
@@ -92,6 +105,7 @@ def _cmd_eval(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="reinforce", description="Reinforcement learning CLI")
+    parser.add_argument("--version", action="version", version=f"reinforce {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_list = sub.add_parser("list", help="list available algorithms and environments")
@@ -105,6 +119,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_train.add_argument("--save", type=str, default=None, help="path to save the trained agent")
     p_train.add_argument("--eval-episodes", type=int, default=20)
     p_train.add_argument("--no-tuned", action="store_true", help="ignore tuned default hyperparameters")
+    p_train.add_argument("--progress", action="store_true", help="show a live progress bar (needs tqdm)")
+    p_train.add_argument("--n-envs", type=int, default=1, help="parallel envs (on-policy algos)")
+    p_train.add_argument("--async", dest="asynchronous", action="store_true",
+                         help="use subprocess AsyncVectorEnv when --n-envs > 1")
     p_train.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                          help="override a hyperparameter (repeatable)")
     p_train.set_defaults(func=_cmd_train)

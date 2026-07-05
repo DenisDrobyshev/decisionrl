@@ -64,6 +64,22 @@ agent = TD3BC(PointMass(), seed=0)
 agent.learn_offline(dataset, total_steps=10_000)   # no env interaction
 ```
 
+## Callbacks & training utilities
+
+```python
+from reinforce.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
+
+agent.learn(100_000, callback=CallbackList([
+    ProgressBarCallback(),                              # live tqdm progress bar
+    EvalCallback(eval_env, eval_freq=5000, best_model_save_path="best.pt"),
+    CheckpointCallback(save_freq=20_000, save_dir="checkpoints"),
+]))
+```
+
+On-policy agents (PPO/A2C) also support linear learning-rate annealing via
+`anneal_lr=True`. Create vectorized envs in one call with
+`make_vec_env("CartPole", n_envs=8, asynchronous=True)`.
+
 ## Learning from pixels
 
 DQN automatically uses a CNN when the observation space is an image `(C, H, W)`:

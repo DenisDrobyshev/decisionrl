@@ -49,6 +49,7 @@ dev = [
     "gymnasium[classic-control]>=0.29",
     "matplotlib>=3.5",
     "mkdocs-material>=9.0",
+    "tqdm>=4.60",
 ]
 
 [project.scripts]

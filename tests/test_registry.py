@@ -1,6 +1,6 @@
 import pytest
 
-from reinforce import make_agent, make_env
+from reinforce import make_agent, make_env, make_vec_env
 from reinforce.algorithms import PPO, QLearning
 from reinforce.registry import list_algorithms, list_environments
 
@@ -27,6 +27,26 @@ def test_unknown_names_raise():
 def test_list_functions():
     assert "ppo" in list_algorithms()
     assert "CartPole" in list_environments()
+
+
+def test_make_vec_env_sync():
+    venv = make_vec_env("CartPole", n_envs=3)
+    try:
+        assert venv.num_envs == 3
+        obs, _ = venv.reset(seed=0)
+        assert obs.shape == (3, 4)
+    finally:
+        venv.close()
+
+
+def test_make_vec_env_ppo_trains():
+    venv = make_vec_env("CartPole", n_envs=2)
+    try:
+        agent = PPO(venv, n_steps=32, batch_size=16, n_epochs=1, seed=0)
+        agent.learn(200)
+        assert agent.num_timesteps >= 200
+    finally:
+        venv.close()
 
 
 def test_make_env_gym_prefix():

@@ -1,3 +1,5 @@
+import pytest
+
 from reinforce.cli import _coerce, _parse_overrides, build_parser, main
 
 
@@ -31,3 +33,15 @@ def test_cli_train_eval_roundtrip(tmp_path):
     assert main(["train", "qlearning", "GridWorld", "--steps", "3000", "--eval-episodes", "2",
                  "--save", path]) == 0
     assert main(["eval", "qlearning", "--env", "GridWorld", "--load", path, "--episodes", "2"]) == 0
+
+
+def test_cli_version(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--version"])
+    assert exc.value.code == 0
+    assert "reinforce" in capsys.readouterr().out
+
+
+def test_cli_train_with_progress(tmp_path):
+    assert main(["train", "qlearning", "GridWorld", "--steps", "1000",
+                 "--eval-episodes", "2", "--progress"]) == 0

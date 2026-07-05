@@ -72,6 +72,7 @@ class _TabularBase(BaseAgent):
             self.epsilon_end,
             max(1, int(self.exploration_fraction * total_steps)),
         )
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
 

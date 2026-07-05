@@ -127,6 +127,7 @@ class IQL(BaseAgent):
     def learn_offline(
         self, dataset: TransitionDataset, total_steps: int, callback=None, log_interval: int = 1000
     ) -> "IQL":
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
         losses: deque = deque(maxlen=100)

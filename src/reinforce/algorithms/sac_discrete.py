@@ -148,6 +148,7 @@ class SACDiscrete(BaseAgent):
         return metrics
 
     def learn(self, total_steps: int, callback=None, log_interval: int = 10) -> "SACDiscrete":
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
         obs, _ = self.env.reset(seed=self.seed)

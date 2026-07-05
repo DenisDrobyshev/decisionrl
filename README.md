@@ -172,8 +172,9 @@ applied automatically per (algorithm, environment) and can be overridden:
 
 ```bash
 reinforce list                                          # show algorithms & envs
-reinforce train ppo CartPole --steps 50000 --save ppo.pt
+reinforce train ppo CartPole --steps 50000 --save ppo.pt --progress
 reinforce train dqn CartPole --set learning_rate=5e-4 --set buffer_size=100000
+reinforce train ppo CartPole --n-envs 8 --async         # parallel data collection
 reinforce eval ppo --env CartPole --load ppo.pt --episodes 20
 reinforce train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
 ```
@@ -181,8 +182,24 @@ reinforce train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
 Programmatic equivalents via the registry:
 
 ```python
-from reinforce import make_env, make_agent
+from reinforce import make_env, make_agent, make_vec_env
 agent = make_agent("ppo", make_env("CartPole"), seed=0).learn(50_000)
+venv = make_vec_env("CartPole", n_envs=8, asynchronous=True)   # one-line vectorization
+```
+
+## Training utilities & callbacks
+
+```python
+from reinforce.algorithms import PPO
+from reinforce.envs import CartPole
+from reinforce.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
+
+agent = PPO(CartPole(), anneal_lr=True, seed=0)      # linear LR decay (best practice)
+agent.learn(100_000, callback=CallbackList([
+    ProgressBarCallback(),                            # live tqdm bar (steps/s, ETA, return)
+    EvalCallback(CartPole(), eval_freq=5000, best_model_save_path="best.pt"),
+    CheckpointCallback(save_freq=20_000, save_dir="checkpoints"),
+]))
 ```
 
 ## Algorithms

@@ -71,6 +71,7 @@ class OffPolicyContinuousAgent(BaseAgent):
         return to_tensor(np.asarray(obs, dtype=np.float32).reshape(1, -1), self.device)
 
     def learn(self, total_steps: int, callback=None, log_interval: int = 10) -> "OffPolicyContinuousAgent":
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
         obs, _ = self.env.reset(seed=self.seed)

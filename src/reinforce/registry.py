@@ -12,7 +12,8 @@ Environment names may also target Gymnasium via a ``"gym:"`` prefix, e.g.
 
 from __future__ import annotations
 
-from typing import Callable, Dict
+from functools import partial
+from typing import Callable, Dict, Union
 
 from .algorithms import (
     A2C,
@@ -46,6 +47,7 @@ __all__ = [
     "ENVIRONMENTS",
     "make_agent",
     "make_env",
+    "make_vec_env",
     "list_algorithms",
     "list_environments",
 ]
@@ -94,6 +96,36 @@ def make_env(name: str, **kwargs) -> Env:
     if name not in ENVIRONMENTS:
         raise KeyError(f"unknown environment {name!r}; available: {sorted(ENVIRONMENTS)}")
     return ENVIRONMENTS[name](**kwargs)
+
+
+def make_vec_env(
+    env: Union[str, Callable[[], Env]],
+    n_envs: int = 1,
+    asynchronous: bool = False,
+    **kwargs,
+):
+    """Create a vectorized environment in one call.
+
+    ``env`` is an environment name (or ``gym:<id>``) or a picklable factory.
+    With ``asynchronous=True`` each copy runs in its own process
+    (:class:`~reinforce.wrappers.AsyncVectorEnv`), otherwise in-process
+    (:class:`~reinforce.wrappers.SyncVectorEnv`).
+    """
+    if isinstance(env, str):
+        fn: Callable[[], Env] = partial(make_env, env, **kwargs)
+    elif callable(env):
+        fn = env
+    else:
+        raise TypeError("env must be a name (str) or a callable factory")
+
+    fns = [fn for _ in range(int(n_envs))]
+    if asynchronous:
+        from .wrappers import AsyncVectorEnv
+
+        return AsyncVectorEnv(fns)
+    from .wrappers import SyncVectorEnv
+
+    return SyncVectorEnv(fns)
 
 
 def list_algorithms() -> list:

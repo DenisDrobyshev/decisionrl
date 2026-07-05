@@ -162,6 +162,7 @@ class DQN(BaseAgent):
             max(1, int(self.exploration_fraction * total_steps)),
         )
         beta_schedule = LinearSchedule(self.per_beta_start, 1.0, total_steps)
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
 

@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Developer experience**: `ProgressBarCallback` (live tqdm bar), `CheckpointCallback`
+  (periodic saves), `EvalCallback` now saves the best model (`best_model_save_path`),
+  `make_vec_env(...)` one-line vectorization, `anneal_lr` linear LR decay for PPO/A2C,
+  and CLI `--version` / `--progress` / `--n-envs` / `--async`.
 - **n-step returns** in `ReplayBuffer`/`PrioritizedReplayBuffer` (per-sample
   discount, correct across termination and truncation); `n_step` option on DQN
   and the continuous off-policy agents.

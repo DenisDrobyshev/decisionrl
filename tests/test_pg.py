@@ -30,6 +30,14 @@ def test_pg_continuous_predict_within_bounds(cls, quiet_logger):
     assert np.all(action >= -1.0 - 1e-5) and np.all(action <= 1.0 + 1e-5)
 
 
+def test_ppo_anneal_lr_decays(quiet_logger):
+    agent = PPO(cartpole(), n_steps=64, batch_size=32, n_epochs=1, learning_rate=1e-3,
+                anneal_lr=True, seed=0, logger=quiet_logger)
+    agent.learn(256)
+    final_lr = agent.optimizer.param_groups[0]["lr"]
+    assert final_lr < 1e-3  # learning rate was annealed downward
+
+
 def test_ppo_accepts_vector_env(quiet_logger):
     venv = SyncVectorEnv([lambda: cartpole() for _ in range(3)])
     agent = PPO(venv, n_steps=32, batch_size=16, n_epochs=2, seed=0, logger=quiet_logger)

@@ -73,6 +73,7 @@ class TD3BC(TD3):
         log_interval: int = 1000,
     ) -> "TD3BC":
         """Train from a fixed dataset (no environment interaction)."""
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
         losses: deque = deque(maxlen=100)

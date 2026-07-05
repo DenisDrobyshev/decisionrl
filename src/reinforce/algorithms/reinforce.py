@@ -121,6 +121,7 @@ class REINFORCE(BaseAgent):
         return {"policy_loss": float(policy_loss.item()), "value_loss": float(critic_loss.item())}
 
     def learn(self, total_steps: int, callback=None, log_interval: int = 10) -> "REINFORCE":
+        self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
             callback.on_training_start(self)
         obs, _ = self.env.reset(seed=self.seed)
