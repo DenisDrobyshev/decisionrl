@@ -30,7 +30,7 @@ from .algorithms import (
     QLearning,
     SACDiscrete,
 )
-from .core import Box, Discrete, Env, Space, Transition, Wrapper
+from .core import Box, Dict, Discrete, Env, Space, Transition, Wrapper
 from .data import TransitionDataset, collect_dataset
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .training import evaluate_policy
@@ -55,6 +55,7 @@ __all__ = [
     "Space",
     "Box",
     "Discrete",
+    "Dict",
     "Transition",
     # algorithms
     "QLearning",

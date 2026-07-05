@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import Dict, Optional
+from typing import Optional
 
 import numpy as np
 
 from ..core.env import Env, Wrapper
-from ..core.spaces import Box, is_discrete
+from ..core.spaces import Box, Dict, flatdim, flatten, is_discrete
 
-__all__ = ["FrameStack", "FlattenObservation", "OneHotObservation"]
+__all__ = ["FrameStack", "FlattenObservation", "OneHotObservation", "FlattenDictObservation"]
 
 
 class FrameStack(Wrapper):
@@ -33,7 +33,7 @@ class FrameStack(Wrapper):
     def _obs(self) -> np.ndarray:
         return np.concatenate(list(self.frames), axis=0)
 
-    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
+    def reset(self, *, seed: Optional[int] = None, options=None):
         obs, info = self.env.reset(seed=seed, options=options)
         obs = np.asarray(obs)
         for _ in range(self.k):
@@ -55,7 +55,7 @@ class FlattenObservation(Wrapper):
         assert isinstance(space, Box), "FlattenObservation needs a Box space"
         self.observation_space = Box(space.low.flatten(), space.high.flatten(), dtype=space.dtype)
 
-    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
+    def reset(self, *, seed: Optional[int] = None, options=None):
         obs, info = self.env.reset(seed=seed, options=options)
         return np.asarray(obs).flatten(), info
 
@@ -82,10 +82,35 @@ class OneHotObservation(Wrapper):
         vec[int(obs)] = 1.0
         return vec
 
-    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
+    def reset(self, *, seed: Optional[int] = None, options=None):
         obs, info = self.env.reset(seed=seed, options=options)
         return self._encode(obs), info
 
     def step(self, action):
         obs, reward, terminated, truncated, info = self.env.step(action)
         return self._encode(obs), reward, terminated, truncated, info
+
+
+class FlattenDictObservation(Wrapper):
+    """Flatten a :class:`~reinforce.core.spaces.Dict` observation into one Box.
+
+    Each subspace is flattened (Discrete -> one-hot, Box -> raveled) and the
+    parts are concatenated, so multi-modal environments work with the standard
+    MLP-based agents.
+    """
+
+    def __init__(self, env: Env) -> None:
+        super().__init__(env)
+        space = self.env.observation_space
+        assert isinstance(space, Dict), "FlattenDictObservation needs a Dict observation space"
+        self._dict_space = space
+        dim = flatdim(space)
+        self.observation_space = Box(-np.inf, np.inf, shape=(dim,), dtype=np.float32)
+
+    def reset(self, *, seed: Optional[int] = None, options=None):
+        obs, info = self.env.reset(seed=seed, options=options)
+        return flatten(self._dict_space, obs), info
+
+    def step(self, action):
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        return flatten(self._dict_space, obs), reward, terminated, truncated, info

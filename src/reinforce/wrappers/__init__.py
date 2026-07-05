@@ -2,7 +2,12 @@
 
 from .async_vector import AsyncVectorEnv
 from .normalize import NormalizeObservation, NormalizeReward
-from .observation import FlattenObservation, FrameStack, OneHotObservation
+from .observation import (
+    FlattenDictObservation,
+    FlattenObservation,
+    FrameStack,
+    OneHotObservation,
+)
 from .time_limit import TimeLimit
 from .vector import SyncVectorEnv
 
@@ -15,4 +20,5 @@ __all__ = [
     "FrameStack",
     "FlattenObservation",
     "OneHotObservation",
+    "FlattenDictObservation",
 ]

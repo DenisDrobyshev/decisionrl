@@ -12,7 +12,7 @@ from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
 
-__all__ = ["Space", "Discrete", "Box", "is_discrete", "flatdim"]
+__all__ = ["Space", "Discrete", "Box", "Dict", "is_discrete", "flatdim", "flatten"]
 
 
 class Space:
@@ -130,6 +130,34 @@ class Box(Space):
         )
 
 
+class Dict(Space):
+    """A dictionary of named subspaces (for multi-modal observations).
+
+    Not consumed directly by the networks; wrap the environment in
+    :class:`~reinforce.wrappers.FlattenDictObservation` to feed agents a single
+    flattened Box.
+    """
+
+    def __init__(self, spaces: dict) -> None:
+        super().__init__(None, np.float32)
+        self.spaces = dict(spaces)
+
+    def seed(self, seed: Optional[int] = None) -> None:
+        for i, s in enumerate(self.spaces.values()):
+            s.seed(None if seed is None else seed + i)
+
+    def sample(self) -> dict:
+        return {k: s.sample() for k, s in self.spaces.items()}
+
+    def contains(self, x) -> bool:
+        return isinstance(x, dict) and set(x) == set(self.spaces) and all(
+            self.spaces[k].contains(v) for k, v in x.items()
+        )
+
+    def __repr__(self) -> str:
+        return "Dict(" + ", ".join(f"{k}: {v}" for k, v in self.spaces.items()) + ")"
+
+
 def is_discrete(space: Space) -> bool:
     """Return ``True`` for discrete action/observation spaces.
 
@@ -142,6 +170,23 @@ def is_discrete(space: Space) -> bool:
 
 def flatdim(space: Space) -> int:
     """Number of scalar components needed to represent one element of ``space``."""
+    if isinstance(space, Dict):
+        return sum(flatdim(s) for s in space.spaces.values())
     if is_discrete(space):
         return int(space.n)  # one-hot dimensionality
     return int(np.prod(space.shape))
+
+
+def flatten(space: Space, x) -> np.ndarray:
+    """Flatten a sample ``x`` of ``space`` into a 1-D float32 vector.
+
+    Discrete values become one-hot; Box values are raveled; Dict values are the
+    concatenation of their flattened subspaces (in insertion order).
+    """
+    if isinstance(space, Dict):
+        return np.concatenate([flatten(s, x[k]) for k, s in space.spaces.items()])
+    if is_discrete(space):
+        vec = np.zeros(int(space.n), dtype=np.float32)
+        vec[int(x)] = 1.0
+        return vec
+    return np.asarray(x, dtype=np.float32).ravel()
