@@ -16,6 +16,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **CLI**: `reinforce train|eval|list` console script and `python -m reinforce`.
 - **Registry & configs**: `make_agent` / `make_env`, per-(algo, env) tuned
   hyperparameters.
+- **AsyncVectorEnv**: subprocess-based vectorized env (spawn) with the same API
+  as `SyncVectorEnv`, for parallel data collection; `maybe_compile` torch.compile
+  helper.
 - `py.typed` marker, pre-commit config, PyPI publish workflow (trusted publishing).
 
 ## [0.1.0] - 2026-07-05

@@ -7,6 +7,7 @@ from .torch_utils import (
     explained_variance,
     get_device,
     hard_update,
+    maybe_compile,
     polyak_update,
     soft_update,
     to_tensor,
@@ -23,4 +24,5 @@ __all__ = [
     "hard_update",
     "polyak_update",
     "explained_variance",
+    "maybe_compile",
 ]

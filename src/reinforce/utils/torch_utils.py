@@ -15,6 +15,7 @@ __all__ = [
     "hard_update",
     "explained_variance",
     "polyak_update",
+    "maybe_compile",
 ]
 
 
@@ -48,6 +49,20 @@ polyak_update = soft_update
 def hard_update(source: nn.Module, target: nn.Module) -> None:
     """Copy parameters from ``source`` to ``target``."""
     target.load_state_dict(source.state_dict())
+
+
+def maybe_compile(module: nn.Module, enabled: bool = False, **kwargs) -> nn.Module:
+    """Optionally wrap ``module`` with ``torch.compile`` for a speed-up.
+
+    A no-op when ``enabled`` is ``False`` or ``torch.compile`` is unavailable, and
+    it falls back gracefully if compilation raises (e.g. no compiler backend).
+    """
+    if not enabled or not hasattr(torch, "compile"):
+        return module
+    try:
+        return torch.compile(module, **kwargs)
+    except Exception:  # pragma: no cover - backend/platform dependent
+        return module
 
 
 def explained_variance(y_pred: np.ndarray, y_true: np.ndarray) -> float:

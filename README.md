@@ -211,7 +211,8 @@ reinforce
 ├── buffers      # ReplayBuffer, PrioritizedReplayBuffer (sum-tree), RolloutBuffer (GAE)
 ├── networks     # build_mlp, QNetwork, DuelingQNetwork, Categorical/Gaussian/Squashed policies
 ├── exploration  # Linear/Exponential schedules, Gaussian & Ornstein-Uhlenbeck noise
-├── wrappers     # TimeLimit, NormalizeObservation, NormalizeReward, SyncVectorEnv
+├── wrappers     # TimeLimit, NormalizeObservation, NormalizeReward,
+│                 #   SyncVectorEnv, AsyncVectorEnv (multiprocessing)
 ├── utils        # set_seed, Logger (stdout/CSV/TensorBoard), RunningMeanStd, torch helpers
 ├── training     # evaluate_policy, Callback, EvalCallback, StopOnRewardThreshold
 └── algorithms   # the ten agents above
