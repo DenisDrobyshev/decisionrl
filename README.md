@@ -224,6 +224,7 @@ agent.learn(100_000, callback=CallbackList([
 | Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset (no env) |
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
+| Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
 
 See [reproduced benchmark scores](docs/benchmarks.md) for all algorithms.
 

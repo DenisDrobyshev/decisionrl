@@ -10,6 +10,7 @@ Offline: :class:`TD3BC`.
 from .a2c import A2C
 from .base import OnPolicyAgent
 from .c51 import C51
+from .cql import CQL
 from .ddpg import DDPG
 from .dqn import DQN
 from .iql import IQL
@@ -41,6 +42,7 @@ __all__ = [
     "SACDiscrete",
     "TD3BC",
     "IQL",
+    "CQL",
     "OnPolicyAgent",
     "OffPolicyContinuousAgent",
 ]

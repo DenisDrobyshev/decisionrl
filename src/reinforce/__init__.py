@@ -16,6 +16,7 @@ from . import algorithms, buffers, envs, exploration, networks, training, utils,
 from .algorithms import (
     A2C,
     C51,
+    CQL,
     DDPG,
     DQN,
     IQL,
@@ -76,6 +77,7 @@ __all__ = [
     "SACDiscrete",
     "TD3BC",
     "IQL",
+    "CQL",
     # offline data
     "TransitionDataset",
     "collect_dataset",

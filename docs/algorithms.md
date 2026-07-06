@@ -18,6 +18,7 @@
 | Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset |
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
+| Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
 
 See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import IQL, TD3BC
+from reinforce.algorithms import CQL, IQL, TD3BC
 from reinforce.data import TransitionDataset, collect_dataset
 from reinforce.envs import PointMass
 from reinforce.training import evaluate_policy
@@ -90,3 +90,28 @@ def test_iql_learns_offline(quiet_logger):
     learned = evaluate_policy(agent, PointMass(), n_episodes=20, seed=1)[0]
     random_ret = _random_return(PointMass)
     assert learned > random_ret + 20, f"IQL offline: learned={learned:.2f} vs random={random_ret:.2f}"
+
+
+def test_cql_online_learn_disabled(quiet_logger):
+    agent = CQL(PointMass(), n_random=2, batch_size=8, seed=0, logger=quiet_logger)
+    with pytest.raises(NotImplementedError):
+        agent.learn(100)
+
+
+def test_cql_predict_within_bounds(quiet_logger):
+    agent = CQL(PointMass(), n_random=2, batch_size=8, seed=0, logger=quiet_logger)
+    obs, _ = PointMass().reset(seed=0)
+    action = np.asarray(agent.predict(obs, deterministic=True))
+    assert action.shape == (2,)
+    assert np.all(action >= -1.0 - 1e-5) and np.all(action <= 1.0 + 1e-5)
+
+
+@pytest.mark.slow
+def test_cql_learns_offline(quiet_logger):
+    ds = _behavior_dataset()
+    agent = CQL(PointMass(), cql_alpha=1.0, n_random=4, batch_size=128, seed=0, logger=quiet_logger)
+    agent.learn_offline(ds, total_steps=2_500)
+
+    learned = evaluate_policy(agent, PointMass(), n_episodes=20, seed=1)[0]
+    random_ret = _random_return(PointMass)
+    assert learned > random_ret + 20, f"CQL offline: learned={learned:.2f} vs random={random_ret:.2f}"

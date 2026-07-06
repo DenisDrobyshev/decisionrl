@@ -13,7 +13,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Environments**: `MountainCar`, `MountainCarContinuous`, `Acrobot`.
 - **Dict observation spaces**: `core.spaces.Dict` + `flatten`/`flatdim` and the
   `FlattenDictObservation` wrapper (multi-modal observations).
-- **Offline RL**: `IQL` (implicit Q-learning) in addition to TD3+BC.
+- **Offline RL**: `IQL` (implicit Q-learning) and `CQL` (conservative Q-learning)
+  in addition to TD3+BC.
 - **Optuna** hyperparameter search (`reinforce.tuning.optuna_search`).
 - **Weights & Biases** logging sink in `Logger`.
 - Static type checking with **mypy** (config, CI step, badge); **Colab/Jupyter
