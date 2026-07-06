@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Multi-agent RL** (`reinforce.multiagent`): `MultiAgentEnv` interface,
+  `RockPaperScissors` and `CoordinationGame`, and `MultiAgentPPO` supporting both
+  shared-policy self-play and independent PPO (IPPO).
 - **Recurrent PPO** (`RecurrentPPO`): LSTM actor-critic with proper hidden-state
   reset masking and truncated BPTT (minibatched over environments) for partially
   observable tasks; `BaseAgent.reset_states()` hook, called by `evaluate_policy`.

@@ -228,6 +228,21 @@ agent.learn(100_000, callback=CallbackList([
 
 See [reproduced benchmark scores](docs/benchmarks.md) for all algorithms.
 
+## Multi-agent
+
+```python
+from reinforce.multiagent import MultiAgentPPO, RockPaperScissors, CoordinationGame
+
+# self-play (one shared policy controls every agent)
+selfplay = MultiAgentPPO(RockPaperScissors(), shared_policy=True, seed=0).learn(40_000)
+
+# independent PPO (a separate policy per agent) on a cooperative game
+ippo = MultiAgentPPO(CoordinationGame(), shared_policy=False, seed=0).learn(20_000)
+```
+
+`reinforce.multiagent` adds a `MultiAgentEnv` interface, example games, and
+`MultiAgentPPO` (self-play or IPPO). See the [multi-agent docs](docs/multiagent.md).
+
 ## Components you can reuse
 
 ```

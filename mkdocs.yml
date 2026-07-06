@@ -35,6 +35,7 @@ nav:
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md
   - Environments: environments.md
+  - Multi-agent: multiagent.md
   - Command-line interface: cli.md
 
 markdown_extensions:
