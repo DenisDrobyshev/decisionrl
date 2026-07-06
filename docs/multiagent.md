@@ -15,8 +15,10 @@ class MultiAgentEnv:
     def step(actions: dict) -> (obs, rewards, terminateds, truncateds, info)
 ```
 
-Built-in games: `RockPaperScissors` (two-player zero-sum) and `CoordinationGame`
-(cooperative — all agents are rewarded when they pick the same action).
+Built-in games: `RockPaperScissors` (two-player zero-sum), `CoordinationGame`
+(cooperative, single-shot — all agents rewarded when they pick the same action),
+and `MultiAgentGridWorld` (cooperative **multi-step** navigation — each agent must
+reach its own target under a dense distance reward).
 
 ## Self-play
 

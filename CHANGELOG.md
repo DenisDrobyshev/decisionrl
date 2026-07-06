@@ -12,8 +12,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   MountainCar and `reinforce.utils.record_gif`; animated agent GIFs in the README
   (`examples/record_gifs.py`).
 - **Multi-agent RL** (`reinforce.multiagent`): `MultiAgentEnv` interface,
-  `RockPaperScissors` and `CoordinationGame`, and `MultiAgentPPO` supporting both
-  shared-policy self-play and independent PPO (IPPO).
+  `RockPaperScissors`, `CoordinationGame` and the multi-step cooperative
+  `MultiAgentGridWorld`, and `MultiAgentPPO` supporting both shared-policy
+  self-play and independent PPO (IPPO).
 - **Recurrent PPO** (`RecurrentPPO`): LSTM actor-critic with proper hidden-state
   reset masking and truncated BPTT (minibatched over environments) for partially
   observable tasks; `BaseAgent.reset_states()` hook, called by `evaluate_policy`.

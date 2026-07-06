@@ -16,7 +16,9 @@ import numpy as np
 
 from ..core.spaces import Box, Discrete, Space
 
-__all__ = ["MultiAgentEnv", "RockPaperScissors", "CoordinationGame"]
+__all__ = ["MultiAgentEnv", "RockPaperScissors", "CoordinationGame", "MultiAgentGridWorld"]
+
+_MA_DELTAS = [(-1, 0), (0, 1), (1, 0), (0, -1), (0, 0)]  # up, right, down, left, stay
 
 
 class MultiAgentEnv:
@@ -100,4 +102,60 @@ class CoordinationGame(MultiAgentEnv):
         rewards = dict.fromkeys(self.agents, reward)
         terminated = dict.fromkeys(self.agents, True)
         truncated = dict.fromkeys(self.agents, False)
+        return self._obs(), rewards, terminated, truncated, {}
+
+
+class MultiAgentGridWorld(MultiAgentEnv):
+    """Cooperative multi-step navigation: each agent must reach its own target.
+
+    Multi-step (unlike the single-shot games above): a dense per-agent reward
+    (negative normalized distance) plus a bonus for reaching the target, so the
+    agents learn temporally-extended navigation. Each agent's observation is its
+    own ``[position, target]`` (normalized), so a single shared policy generalizes
+    across agents.
+    """
+
+    def __init__(self, rows: int = 5, cols: int = 5, n_agents: int = 2, horizon: int = 25) -> None:
+        self.rows, self.cols, self.horizon = int(rows), int(cols), int(horizon)
+        self.agents = [f"agent_{i}" for i in range(n_agents)]
+        corners = [(0, 0), (rows - 1, cols - 1), (0, cols - 1), (rows - 1, 0)]
+        self.targets = {a: corners[i % len(corners)] for i, a in enumerate(self.agents)}
+        self.observation_spaces = {a: Box(0.0, 1.0, shape=(4,), dtype=np.float32) for a in self.agents}
+        self.action_spaces = {a: Discrete(5) for a in self.agents}
+        self._rng = np.random.default_rng()
+        self._pos: Dict[str, tuple] = {}
+        self._steps = 0
+
+    def _obs_for(self, a: str) -> np.ndarray:
+        r, c = self._pos[a]
+        tr, tc = self.targets[a]
+        return np.array([r / (self.rows - 1), c / (self.cols - 1),
+                         tr / (self.rows - 1), tc / (self.cols - 1)], dtype=np.float32)
+
+    def _obs(self) -> Dict[str, np.ndarray]:
+        return {a: self._obs_for(a) for a in self.agents}
+
+    def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
+        if seed is not None:
+            self._rng = np.random.default_rng(seed)
+        self._pos = {a: (int(self._rng.integers(self.rows)), int(self._rng.integers(self.cols)))
+                     for a in self.agents}
+        self._steps = 0
+        return self._obs(), {}
+
+    def step(self, actions: Dict[str, Any]):
+        rewards = {}
+        max_dist = (self.rows - 1) + (self.cols - 1)
+        for a in self.agents:
+            dr, dc = _MA_DELTAS[int(actions[a])]
+            r, c = self._pos[a]
+            self._pos[a] = (int(np.clip(r + dr, 0, self.rows - 1)), int(np.clip(c + dc, 0, self.cols - 1)))
+            tr, tc = self.targets[a]
+            dist = abs(self._pos[a][0] - tr) + abs(self._pos[a][1] - tc)
+            reached = self._pos[a] == self.targets[a]
+            rewards[a] = (1.0 if reached else 0.0) - dist / max_dist
+        self._steps += 1
+        all_reached = all(self._pos[a] == self.targets[a] for a in self.agents)
+        terminated = dict.fromkeys(self.agents, all_reached)
+        truncated = dict.fromkeys(self.agents, self._steps >= self.horizon and not all_reached)
         return self._obs(), rewards, terminated, truncated, {}
