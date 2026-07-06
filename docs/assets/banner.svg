@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4338ca"/>
+      <stop offset="0.55" stop-color="#6d28d9"/>
+      <stop offset="1" stop-color="#9333ea"/>
+    </linearGradient>
+    <linearGradient id="curve" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a5b4fc" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#a5b4fc" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="320" rx="24" fill="url(#bg)"/>
+
+  <!-- faint grid -->
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <path d="M0 80 H1200 M0 160 H1200 M0 240 H1200"/>
+    <path d="M200 0 V320 M400 0 V320 M600 0 V320 M800 0 V320 M1000 0 V320"/>
+  </g>
+
+  <!-- decorative rising learning curve -->
+  <path d="M690 250 C 760 245, 800 210, 850 195 S 950 150, 1000 120 S 1110 70, 1150 55 L 1150 250 Z" fill="url(#curve)"/>
+  <path d="M690 250 C 760 245, 800 210, 850 195 S 950 150, 1000 120 S 1110 70, 1150 55"
+        fill="none" stroke="#e0e7ff" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#ffffff">
+    <circle cx="850" cy="195" r="6"/><circle cx="1000" cy="120" r="6"/><circle cx="1150" cy="55" r="7"/>
+  </g>
+
+  <!-- title -->
+  <text x="70" y="150" font-size="92" font-weight="800" fill="#ffffff" letter-spacing="1">reinforce</text>
+  <text x="74" y="200" font-size="27" fill="#ffffff" fill-opacity="0.92">
+    a correctness-first reinforcement learning foundation
+  </text>
+  <text x="74" y="234" font-size="19" fill="#ffffff" fill-opacity="0.7">
+    22 algorithms · PyTorch · dependency-light · typed · tested
+  </text>
+
+  <!-- algorithm family chips -->
+  <g font-size="17" font-weight="600">
+    <g transform="translate(74,262)">
+      <rect width="66" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="33" y="20" fill="#ffffff" text-anchor="middle">DQN</text>
+    </g>
+    <g transform="translate(150,262)">
+      <rect width="66" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="33" y="20" fill="#ffffff" text-anchor="middle">PPO</text>
+    </g>
+    <g transform="translate(226,262)">
+      <rect width="66" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="33" y="20" fill="#ffffff" text-anchor="middle">SAC</text>
+    </g>
+    <g transform="translate(302,262)">
+      <rect width="94" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="47" y="20" fill="#ffffff" text-anchor="middle">Rainbow</text>
+    </g>
+    <g transform="translate(406,262)">
+      <rect width="90" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="45" y="20" fill="#ffffff" text-anchor="middle">IMPALA</text>
+    </g>
+    <g transform="translate(506,262)">
+      <rect width="76" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="38" y="20" fill="#ffffff" text-anchor="middle">MBPO</text>
+    </g>
+    <g transform="translate(592,262)">
+      <rect width="120" height="30" rx="15" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="60" y="20" fill="#ffffff" text-anchor="middle">multi-agent</text>
+    </g>
+  </g>
+</svg>

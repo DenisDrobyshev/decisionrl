@@ -5,7 +5,10 @@ import pytest
 import torch
 from hypothesis import given, settings
 from hypothesis import strategies as st
+from hypothesis.extra import numpy as hnp
 
+from reinforce import make_agent, make_env
+from reinforce.algorithms import PPO, SAC
 from reinforce.buffers import ReplayBuffer
 from reinforce.core.spaces import Box, Discrete
 from reinforce.exploration import LinearSchedule
@@ -98,3 +101,108 @@ def test_running_mean_std_matches_numpy(data):
     # rtol/atol account for the small bias from the epsilon-count initialization
     np.testing.assert_allclose(rms.mean, arr.mean(axis=0), rtol=1e-2, atol=1e-2)
     np.testing.assert_allclose(rms.var, arr.var(axis=0), rtol=1e-2, atol=1e-2)
+
+
+# --------------------------------------------------------------------------- #
+# Property-based tests over the algorithms themselves.
+#
+# Invariants that must hold for *any* observation and *any* reasonable
+# hyperparameters: predictions stay inside the action space, and a save/load
+# round-trip is a no-op on the (deterministic) policy. Fixtures are module- or
+# session-scoped so the (relatively expensive) agents are built once and then
+# probed with many Hypothesis-generated observations.
+# --------------------------------------------------------------------------- #
+
+ALGO_SETTINGS = settings(max_examples=30, deadline=None)
+
+_CARTPOLE_OBS = tuple(make_env("CartPole").observation_space.shape)
+_CARTPOLE_ACTION = make_env("CartPole").action_space
+_POINTMASS_OBS = tuple(make_env("PointMass").observation_space.shape)
+_POINTMASS_ACTION = make_env("PointMass").action_space
+
+DISCRETE_ALGOS = ["dqn", "ppo", "a2c", "c51", "qrdqn", "sac_discrete"]
+CONTINUOUS_ALGOS = ["ddpg", "td3", "sac"]
+
+
+def _obs_strategy(shape):
+    return hnp.arrays(np.float32, shape, elements=st.floats(-5.0, 5.0, width=32))
+
+
+@pytest.fixture(scope="module")
+def discrete_agents():
+    return {name: make_agent(name, make_env("CartPole"), seed=0) for name in DISCRETE_ALGOS}
+
+
+@pytest.fixture(scope="module")
+def continuous_agents():
+    return {name: make_agent(name, make_env("PointMass"), seed=0) for name in CONTINUOUS_ALGOS}
+
+
+@ALGO_SETTINGS
+@given(obs=_obs_strategy(_CARTPOLE_OBS))
+def test_discrete_agents_predict_valid_actions(discrete_agents, obs):
+    for name, agent in discrete_agents.items():
+        for deterministic in (True, False):
+            a = agent.predict(obs, deterministic=deterministic)
+            assert isinstance(a, (int, np.integer)), (name, type(a))
+            assert _CARTPOLE_ACTION.contains(int(a)), (name, a)
+
+
+@ALGO_SETTINGS
+@given(obs=_obs_strategy(_POINTMASS_OBS))
+def test_continuous_agents_predict_within_bounds(continuous_agents, obs):
+    for name, agent in continuous_agents.items():
+        a = np.asarray(agent.predict(obs, deterministic=True), dtype=np.float32)
+        assert a.shape == _POINTMASS_ACTION.low.shape, (name, a.shape)
+        assert np.all(np.isfinite(a)), (name, a)
+        assert np.all(a >= _POINTMASS_ACTION.low - 1e-4), (name, a)
+        assert np.all(a <= _POINTMASS_ACTION.high + 1e-4), (name, a)
+
+
+@pytest.fixture(scope="module")
+def ppo_roundtrip(tmp_path_factory):
+    agent = make_agent("ppo", make_env("CartPole"), seed=0)
+    path = str(tmp_path_factory.mktemp("ppo") / "ppo.pt")
+    agent.save(path)
+    return agent, PPO.load(path, env=make_env("CartPole"))
+
+
+@ALGO_SETTINGS
+@given(obs=_obs_strategy(_CARTPOLE_OBS))
+def test_ppo_save_load_predictions_match(ppo_roundtrip, obs):
+    agent, loaded = ppo_roundtrip
+    assert agent.predict(obs, deterministic=True) == loaded.predict(obs, deterministic=True)
+
+
+@pytest.fixture(scope="module")
+def sac_roundtrip(tmp_path_factory):
+    agent = make_agent("sac", make_env("PointMass"), seed=0)
+    path = str(tmp_path_factory.mktemp("sac") / "sac.pt")
+    agent.save(path)
+    return agent, SAC.load(path, env=make_env("PointMass"))
+
+
+@ALGO_SETTINGS
+@given(obs=_obs_strategy(_POINTMASS_OBS))
+def test_sac_save_load_predictions_match(sac_roundtrip, obs):
+    agent, loaded = sac_roundtrip
+    a1 = np.asarray(agent.predict(obs, deterministic=True))
+    a2 = np.asarray(loaded.predict(obs, deterministic=True))
+    np.testing.assert_allclose(a1, a2, atol=1e-5)
+
+
+@settings(max_examples=15, deadline=None)
+@given(
+    learning_rate=st.floats(1e-5, 1e-2),
+    gamma=st.floats(0.80, 0.999),
+    h1=st.integers(8, 64),
+    h2=st.integers(8, 64),
+)
+def test_dqn_random_hyperparams_construct_and_predict(learning_rate, gamma, h1, h2):
+    env = make_env("CartPole")
+    agent = make_agent(
+        "dqn", env, learning_rate=learning_rate, gamma=gamma, hidden_sizes=(h1, h2), seed=0
+    )
+    obs, _ = env.reset(seed=0)
+    action = agent.predict(obs)
+    assert env.action_space.contains(int(action))

@@ -15,7 +15,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   dynamics. The world model learns the dynamics; the policy-learning part is not
   tuned to be competitive (use `MBPO` for a robust model-based agent).
 - **Property-based tests** (Hypothesis) for spaces, replay buffer storage/n-step,
-  schedules and running statistics.
+  schedules and running statistics, and for the **algorithms themselves**:
+  predictions stay inside the action space for arbitrary observations, and
+  save/load round-trips are a no-op on the deterministic policy.
+- **PyPI packaging**: distributed as `reinforce-rl` (imported as `reinforce`);
+  release process documented in [`RELEASING.md`](RELEASING.md) via trusted
+  publishing. README gains a hero banner (`docs/assets/banner.svg`).
 - **MBPO** (`MBPO`): model-based policy optimization — an `EnsembleDynamics`
   model generates short synthetic rollouts to augment SAC training on a mix of
   real and model data.

@@ -3,7 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "reinforce"
+# PyPI distribution name (the import package stays `reinforce`); "reinforce" is
+# already taken on PyPI, so we distribute as "reinforce-rl": pip install reinforce-rl
+name = "reinforce-rl"
 version = "0.1.0"
 description = "A dependency-light, correctness-first reinforcement learning foundation: readable algorithms, composable components, batteries-included environments."
 readme = "README.md"

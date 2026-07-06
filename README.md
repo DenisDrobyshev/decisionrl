@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/banner.svg" alt="reinforce — a correctness-first reinforcement learning foundation" width="100%">
+
 # reinforce
 
 **A dependency-light, correctness-first reinforcement learning foundation.**
@@ -171,17 +173,23 @@ Three principles guide it:
 ## Installation
 
 ```bash
-# core (numpy + torch only)
-pip install git+https://github.com/DenisDrobyshev/reinforce.git
+# from PyPI — distributed as "reinforce-rl", imported as "reinforce"
+pip install reinforce-rl
 
 # with Gymnasium environments
-pip install "reinforce[gym] @ git+https://github.com/DenisDrobyshev/reinforce.git"
+pip install "reinforce-rl[gym]"
+
+# latest from source
+pip install git+https://github.com/DenisDrobyshev/reinforce.git
 
 # local dev install
 git clone https://github.com/DenisDrobyshev/reinforce.git
 cd reinforce
 pip install -e ".[dev]"
 ```
+
+> The import package is always `reinforce` (`import reinforce`); the PyPI
+> distribution is named `reinforce-rl` because `reinforce` was already taken.
 
 ## Quick start
 
