@@ -96,6 +96,7 @@ python_version = "3.9"
 files = ["src/reinforce"]
 ignore_missing_imports = true
 implicit_optional = true
+follow_imports_for_stubs = true
 # Categories dominated by PyTorch / duck-typed space false positives are muted;
 # name-resolution and structural checks stay on.
 disable_error_code = [
@@ -106,3 +107,11 @@ disable_error_code = [
     "index",
     "assignment",
 ]
+
+# Don't analyze NumPy's stubs: their version resolved on Python 3.12 uses the
+# PEP 695 `type` statement (unparseable under python_version 3.9) and NumPy 2.x
+# shape typing is over-strict. Treat NumPy as Any so mypy is version-stable.
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
