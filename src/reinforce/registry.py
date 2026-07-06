@@ -28,6 +28,7 @@ from .algorithms import (
     SAC,
     SARSA,
     TD3,
+    Dreamer,
     DynaQ,
     ExpectedSARSA,
     QLearning,
@@ -79,6 +80,7 @@ ALGORITHMS: Dict[str, type] = {
     "td3": TD3,
     "sac": SAC,
     "mbpo": MBPO,
+    "dreamer": Dreamer,
 }
 
 ENVIRONMENTS: Dict[str, Callable[..., Env]] = {

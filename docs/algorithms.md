@@ -7,6 +7,7 @@
 | Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
 | Model-based | Dyna-Q | `DynaQ` | Discrete | learned model + planning |
 | Model-based | MBPO | `MBPO` | Continuous | ensemble dynamics + short rollouts + SAC |
+| Model-based | Dreamer (experimental) | `Dreamer` | Continuous | latent world model + actor-critic in imagination |
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · n-step · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
 | Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |

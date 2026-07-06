@@ -13,6 +13,7 @@ from .c51 import C51
 from .cql import CQL
 from .ddpg import DDPG
 from .dqn import DQN
+from .dreamer import Dreamer
 from .impala import IMPALA
 from .iql import IQL
 from .mbpo import MBPO
@@ -50,6 +51,7 @@ __all__ = [
     "IQL",
     "CQL",
     "MBPO",
+    "Dreamer",
     "OnPolicyAgent",
     "OffPolicyContinuousAgent",
 ]

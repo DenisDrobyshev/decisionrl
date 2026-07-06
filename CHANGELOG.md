@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Dreamer** (`Dreamer`, experimental): compact latent world model with an
+  actor-critic trained in imagination via analytic gradients through the learned
+  dynamics. The world model learns the dynamics; the policy-learning part is not
+  tuned to be competitive (use `MBPO` for a robust model-based agent).
 - **Property-based tests** (Hypothesis) for spaces, replay buffer storage/n-step,
   schedules and running statistics.
 - **MBPO** (`MBPO`): model-based policy optimization — an `EnsembleDynamics`

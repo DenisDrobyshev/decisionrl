@@ -223,6 +223,7 @@ agent.learn(100_000, callback=CallbackList([
 | Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
 | Model-based | Dyna-Q | `DynaQ` | Discrete | learned model + planning (Sutton 1990) |
 | Model-based | MBPO | `MBPO` | Continuous | ensemble dynamics + short rollouts + SAC |
+| Model-based | Dreamer* | `Dreamer` | Continuous | latent world model + imagination (*experimental) |
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · **n-step** · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
 | Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |

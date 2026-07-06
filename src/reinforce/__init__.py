@@ -29,6 +29,7 @@ from .algorithms import (
     SARSA,
     TD3,
     TD3BC,
+    Dreamer,
     DynaQ,
     ExpectedSARSA,
     QLearning,
@@ -86,6 +87,7 @@ __all__ = [
     "IQL",
     "CQL",
     "MBPO",
+    "Dreamer",
     # offline data
     "TransitionDataset",
     "collect_dataset",
