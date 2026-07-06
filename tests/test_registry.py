@@ -54,3 +54,19 @@ def test_make_env_gym_prefix():
     env = make_env("gym:CartPole-v1")
     obs, _ = env.reset(seed=0)
     assert env.observation_space.contains(obs)
+
+
+def test_make_gym_vec_trains_ppo():
+    pytest.importorskip("gymnasium")
+    from reinforce.envs import make_gym_vec
+
+    venv = make_gym_vec("CartPole-v1", num_envs=4)
+    try:
+        assert venv.num_envs == 4
+        obs, _ = venv.reset(seed=0)
+        assert obs.shape == (4, 4)
+        agent = PPO(venv, n_steps=32, batch_size=16, n_epochs=1, seed=0)
+        agent.learn(200)
+        assert agent.num_timesteps >= 200
+    finally:
+        venv.close()

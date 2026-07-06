@@ -37,6 +37,20 @@ env = make_gym("CartPole-v1")     # requires: pip install "reinforce[gym]"
 Gymnasium environments already match this library's API, so agents consume them
 directly; `make_gym` simply wraps one with reinforce's `Box`/`Discrete` spaces.
 
+For vectorized Gymnasium training use `make_gym_vec`:
+
+```python
+from reinforce.envs import make_gym_vec
+from reinforce.algorithms import PPO
+
+venv = make_gym_vec("CartPole-v1", num_envs=8, asynchronous=True)
+PPO(venv, n_steps=256, seed=0).learn(200_000)
+```
+
+It vectorizes Gymnasium *single* envs with reinforce's own vector envs, which use
+correct immediate-autoreset and `final_observation` bootstrapping — stable across
+Gymnasium autoreset-API changes.
+
 ## Wrappers
 
 `TimeLimit`, `NormalizeObservation`, `NormalizeReward`, `FrameStack`,

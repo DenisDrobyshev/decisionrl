@@ -7,7 +7,7 @@ from .acrobot import Acrobot
 from .bandit import MultiArmedBandit
 from .cartpole import CartPole
 from .grid_world import GridWorld
-from .gym import GymAdapter, convert_space, make_gym
+from .gym import GymAdapter, convert_space, make_gym, make_gym_vec
 from .inventory import InventoryManagement
 from .mountain_car import MountainCar, MountainCarContinuous
 from .pendulum import Pendulum
@@ -30,5 +30,6 @@ __all__ = [
     # gymnasium interop
     "GymAdapter",
     "make_gym",
+    "make_gym_vec",
     "convert_space",
 ]

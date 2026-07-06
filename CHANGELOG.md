@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Gymnasium vectorized training**: `make_gym_vec(id, num_envs, asynchronous)`
+  vectorizes Gymnasium single envs with reinforce's own (correct-autoreset)
+  vector envs for on-policy training.
 - **Model-based RL**: `DynaQ` (tabular Dyna-Q — learned model + planning steps).
 - **Episode GIF recording**: `render_rgb()` on CartPole/Pendulum/GridWorld/
   MountainCar and `reinforce.utils.record_gif`; animated agent GIFs in the README

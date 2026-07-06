@@ -17,7 +17,7 @@ import numpy as np
 from ..core.env import Env
 from ..core.spaces import Box, Discrete, Space
 
-__all__ = ["GymAdapter", "make_gym", "convert_space"]
+__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "convert_space"]
 
 
 def convert_space(space) -> Space:
@@ -79,3 +79,22 @@ def make_gym(env_id: str, adapter: bool = True, **kwargs: Any) -> Env:
 
     env = gym.make(env_id, **kwargs)
     return GymAdapter(env) if adapter else env  # type: ignore[return-value]
+
+
+def make_gym_vec(env_id: str, num_envs: int = 1, asynchronous: bool = False, **kwargs):
+    """Vectorize a Gymnasium environment for use with this library's agents.
+
+    Builds ``num_envs`` Gymnasium environments wrapped in :class:`GymAdapter` and
+    combines them with reinforce's own :class:`~reinforce.wrappers.SyncVectorEnv`
+    / :class:`~reinforce.wrappers.AsyncVectorEnv`. This deliberately uses
+    reinforce's vectorization (with correct immediate-autoreset and
+    ``final_observation`` bootstrapping) rather than ``gymnasium.vector`` so
+    behaviour is correct and stable across Gymnasium autoreset-API changes.
+    """
+    from functools import partial
+
+    from ..wrappers import AsyncVectorEnv, SyncVectorEnv
+
+    fn = partial(make_gym, env_id, **kwargs)
+    fns = [fn for _ in range(int(num_envs))]
+    return AsyncVectorEnv(fns) if asynchronous else SyncVectorEnv(fns)
