@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Interactive Plotly dashboards**: `reinforce.utils.plot_dashboard` renders a
+  self-contained HTML dashboard (one panel per metric) from a `HistoryLogger`,
+  a metrics dict, or a Logger CSV.
 - **Prioritized Experience Replay + n-step for continuous control**: DDPG, TD3 and
   SAC now accept `prioritized=True` (with `per_alpha`/`per_beta_start`) and `n_step`,
   with importance-weighted critic losses and TD-error priority updates.

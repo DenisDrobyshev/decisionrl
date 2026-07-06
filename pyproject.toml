@@ -52,6 +52,7 @@ dev = [
     "tqdm>=4.60",
     "optuna>=3.0",
     "mypy>=1.0",
+    "plotly>=5.0",
 ]
 
 [project.scripts]

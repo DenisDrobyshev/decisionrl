@@ -1,5 +1,6 @@
 """Utility helpers: seeding, logging, normalization and torch tooling."""
 
+from .dashboard import plot_dashboard
 from .logger import HistoryLogger, Logger
 from .render import record_gif
 from .running_mean_std import RunningMeanStd
@@ -27,4 +28,5 @@ __all__ = [
     "explained_variance",
     "maybe_compile",
     "record_gif",
+    "plot_dashboard",
 ]

@@ -80,6 +80,15 @@ On-policy agents (PPO/A2C) also support linear learning-rate annealing via
 `anneal_lr=True`. Create vectorized envs in one call with
 `make_vec_env("CartPole", n_envs=8, asynchronous=True)`.
 
+Turn logged metrics into an interactive HTML dashboard (Plotly):
+
+```python
+from reinforce.utils import HistoryLogger, plot_dashboard
+log = HistoryLogger()
+agent = PPO(CartPole(), logger=log); agent.learn(50_000)
+plot_dashboard(log, "dashboard.html")   # one interactive panel per metric
+```
+
 ## Learning from pixels
 
 DQN automatically uses a CNN when the observation space is an image `(C, H, W)`:
