@@ -7,6 +7,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Model-based RL**: `DynaQ` (tabular Dyna-Q — learned model + planning steps).
 - **Episode GIF recording**: `render_rgb()` on CartPole/Pendulum/GridWorld/
   MountainCar and `reinforce.utils.record_gif`; animated agent GIFs in the README
   (`examples/record_gifs.py`).

@@ -21,7 +21,7 @@ from .recurrent_ppo import RecurrentPPO
 from .reinforce import REINFORCE
 from .sac import SAC
 from .sac_discrete import SACDiscrete
-from .tabular import SARSA, ExpectedSARSA, QLearning
+from .tabular import SARSA, DynaQ, ExpectedSARSA, QLearning
 from .td3 import TD3
 from .td3bc import TD3BC
 
@@ -29,6 +29,7 @@ __all__ = [
     "QLearning",
     "SARSA",
     "ExpectedSARSA",
+    "DynaQ",
     "DQN",
     "C51",
     "QRDQN",

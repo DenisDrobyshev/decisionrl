@@ -1,10 +1,10 @@
 import pytest
 
-from reinforce.algorithms import SARSA, ExpectedSARSA, QLearning
+from reinforce.algorithms import SARSA, DynaQ, ExpectedSARSA, QLearning
 from reinforce.envs import GridWorld
 from reinforce.training import evaluate_policy
 
-ALGOS = [QLearning, SARSA, ExpectedSARSA]
+ALGOS = [QLearning, SARSA, ExpectedSARSA, DynaQ]
 
 
 def greedy_rollout(agent, env):

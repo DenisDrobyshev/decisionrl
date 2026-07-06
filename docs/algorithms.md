@@ -5,6 +5,7 @@
 | Tabular | Q-Learning | `QLearning` | Discrete | off-policy TD |
 | Tabular | SARSA | `SARSA` | Discrete | on-policy TD |
 | Tabular | Expected SARSA | `ExpectedSARSA` | Discrete | lower-variance TD |
+| Model-based | Dyna-Q | `DynaQ` | Discrete | learned model + planning |
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · n-step · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
 | Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |

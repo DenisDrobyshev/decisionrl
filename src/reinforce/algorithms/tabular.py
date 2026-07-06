@@ -18,7 +18,7 @@ from ..core.env import Env
 from ..core.spaces import is_discrete
 from ..exploration.schedules import LinearSchedule
 
-__all__ = ["QLearning", "SARSA", "ExpectedSARSA"]
+__all__ = ["QLearning", "SARSA", "ExpectedSARSA", "DynaQ"]
 
 
 class _TabularBase(BaseAgent):
@@ -46,6 +46,9 @@ class _TabularBase(BaseAgent):
         self.n_actions = int(self.action_space.n)
         self.q_table = np.zeros((self.n_states, self.n_actions), dtype=np.float64)
         self.epsilon = epsilon_start
+        # model-based planning (Dyna); disabled unless planning_steps > 0
+        self.planning_steps = 0
+        self._model: dict = {}
 
     def _epsilon_greedy(self, state: int, epsilon: float) -> int:
         if self.rng.random() < epsilon:
@@ -90,6 +93,15 @@ class _TabularBase(BaseAgent):
 
             target = self._td_target(reward, next_state, done, self.epsilon)
             self.q_table[state, action] += self.lr * (target - self.q_table[state, action])
+
+            if self.planning_steps > 0:  # Dyna: learn a model and plan from it
+                self._model[(state, action)] = (reward, next_state, terminated)
+                model_keys = list(self._model.keys())
+                for _ in range(self.planning_steps):
+                    s, a = model_keys[int(self.rng.integers(len(model_keys)))]
+                    r, ns, d = self._model[(s, a)]
+                    tgt = self._td_target(r, ns, d, self.epsilon)
+                    self.q_table[s, a] += self.lr * (tgt - self.q_table[s, a])
 
             state = next_state
             ep_return += reward
@@ -143,6 +155,20 @@ class QLearning(_TabularBase):
         if done:
             return reward
         return reward + self.gamma * float(self.q_table[next_state].max())
+
+
+class DynaQ(QLearning):
+    """Dyna-Q (Sutton, 1990): tabular model-based RL.
+
+    Learns a deterministic model of the environment from real transitions and
+    performs ``planning_steps`` extra Q-updates per real step by replaying
+    simulated transitions from the model, so it needs far fewer real interactions
+    than plain Q-Learning.
+    """
+
+    def __init__(self, env: Env, planning_steps: int = 10, **kwargs) -> None:
+        super().__init__(env, **kwargs)
+        self.planning_steps = int(planning_steps)
 
 
 class SARSA(_TabularBase):
