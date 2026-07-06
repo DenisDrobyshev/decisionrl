@@ -98,7 +98,7 @@ class Box(Space):
     def sample(self) -> np.ndarray:
         # Sample uniformly within finite bounds; fall back to a standard normal
         # for unbounded dimensions (matching Gymnasium's behaviour closely).
-        sample = np.empty(self.shape, dtype=np.float64)
+        sample = np.empty(self.shape, dtype=np.float64)  # type: ignore[type-var]
         both = self.bounded_below & self.bounded_above
         low_only = self.bounded_below & ~self.bounded_above
         high_only = ~self.bounded_below & self.bounded_above
@@ -108,7 +108,7 @@ class Box(Space):
         sample[both] = self._rng.uniform(low=self.low[both], high=self.high[both])
         sample[low_only] = self.low[low_only] + self._rng.exponential(size=low_only.sum())
         sample[high_only] = self.high[high_only] - self._rng.exponential(size=high_only.sum())
-        return sample.astype(self.dtype)
+        return sample.astype(self.dtype)  # type: ignore[return-value]
 
     def contains(self, x) -> bool:
         x = np.asarray(x)

@@ -27,8 +27,8 @@ class NormalizeObservation(Wrapper):
         self.rms = RunningMeanStd(shape=self.observation_space.shape)
         self.epsilon = float(epsilon)
         self.clip = float(clip)
-        low = np.full(self.observation_space.shape, -clip, dtype=np.float32)
-        high = np.full(self.observation_space.shape, clip, dtype=np.float32)
+        low = np.full(self.observation_space.shape, -clip, dtype=np.float32)  # type: ignore[type-var]
+        high = np.full(self.observation_space.shape, clip, dtype=np.float32)  # type: ignore[type-var]
         self.observation_space = Box(low, high, dtype=np.float32)
 
     def _normalize(self, obs: np.ndarray) -> np.ndarray:
