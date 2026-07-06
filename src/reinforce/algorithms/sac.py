@@ -11,7 +11,6 @@ from typing import Optional, Sequence, Union
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 
 from ..core.env import Env
 from ..networks.policies import SquashedGaussianActor
@@ -83,7 +82,7 @@ class SAC(OffPolicyContinuousAgent):
         return chosen.cpu().numpy()[0].astype(np.float32)
 
     def train_step(self) -> dict:
-        batch = self.buffer.sample(self.batch_size)
+        batch = self._sample()
 
         with torch.no_grad():
             next_actions, next_log_prob, _ = self.actor.sample(batch.next_obs)
@@ -97,10 +96,13 @@ class SAC(OffPolicyContinuousAgent):
 
         q1 = self.critic1(batch.obs, batch.actions)
         q2 = self.critic2(batch.obs, batch.actions)
-        critic_loss = F.mse_loss(q1, y) + F.mse_loss(q2, y)
+        td1, td2 = q1 - y, q2 - y
+        weights = batch.weights if batch.weights is not None else torch.ones_like(td1)
+        critic_loss = (weights * td1.pow(2)).mean() + (weights * td2.pow(2)).mean()
         self.critic_opt.zero_grad()
         critic_loss.backward()
         self.critic_opt.step()
+        self._update_priorities(batch, 0.5 * (td1.abs() + td2.abs()))
 
         actions, log_prob, _ = self.actor.sample(batch.obs)
         log_prob = log_prob.squeeze(-1)

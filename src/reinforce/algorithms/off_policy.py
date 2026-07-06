@@ -8,10 +8,12 @@ from typing import Optional
 import numpy as np
 import torch
 
+from ..buffers.prioritized import PrioritizedReplayBuffer
 from ..buffers.replay import ReplayBuffer
 from ..core.agent import BaseAgent
 from ..core.env import Env
 from ..core.spaces import is_discrete
+from ..exploration.schedules import LinearSchedule
 from ..utils.torch_utils import get_device, to_tensor
 
 __all__ = ["OffPolicyContinuousAgent"]
@@ -29,6 +31,9 @@ class OffPolicyContinuousAgent(BaseAgent):
         gradient_steps: int = 1,
         tau: float = 0.005,
         n_step: int = 1,
+        prioritized: bool = False,
+        per_alpha: float = 0.6,
+        per_beta_start: float = 0.4,
         device: str = "auto",
         seed: Optional[int] = None,
         **kwargs,
@@ -49,10 +54,20 @@ class OffPolicyContinuousAgent(BaseAgent):
         self.action_high = np.asarray(self.action_space.high, dtype=np.float32)
 
         self.n_step = int(n_step)
-        self.buffer = ReplayBuffer(
-            buffer_size, self.observation_space, self.action_space,
-            device=str(self.device), seed=seed, n_step=self.n_step, gamma=self.gamma,
-        )
+        self.prioritized = bool(prioritized)
+        self.per_beta_start = float(per_beta_start)
+        self._beta = float(per_beta_start)
+        if self.prioritized:
+            self.buffer = PrioritizedReplayBuffer(
+                buffer_size, self.observation_space, self.action_space,
+                alpha=per_alpha, beta=per_beta_start, device=str(self.device),
+                seed=seed, n_step=self.n_step, gamma=self.gamma,
+            )
+        else:
+            self.buffer = ReplayBuffer(
+                buffer_size, self.observation_space, self.action_space,
+                device=str(self.device), seed=seed, n_step=self.n_step, gamma=self.gamma,
+            )
 
     # -- to be implemented by subclasses -----------------------------------
     def act(self, obs, deterministic: bool = False) -> np.ndarray:
@@ -70,6 +85,16 @@ class OffPolicyContinuousAgent(BaseAgent):
     def _tensor(self, obs) -> torch.Tensor:
         return to_tensor(np.asarray(obs, dtype=np.float32).reshape(1, -1), self.device)
 
+    def _sample(self):
+        """Sample a batch (prioritized with the current beta, or uniform)."""
+        if self.prioritized:
+            return self.buffer.sample(self.batch_size, beta=self._beta)
+        return self.buffer.sample(self.batch_size)
+
+    def _update_priorities(self, batch, td_errors: torch.Tensor) -> None:
+        if self.prioritized and batch.indices is not None:
+            self.buffer.update_priorities(batch.indices, td_errors.detach().cpu().numpy())
+
     def learn(self, total_steps: int, callback=None, log_interval: int = 10) -> "OffPolicyContinuousAgent":
         self._total_timesteps = self.num_timesteps + total_steps
         if callback is not None:
@@ -78,6 +103,7 @@ class OffPolicyContinuousAgent(BaseAgent):
         ep_return, episodes = 0.0, 0
         returns_window: deque = deque(maxlen=100)
         metrics: dict = {}
+        beta_schedule = LinearSchedule(self.per_beta_start, 1.0, total_steps)
 
         for step in range(total_steps):
             if step < self.learning_starts:
@@ -93,6 +119,7 @@ class OffPolicyContinuousAgent(BaseAgent):
             self.num_timesteps += 1
 
             if step >= self.learning_starts and step % self.train_freq == 0:
+                self._beta = beta_schedule(step)
                 for _ in range(self.gradient_steps):
                     metrics = self.train_step()
 

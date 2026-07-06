@@ -231,9 +231,9 @@ agent.learn(100_000, callback=CallbackList([
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability |
 | Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
-| Continuous | DDPG | `DDPG` | Continuous | deterministic policy, OU/Gaussian noise |
-| Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates, smoothing |
-| Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature |
+| Continuous | DDPG | `DDPG` | Continuous | deterministic policy, noise · PER · n-step |
+| Continuous | TD3 | `TD3` | Continuous | twin critics, delayed updates · PER · n-step |
+| Continuous | SAC | `SAC` | Continuous | max-entropy, auto temperature · PER · n-step |
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset (no env) |
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
 | Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |

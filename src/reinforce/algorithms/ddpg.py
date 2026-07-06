@@ -6,7 +6,6 @@ from typing import Optional, Sequence
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 
 from ..core.env import Env
 from ..exploration.noise import ActionNoise, GaussianNoise
@@ -74,7 +73,7 @@ class DDPG(OffPolicyContinuousAgent):
         return np.clip(action, self.action_low, self.action_high).astype(np.float32)
 
     def train_step(self) -> dict:
-        batch = self.buffer.sample(self.batch_size)
+        batch = self._sample()
 
         with torch.no_grad():
             next_actions = self.actor_target(batch.next_obs)
@@ -82,10 +81,13 @@ class DDPG(OffPolicyContinuousAgent):
             y = batch.rewards + batch.discounts * (1.0 - batch.dones) * target_q
 
         current_q = self.critic(batch.obs, batch.actions)
-        critic_loss = F.mse_loss(current_q, y)
+        td_error = current_q - y
+        weights = batch.weights if batch.weights is not None else torch.ones_like(td_error)
+        critic_loss = (weights * td_error.pow(2)).mean()
         self.critic_opt.zero_grad()
         critic_loss.backward()
         self.critic_opt.step()
+        self._update_priorities(batch, td_error.abs())
 
         actor_loss = -self.critic(batch.obs, self.actor(batch.obs)).mean()
         self.actor_opt.zero_grad()
