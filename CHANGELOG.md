@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Property-based tests** (Hypothesis) for spaces, replay buffer storage/n-step,
+  schedules and running statistics.
 - **MBPO** (`MBPO`): model-based policy optimization — an `EnsembleDynamics`
   model generates short synthetic rollouts to augment SAC training on a mix of
   real and model data.

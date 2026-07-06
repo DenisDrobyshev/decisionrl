@@ -7,6 +7,12 @@ name: Docs
 on:
   push:
     branches: [main]
+    paths:  # only redeploy when docs actually change (avoids racing Pages deploys)
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/docs.yml"
+      - "README.md"
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -53,6 +53,7 @@ dev = [
     "optuna>=3.0",
     "mypy>=1.0",
     "plotly>=5.0",
+    "hypothesis>=6.0",
 ]
 
 [project.scripts]
