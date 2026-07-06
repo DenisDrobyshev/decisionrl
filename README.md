@@ -258,6 +258,21 @@ ippo = MultiAgentPPO(CoordinationGame(), shared_policy=False, seed=0).learn(20_0
 `reinforce.multiagent` adds a `MultiAgentEnv` interface, example games, and
 `MultiAgentPPO` (self-play or IPPO). See the [multi-agent docs](docs/multiagent.md).
 
+## Distributed training
+
+```python
+from reinforce import DistributedActorLearner
+from reinforce.envs import CartPole
+
+# real actor processes stream trajectories to a central V-trace learner
+learner = DistributedActorLearner(CartPole, num_actors=8, seed=0).learn(200_000)
+```
+
+`DistributedActorLearner` is a true multi-process, IMPALA-style architecture: each
+actor runs its own environment and local policy inference in a separate process,
+and the learner performs V-trace updates and broadcasts fresh weights every
+iteration.
+
 ## Components you can reuse
 
 ```

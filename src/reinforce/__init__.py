@@ -39,6 +39,7 @@ from .algorithms import (
 )
 from .core import Box, Dict, Discrete, Env, Space, Transition, Wrapper
 from .data import TransitionDataset, collect_dataset
+from .distributed import DistributedActorLearner
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .training import evaluate_policy
 from .tuning import optuna_search
@@ -91,6 +92,7 @@ __all__ = [
     # offline data
     "TransitionDataset",
     "collect_dataset",
+    "DistributedActorLearner",
     # helpers
     "evaluate_policy",
     "set_seed",

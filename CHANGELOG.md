@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Distributed actors** (`DistributedActorLearner`): true multi-process
+  IMPALA-style training — actor processes run env + local inference and stream
+  trajectories to a central V-trace learner that broadcasts fresh weights.
 - **Dreamer** (`Dreamer`, experimental): compact latent world model with an
   actor-critic trained in imagination via analytic gradients through the learned
   dynamics. The world model learns the dynamics; the policy-learning part is not
