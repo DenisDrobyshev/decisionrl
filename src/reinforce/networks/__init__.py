@@ -1,6 +1,7 @@
 """Reusable neural-network building blocks."""
 
 from .cnn import CNNFeatureExtractor, ImageQNetwork, is_image_space
+from .dynamics import EnsembleDynamics
 from .mlp import build_mlp, layer_init
 from .noisy import NoisyLinear, RainbowNetwork
 from .policies import (
@@ -24,6 +25,7 @@ __all__ = [
     "QuantileQNetwork",
     "NoisyLinear",
     "RainbowNetwork",
+    "EnsembleDynamics",
     "CategoricalActor",
     "GaussianActor",
     "SquashedGaussianActor",

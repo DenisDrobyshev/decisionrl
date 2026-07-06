@@ -21,6 +21,7 @@ from .algorithms import (
     DDPG,
     DQN,
     IMPALA,
+    MBPO,
     PPO,
     QRDQN,
     REINFORCE,
@@ -77,6 +78,7 @@ ALGORITHMS: Dict[str, type] = {
     "ddpg": DDPG,
     "td3": TD3,
     "sac": SAC,
+    "mbpo": MBPO,
 }
 
 ENVIRONMENTS: Dict[str, Callable[..., Env]] = {

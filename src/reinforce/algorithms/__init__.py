@@ -15,6 +15,7 @@ from .ddpg import DDPG
 from .dqn import DQN
 from .impala import IMPALA
 from .iql import IQL
+from .mbpo import MBPO
 from .off_policy import OffPolicyContinuousAgent
 from .ppo import PPO
 from .qrdqn import QRDQN
@@ -48,6 +49,7 @@ __all__ = [
     "TD3BC",
     "IQL",
     "CQL",
+    "MBPO",
     "OnPolicyAgent",
     "OffPolicyContinuousAgent",
 ]

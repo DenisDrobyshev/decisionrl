@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **MBPO** (`MBPO`): model-based policy optimization — an `EnsembleDynamics`
+  model generates short synthetic rollouts to augment SAC training on a mix of
+  real and model data.
 - **IMPALA** (`IMPALA`): V-trace off-policy actor-critic for parallel-actor
   training (sync/async vector envs); corrects behaviour/target policy lag across
   update epochs. Discrete and continuous action spaces.

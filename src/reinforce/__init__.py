@@ -21,6 +21,7 @@ from .algorithms import (
     DQN,
     IMPALA,
     IQL,
+    MBPO,
     PPO,
     QRDQN,
     REINFORCE,
@@ -84,6 +85,7 @@ __all__ = [
     "TD3BC",
     "IQL",
     "CQL",
+    "MBPO",
     # offline data
     "TransitionDataset",
     "collect_dataset",
