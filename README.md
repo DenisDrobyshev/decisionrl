@@ -16,7 +16,74 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
+[![Algorithms](https://img.shields.io/badge/algorithms-22-8A2BE2.svg)](docs/algorithms.md)
+[![Tests](https://img.shields.io/badge/tests-208-brightgreen.svg)](tests)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
+[![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
+
+<em>Tabular · value-based · policy-gradient · actor-critic · continuous control · offline · model-based · multi-agent · distributed — one clean, tested, typed library.</em>
+
 </div>
+
+---
+
+## Overview
+
+```mermaid
+flowchart LR
+    subgraph Interaction
+        Env["Environment<br/>(GridWorld · CartPole · Pendulum<br/>Inventory · Thermostat · Gymnasium)"]
+        Agent["Agent<br/>predict / learn / save / load"]
+        Env -- "obs, reward, done" --> Agent
+        Agent -- "action" --> Env
+    end
+    Agent --> Buf["Buffers<br/>Replay · PER · n-step · Rollout (GAE)"]
+    Net["Networks<br/>MLP · CNN · Dueling · Categorical<br/>Gaussian · Noisy · Ensemble"] --> Agent
+    Buf --> Learn["Learner update<br/>TD · PPO/GAE · V-trace · SAC · CQL · imagination"]
+    Learn -- "gradients" --> Net
+    Agent --> Log["Logger → CSV · TensorBoard · W&B · Plotly dashboard"]
+
+    Vec["Vector envs (sync / async / distributed actors)"] -.-> Env
+    Tune["Optuna search · CLI · tuned configs"] -.-> Agent
+```
+
+## Algorithm zoo
+
+```mermaid
+mindmap
+  root(("reinforce"))
+    Tabular
+      Q-Learning
+      SARSA
+      Expected SARSA
+    Model-based
+      Dyna-Q
+      MBPO
+      Dreamer exp
+    Value-based
+      DQN
+      C51
+      QR-DQN
+      Rainbow
+    Policy actor-critic
+      REINFORCE
+      A2C
+      PPO
+      IMPALA
+      Recurrent PPO
+      SAC-Discrete
+    Continuous
+      DDPG
+      TD3
+      SAC
+    Offline
+      TD3-BC
+      IQL
+      CQL
+    Multi-agent
+      MAPPO
+      self-play IPPO
+```
 
 ---
 
