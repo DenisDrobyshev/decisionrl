@@ -13,6 +13,7 @@ from .c51 import C51
 from .cql import CQL
 from .ddpg import DDPG
 from .dqn import DQN
+from .impala import IMPALA
 from .iql import IQL
 from .off_policy import OffPolicyContinuousAgent
 from .ppo import PPO
@@ -38,6 +39,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "IMPALA",
     "RecurrentPPO",
     "DDPG",
     "TD3",

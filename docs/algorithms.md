@@ -13,6 +13,7 @@
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | IMPALA | `IMPALA` | Discrete + Continuous | V-trace off-policy correction, parallel actors |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability (POMDPs) |
 | Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
 | Continuous | DDPG | `DDPG` | Continuous | deterministic policy, action noise |

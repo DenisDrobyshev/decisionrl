@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **IMPALA** (`IMPALA`): V-trace off-policy actor-critic for parallel-actor
+  training (sync/async vector envs); corrects behaviour/target policy lag across
+  update epochs. Discrete and continuous action spaces.
 - **Interactive Plotly dashboards**: `reinforce.utils.plot_dashboard` renders a
   self-contained HTML dashboard (one panel per metric) from a `HistoryLogger`,
   a metrics dict, or a Logger CSV.
