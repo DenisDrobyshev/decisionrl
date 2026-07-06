@@ -55,16 +55,14 @@ class C51(DQN):
         obs_t = to_tensor(np.asarray(obs).reshape(1, -1), self.device)
         return int(self._q_values(obs_t).argmax(dim=1).item())
 
-    def _train_step(self, beta: float) -> float:
-        batch = self.buffer.sample(self.batch_size)
-        bsz = self.batch_size
-
+    def _project(self, batch) -> torch.Tensor:
+        """Project the distributional Bellman target onto the fixed support."""
+        bsz = batch.obs.shape[0]
         with torch.no_grad():
             next_probs = F.softmax(self.target_net(batch.next_obs), dim=2)  # (B, A, N)
             next_q = (next_probs * self.support).sum(dim=2)  # (B, A)
             if self.double_q:
-                online_q = self._q_values(batch.next_obs)
-                next_actions = online_q.argmax(dim=1)
+                next_actions = self._q_values(batch.next_obs).argmax(dim=1)
             else:
                 next_actions = next_q.argmax(dim=1)
             next_dist = next_probs[torch.arange(bsz), next_actions]  # (B, N)
@@ -84,7 +82,12 @@ class C51(DQN):
             offset = (torch.arange(bsz, device=self.device) * self.n_atoms).unsqueeze(1)
             m.view(-1).index_add_(0, (lower + offset).view(-1), (next_dist * (upper.float() - b)).view(-1))
             m.view(-1).index_add_(0, (upper + offset).view(-1), (next_dist * (b - lower.float())).view(-1))
+        return m
 
+    def _train_step(self, beta: float) -> float:
+        batch = self.buffer.sample(self.batch_size)
+        m = self._project(batch)
+        bsz = batch.obs.shape[0]
         log_p = F.log_softmax(self.q_net(batch.obs), dim=2)[torch.arange(bsz), batch.actions]  # (B, N)
         loss = -(m * log_p).sum(dim=1).mean()
 

@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Rainbow DQN** (`Rainbow`): combines Double, Dueling, Prioritized Replay,
+  n-step returns, distributional (C51) and Noisy Nets; new `NoisyLinear` /
+  `RainbowNetwork` building blocks (C51's projection refactored for reuse).
 - **Gymnasium vectorized training**: `make_gym_vec(id, num_envs, asynchronous)`
   vectorizes Gymnasium single envs with reinforce's own (correct-autoreset)
   vector envs for on-policy training.

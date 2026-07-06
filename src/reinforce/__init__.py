@@ -30,6 +30,7 @@ from .algorithms import (
     DynaQ,
     ExpectedSARSA,
     QLearning,
+    Rainbow,
     RecurrentPPO,
     SACDiscrete,
 )
@@ -69,6 +70,7 @@ __all__ = [
     "DQN",
     "C51",
     "QRDQN",
+    "Rainbow",
     "REINFORCE",
     "A2C",
     "PPO",

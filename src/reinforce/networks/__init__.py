@@ -2,6 +2,7 @@
 
 from .cnn import CNNFeatureExtractor, ImageQNetwork, is_image_space
 from .mlp import build_mlp, layer_init
+from .noisy import NoisyLinear, RainbowNetwork
 from .policies import (
     CategoricalActor,
     DeterministicActor,
@@ -21,6 +22,8 @@ __all__ = [
     "DuelingQNetwork",
     "CategoricalQNetwork",
     "QuantileQNetwork",
+    "NoisyLinear",
+    "RainbowNetwork",
     "CategoricalActor",
     "GaussianActor",
     "SquashedGaussianActor",

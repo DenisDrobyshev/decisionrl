@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import C51, DQN, QRDQN
+from reinforce.algorithms import C51, DQN, QRDQN, Rainbow
 from reinforce.envs import GridWorld
 from reinforce.training import evaluate_policy
 
@@ -62,6 +62,27 @@ def test_qrdqn_learns_gridworld(quiet_logger):
     agent.learn(8_000)
     mean_return, _ = evaluate_policy(agent, make_env(), n_episodes=10)
     assert mean_return > 0.5, f"QR-DQN failed to learn GridWorld (mean_return={mean_return:.3f})"
+
+
+def test_rainbow_constructs_and_predicts(quiet_logger):
+    agent = Rainbow(make_env(), v_min=-1.0, v_max=1.0, n_atoms=21, learning_starts=10,
+                    batch_size=8, buffer_size=1000, seed=0, logger=quiet_logger)
+    # combines double + dueling(network) + PER + n-step + distributional + noisy
+    assert agent.double_q and agent.prioritized and agent.n_step > 1
+    obs = np.eye(16, dtype=np.float32)[0]
+    a1 = agent.predict(obs, deterministic=True)
+    a2 = agent.predict(obs, deterministic=True)
+    assert 0 <= a1 < 4 and a1 == a2  # deterministic (noise off in eval)
+
+
+@pytest.mark.slow
+def test_rainbow_learns_gridworld(quiet_logger):
+    agent = Rainbow(make_env(), v_min=-1.0, v_max=1.0, n_atoms=51, n_step=3, learning_rate=1e-3,
+                    learning_starts=500, batch_size=64, buffer_size=10_000, hidden_sizes=(64, 64),
+                    target_update_interval=200, seed=0, logger=quiet_logger)
+    agent.learn(8_000)
+    mean_return, _ = evaluate_policy(agent, make_env(), n_episodes=10)
+    assert mean_return > 0.5, f"Rainbow failed to learn GridWorld (mean_return={mean_return:.3f})"
 
 
 def test_dqn_nstep_constructs(quiet_logger):

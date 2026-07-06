@@ -7,7 +7,9 @@ from reinforce.networks import (
     DeterministicActor,
     DuelingQNetwork,
     GaussianActor,
+    NoisyLinear,
     QNetwork,
+    RainbowNetwork,
     SquashedGaussianActor,
     VNetwork,
     build_mlp,
@@ -64,6 +66,28 @@ def test_deterministic_actor_bounds():
     a = actor(torch.randn(20, 4) * 5)
     assert a.shape == (20, 1)
     assert (a >= -1.0 - 1e-4).all() and (a <= 3.0 + 1e-4).all()
+
+
+def test_noisy_linear_train_vs_eval():
+    layer = NoisyLinear(8, 4, sigma0=0.5)
+    x = torch.zeros(1, 8)
+    # in eval mode: deterministic (mean weights); repeated calls identical
+    layer.eval()
+    assert torch.allclose(layer(x), layer(x))
+    # in train mode with fresh noise, output changes
+    layer.train()
+    layer.reset_noise()
+    out1 = layer(x)
+    layer.reset_noise()
+    out2 = layer(x)
+    assert not torch.allclose(out1, out2)
+
+
+def test_rainbow_network_shape_and_reset_noise():
+    net = RainbowNetwork(6, n_actions=3, n_atoms=11, hidden_sizes=(16,))
+    logits = net(torch.zeros(5, 6))
+    assert logits.shape == (5, 3, 11)
+    net.reset_noise()  # should not raise
 
 
 def test_value_and_continuous_q_shapes():

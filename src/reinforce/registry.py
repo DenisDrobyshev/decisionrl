@@ -29,6 +29,7 @@ from .algorithms import (
     DynaQ,
     ExpectedSARSA,
     QLearning,
+    Rainbow,
     RecurrentPPO,
     SACDiscrete,
 )
@@ -65,6 +66,7 @@ ALGORITHMS: Dict[str, type] = {
     "dqn": DQN,
     "c51": C51,
     "qrdqn": QRDQN,
+    "rainbow": Rainbow,
     "sac_discrete": SACDiscrete,
     "reinforce": REINFORCE,
     "a2c": A2C,

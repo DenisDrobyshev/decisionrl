@@ -9,6 +9,7 @@
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · n-step · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
 | Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |
+| Value-based | Rainbow | `Rainbow` | Discrete | Double + Dueling + PER + n-step + C51 + NoisyNets |
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
