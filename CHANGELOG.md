@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Episode GIF recording**: `render_rgb()` on CartPole/Pendulum/GridWorld/
+  MountainCar and `reinforce.utils.record_gif`; animated agent GIFs in the README
+  (`examples/record_gifs.py`).
 - **Multi-agent RL** (`reinforce.multiagent`): `MultiAgentEnv` interface,
   `RockPaperScissors` and `CoordinationGame`, and `MultiAgentPPO` supporting both
   shared-policy self-play and independent PPO (IPPO).

@@ -47,6 +47,29 @@ class _MountainCarBase(Env):
         self._steps = 0
         return self._obs(), {}
 
+    @staticmethod
+    def _height(x):
+        return np.sin(3 * x) * 0.45 + 0.55
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=64)
+        xs = np.linspace(self.min_position, self.max_position, 100)
+        ax.plot(xs, self._height(xs), color="#475569", lw=2)
+        ax.plot([self.goal_position], [self._height(self.goal_position)], marker="^", color="#16a34a", ms=12)
+        ax.plot([self._pos], [self._height(self._pos)], marker="o", color="#2563eb", ms=12)
+        ax.set_xlim(self.min_position, self.max_position)
+        ax.set_ylim(0, 1.2)
+        ax.axis("off")
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame
+
 
 class MountainCar(_MountainCarBase):
     force = 0.001

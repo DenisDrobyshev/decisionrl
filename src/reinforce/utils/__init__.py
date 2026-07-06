@@ -1,6 +1,7 @@
 """Utility helpers: seeding, logging, normalization and torch tooling."""
 
 from .logger import HistoryLogger, Logger
+from .render import record_gif
 from .running_mean_std import RunningMeanStd
 from .seeding import set_seed
 from .torch_utils import (
@@ -25,4 +26,5 @@ __all__ = [
     "polyak_update",
     "explained_variance",
     "maybe_compile",
+    "record_gif",
 ]

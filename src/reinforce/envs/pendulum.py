@@ -69,3 +69,23 @@ class Pendulum(Env):
         self._steps += 1
         truncated = self._steps >= self.max_steps
         return self._obs(), float(-cost), False, truncated, {}
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        fig, ax = plt.subplots(figsize=(3, 3), dpi=72)
+        ax.set_xlim(-1.3, 1.3)
+        ax.set_ylim(-1.3, 1.3)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        tip = (np.sin(self._theta), np.cos(self._theta))  # theta=0 is upright
+        ax.plot([0, tip[0]], [0, tip[1]], color="#db2777", lw=6, solid_capstyle="round")
+        ax.plot([0], [0], marker="o", color="#1e293b", ms=8)
+        ax.plot([tip[0]], [tip[1]], marker="o", color="#db2777", ms=10)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame

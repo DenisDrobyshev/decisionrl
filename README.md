@@ -39,6 +39,16 @@ The tabular agent recovers the optimal navigation policy (every arrow flows to t
 
 <p align="center"><img src="docs/assets/gridworld_policy.png" width="360" alt="Learned GridWorld policy"></p>
 
+## Watch trained agents
+
+<p align="center">
+  <img src="docs/assets/cartpole_ppo.gif" width="240" alt="PPO balancing CartPole">
+  <img src="docs/assets/pendulum_sac.gif" width="200" alt="SAC swinging up Pendulum">
+  <img src="docs/assets/gridworld_qlearning.gif" width="200" alt="Q-Learning navigating GridWorld">
+</p>
+
+<p align="center"><em>PPO balances CartPole · SAC swings up Pendulum · Q-Learning navigates GridWorld — all rendered by <code>python examples/record_gifs.py</code>.</em></p>
+
 ---
 
 ## Applied solutions

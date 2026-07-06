@@ -125,3 +125,34 @@ class GridWorld(Env):
         out = "\n".join(rows)
         print(out)
         return out
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        fig, ax = plt.subplots(figsize=(3, 3), dpi=72)
+        ax.set_xlim(-0.5, self.cols - 0.5)
+        ax.set_ylim(-0.5, self.rows - 0.5)
+        ax.set_aspect("equal")
+        ax.set_xticks(range(self.cols))
+        ax.set_yticks(range(self.rows))
+        ax.grid(True, color="#cbd5e1")
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+
+        def xy(pos):
+            return pos[1], self.rows - 1 - pos[0]
+
+        for wall in self.walls:
+            wx, wy = xy(wall)
+            ax.add_patch(plt.Rectangle((wx - 0.5, wy - 0.5), 1, 1, color="#475569"))
+        gx, gy = xy(self.goal)
+        ax.add_patch(plt.Rectangle((gx - 0.5, gy - 0.5), 1, 1, color="#16a34a", alpha=0.5))
+        ax_x, ax_y = xy(self._pos)
+        ax.plot([ax_x], [ax_y], marker="o", color="#2563eb", ms=22)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame

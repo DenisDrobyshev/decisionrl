@@ -93,3 +93,26 @@ class CartPole(Env):
         truncated = self._steps >= self.max_steps and not terminated
         reward = 1.0
         return self._state.copy(), reward, terminated, truncated, {}
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        x, _, theta, _ = self._state
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=64)
+        ax.set_xlim(-2.6, 2.6)
+        ax.set_ylim(-0.4, 1.6)
+        ax.axis("off")
+        ax.plot([-2.6, 2.6], [0, 0], color="#555", lw=1)
+        cart_w, cart_h = 0.5, 0.3
+        ax.add_patch(plt.Rectangle((x - cart_w / 2, 0), cart_w, cart_h, color="#334155"))
+        length = 1.0
+        tip = (x + length * math.sin(theta), cart_h + length * math.cos(theta))
+        ax.plot([x, tip[0]], [cart_h, tip[1]], color="#2563eb", lw=5, solid_capstyle="round")
+        ax.plot([x], [cart_h], marker="o", color="#1e293b", ms=6)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame
