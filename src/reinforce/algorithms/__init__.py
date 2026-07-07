@@ -12,8 +12,10 @@ from .base import OnPolicyAgent
 from .c51 import C51
 from .cql import CQL
 from .ddpg import DDPG
+from .decision_transformer import DecisionTransformer
 from .dqn import DQN
 from .dreamer import Dreamer
+from .grpo import GRPO
 from .impala import IMPALA
 from .iql import IQL
 from .mbpo import MBPO
@@ -41,6 +43,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "GRPO",
     "IMPALA",
     "RecurrentPPO",
     "DDPG",
@@ -50,6 +53,7 @@ __all__ = [
     "TD3BC",
     "IQL",
     "CQL",
+    "DecisionTransformer",
     "MBPO",
     "Dreamer",
     "OnPolicyAgent",

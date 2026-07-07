@@ -15,6 +15,7 @@
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | GRPO | `GRPO` | Discrete + Continuous | critic-free, group-relative advantage (LLM-RLHF) |
 | Actor-critic | IMPALA | `IMPALA` | Discrete + Continuous | V-trace off-policy correction, parallel actors |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability (POMDPs) |
 | Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
@@ -24,8 +25,18 @@
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset |
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
 | Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
+| Offline | Decision Transformer | `DecisionTransformer` | Discrete + Continuous | return-conditioned sequence modeling (causal GPT) |
 
 See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
+
+## RLHF & intrinsic motivation
+
+- **RLHF** (`reinforce.rlhf`): learn a reward from preferences (`RewardModel`,
+  `synthetic_preferences`, `train_reward_model`) and optimize any agent against it
+  via `RewardModelWrapper`. Pairs with **GRPO**, the policy-optimization method
+  used to align language models.
+- **Curiosity** (`reinforce.exploration`): `RND` and `ICM` intrinsic rewards, added
+  to any environment with `CuriosityWrapper` for exploration on sparse-reward tasks.
 
 ## Correctness details
 

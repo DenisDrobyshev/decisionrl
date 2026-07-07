@@ -7,6 +7,29 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Complex scenario environments** (self-contained, NumPy-only): `ReacherArm`
+  (2-link torque-controlled reaching), `Navigation2D` (continuous maze with lidar
+  sensors and hard exploration), `LunarLander` (2-D rigid-body rocket landing with
+  shaped + terminal reward), and `PortfolioAllocation` (allocate across correlated
+  momentum assets with transaction costs). All registered in `make_env`; trained
+  end-to-end in `examples/complex_scenarios.py`.
+- **RLHF pipeline** (`reinforce.rlhf`): learn a reward from *preferences* the way
+  language models are aligned — `collect_segments`, `synthetic_preferences`
+  (Bradley-Terry teacher), a `RewardModel` trained on the preference likelihood,
+  and `RewardModelWrapper` to optimize any agent against the learned reward while
+  keeping the true reward in `info` for evaluation.
+- **GRPO** (`GRPO`): Group Relative Policy Optimization (DeepSeekMath) — the
+  critic-free, group-normalized-advantage policy-optimization method behind modern
+  LLM RLHF, with a PPO clipped objective and a KL penalty to a reference policy.
+  Pairs directly with `reinforce.rlhf`.
+- **Decision Transformer** (`DecisionTransformer`): offline RL as return-conditioned
+  sequence modeling (causal GPT over `(return-to-go, state, action)` tokens), with
+  a `TrajectoryDataset` / `collect_trajectories` data module and a faithful
+  return-conditioned `evaluate`.
+- **Curiosity / intrinsic motivation** (`reinforce.exploration`): `RND` (Random
+  Network Distillation) and `ICM` (Intrinsic Curiosity Module), plus a
+  `CuriosityWrapper` that adds a normalized novelty bonus to any environment so
+  every agent gets exploration for sparse-reward tasks for free.
 - **Distributed actors** (`DistributedActorLearner`): true multi-process
   IMPALA-style training — actor processes run env + local inference and stream
   trajectories to a central V-trace learner that broadcasts fresh weights.

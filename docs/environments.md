@@ -17,6 +17,29 @@ truncated, info)`) and need no external dependencies.
 | Mountain Car (continuous) | `MountainCarContinuous` | Box(2) | Box(1) |
 | Acrobot | `Acrobot` | Box(6) | Discrete(3) |
 
+## Complex scenarios
+
+Higher-dimensional, harder tasks spanning distinct domains — richer observations,
+non-linear dynamics and real credit-assignment / exploration challenges.
+
+| Env | Class | Obs | Action | Domain |
+|---|---|---|---|---|
+| Two-link reaching arm | `ReacherArm` | Box(10) | Box(2) | robotic manipulation |
+| 2-D maze navigation (lidar) | `Navigation2D` | Box(14) | Box(2) | navigation / hard exploration |
+| Lunar lander | `LunarLander` | Box(8) | Discrete(4) | rocket soft-landing control |
+| Portfolio allocation | `PortfolioAllocation` | Box(4·n) | Box(n) | finance / sequential allocation |
+
+- **ReacherArm** — 2-DoF torque-controlled arm; dense negative-distance reward with
+  a control-effort penalty. Non-linear kinematics; solve with SAC / TD3.
+- **Navigation2D** — point robot with momentum and lidar range sensors must reach a
+  goal past walls with gaps; progress reward, collision penalty, terminal bonus.
+  Pairs well with the `reinforce.exploration` curiosity bonuses.
+- **LunarLander** — self-contained 2-D rigid-body lander; potential-based shaping
+  (distance, speed, tilt, legs, fuel) plus a large land/crash terminal reward.
+- **PortfolioAllocation** — allocate across correlated assets with AR(1) *momentum*
+  returns and transaction costs; recent returns are predictive, so the optimal
+  policy is not static and should beat equal-weight.
+
 ## Applied
 
 | Env | Class | Problem |

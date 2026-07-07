@@ -18,8 +18,8 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-22-8A2BE2.svg)](docs/algorithms.md)
-[![Tests](https://img.shields.io/badge/tests-208-brightgreen.svg)](tests)
+[![Algorithms](https://img.shields.io/badge/algorithms-24-8A2BE2.svg)](docs/algorithms.md)
+[![Tests](https://img.shields.io/badge/tests-240-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -71,6 +71,7 @@ mindmap
       REINFORCE
       A2C
       PPO
+      GRPO
       IMPALA
       Recurrent PPO
       SAC-Discrete
@@ -82,6 +83,7 @@ mindmap
       TD3-BC
       IQL
       CQL
+      Decision Transformer
     Multi-agent
       MAPPO
       self-play IPPO
@@ -144,6 +146,28 @@ using about ⅓ of the energy of a bang-bang thermostat** (return **≈ −40 vs
 energy **≈ 59 vs 200**).
 
 ![Thermostat / HVAC control with SAC](docs/assets/applied_thermostat.png)
+
+---
+
+## Complex scenarios
+
+Beyond the toy tasks, `reinforce` ships four **harder, higher-dimensional
+environments** from distinct domains — richer observations, non-linear dynamics
+and real exploration / credit-assignment challenges. Train them all with
+[`python examples/complex_scenarios.py`](examples/complex_scenarios.py) (uses the
+GPU automatically). Measured results (random start → after training):
+
+| Scenario | Domain | Obs · Action | Algorithm | Return: before → after |
+|---|---|---|---|---|
+| 🦾 **ReacherArm** | robotic manipulation | Box(10) · Box(2) | SAC | −8.1 → **−5.6** |
+| 🧭 **Navigation2D** (lidar maze) | navigation / hard exploration | Box(14) · Box(2) | SAC | −9.5 → **+5.0** (reaches goal) |
+| 🚀 **LunarLander** | rocket soft-landing | Box(8) · Discrete(4) | PPO | −435 → **+79** (lands) |
+| 📈 **PortfolioAllocation** | finance / allocation | Box(4n) · Box(n) | SAC | beats equal-weight (**+0.10 vs −0.02**) |
+
+Each is self-contained (NumPy only, Gymnasium API) — see the
+[environments docs](docs/environments.md). `Navigation2D` pairs naturally with the
+[curiosity bonuses](#curiosity--return-conditioned-control) for sparse-reward
+exploration.
 
 ---
 
@@ -306,6 +330,7 @@ agent.learn(100_000, callback=CallbackList([
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | **GRPO** | `GRPO` | Discrete + Continuous | critic-free, group-relative advantage (LLM-RLHF) |
 | Actor-critic | IMPALA | `IMPALA` | Discrete + Continuous | V-trace, parallel actors |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability |
 | Actor-critic | SAC (discrete) | `SACDiscrete` | Discrete | max-entropy, auto temperature |
@@ -315,8 +340,51 @@ agent.learn(100_000, callback=CallbackList([
 | Offline | TD3+BC | `TD3BC` | Continuous | learns from a fixed dataset (no env) |
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
 | Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
+| Offline | **Decision Transformer** | `DecisionTransformer` | Discrete + Continuous | return-conditioned sequence modeling (GPT) |
 
 See [reproduced benchmark scores](docs/benchmarks.md) for all algorithms.
+
+## RLHF & LLM-style alignment
+
+The same recipe that aligns language models, on control tasks: learn a reward
+from **preferences**, then optimize a policy against it with **GRPO** — the
+critic-free method behind modern LLM RLHF.
+
+```python
+from reinforce.envs import PointMass
+from reinforce.rlhf import collect_segments, synthetic_preferences, RewardModel, train_reward_model
+from reinforce.algorithms import SAC
+
+env = PointMass()
+segments = collect_segments(env, lambda o: env.action_space.sample(), n_segments=120, seg_len=25, seed=0)
+prefs = synthetic_preferences(segments, n_pairs=800, seed=1)          # a preference teacher
+
+reward_model = RewardModel(obs_dim=2, action_space=env.action_space, use_action=False)
+train_reward_model(reward_model, prefs, n_iters=500)                  # Bradley-Terry likelihood
+# -> learned reward correlates ≈0.98 with the true reward; optimize any agent on it:
+from reinforce.rlhf import RewardModelWrapper
+agent = SAC(RewardModelWrapper(env, reward_model), seed=0).learn(20_000)
+```
+
+`reinforce.rlhf` provides `RewardModel`, `PreferenceDataset`, `collect_segments`,
+`synthetic_preferences`, `train_reward_model` and `RewardModelWrapper`.
+
+## Curiosity & return-conditioned control
+
+```python
+# Intrinsic motivation: any agent gets exploration on sparse-reward tasks for free.
+from reinforce.exploration import RND, CuriosityWrapper
+from reinforce.algorithms import DQN
+env = CuriosityWrapper(CartPole(), RND(obs_dim=4))      # or ICM(...)
+DQN(env, seed=0).learn(50_000)
+
+# Decision Transformer: offline RL as return-conditioned sequence modeling.
+from reinforce import collect_trajectories
+from reinforce.algorithms import DecisionTransformer
+data = collect_trajectories(CartPole(), policy, n_trajectories=150, seed=0)
+dt = DecisionTransformer(CartPole(), seed=0).learn_offline(data, n_iters=2500)
+dt.evaluate(CartPole(), target_return=500)             # condition on the return you want
+```
 
 ## Multi-agent
 

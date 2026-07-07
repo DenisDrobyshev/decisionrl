@@ -9,9 +9,13 @@ from .cartpole import CartPole
 from .grid_world import GridWorld
 from .gym import GymAdapter, convert_space, make_gym, make_gym_vec
 from .inventory import InventoryManagement
+from .lunar_lander import LunarLander
 from .mountain_car import MountainCar, MountainCarContinuous
+from .navigation import Navigation2D
 from .pendulum import Pendulum
 from .point_mass import PointMass
+from .portfolio import PortfolioAllocation
+from .reacher import ReacherArm
 from .thermostat import Thermostat
 
 __all__ = [
@@ -24,6 +28,11 @@ __all__ = [
     "MountainCar",
     "MountainCarContinuous",
     "Acrobot",
+    # complex / varied scenarios
+    "ReacherArm",
+    "Navigation2D",
+    "LunarLander",
+    "PortfolioAllocation",
     # applied
     "InventoryManagement",
     "Thermostat",

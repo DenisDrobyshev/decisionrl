@@ -1,5 +1,6 @@
-"""Exploration tools: value schedules and continuous action-noise processes."""
+"""Exploration tools: value schedules, action-noise processes and curiosity."""
 
+from .curiosity import ICM, RND, CuriosityWrapper, IntrinsicRewardModule
 from .noise import ActionNoise, GaussianNoise, OrnsteinUhlenbeckNoise
 from .schedules import (
     ConstantSchedule,
@@ -16,4 +17,8 @@ __all__ = [
     "ActionNoise",
     "GaussianNoise",
     "OrnsteinUhlenbeckNoise",
+    "IntrinsicRewardModule",
+    "RND",
+    "ICM",
+    "CuriosityWrapper",
 ]

@@ -19,6 +19,7 @@ from .algorithms import (
     CQL,
     DDPG,
     DQN,
+    GRPO,
     IMPALA,
     IQL,
     MBPO,
@@ -29,6 +30,7 @@ from .algorithms import (
     SARSA,
     TD3,
     TD3BC,
+    DecisionTransformer,
     Dreamer,
     DynaQ,
     ExpectedSARSA,
@@ -38,9 +40,22 @@ from .algorithms import (
     SACDiscrete,
 )
 from .core import Box, Dict, Discrete, Env, Space, Transition, Wrapper
-from .data import TransitionDataset, collect_dataset
+from .data import (
+    TrajectoryDataset,
+    TransitionDataset,
+    collect_dataset,
+    collect_trajectories,
+)
 from .distributed import DistributedActorLearner
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
+from .rlhf import (
+    PreferenceDataset,
+    RewardModel,
+    RewardModelWrapper,
+    collect_segments,
+    synthetic_preferences,
+    train_reward_model,
+)
 from .training import evaluate_policy
 from .tuning import optuna_search
 from .utils import set_seed
@@ -78,6 +93,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "GRPO",
     "IMPALA",
     "RecurrentPPO",
     "DDPG",
@@ -87,12 +103,22 @@ __all__ = [
     "TD3BC",
     "IQL",
     "CQL",
+    "DecisionTransformer",
     "MBPO",
     "Dreamer",
     # offline data
     "TransitionDataset",
     "collect_dataset",
+    "TrajectoryDataset",
+    "collect_trajectories",
     "DistributedActorLearner",
+    # RLHF
+    "RewardModel",
+    "PreferenceDataset",
+    "collect_segments",
+    "synthetic_preferences",
+    "train_reward_model",
+    "RewardModelWrapper",
     # helpers
     "evaluate_policy",
     "set_seed",
