@@ -98,3 +98,29 @@ class ReacherArm(Env):
         terminated = False
         truncated = self._steps >= self.max_steps
         return self._obs(), reward, terminated, truncated, {"distance": distance}
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        t1, t2 = self._theta
+        elbow = self.l1 * np.array([np.cos(t1), np.sin(t1)])
+        tip = self._fingertip()
+        lim = self.reach * 1.15
+        fig, ax = plt.subplots(figsize=(3.2, 3.2), dpi=64)
+        ax.set_xlim(-lim, lim)
+        ax.set_ylim(-lim, lim)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.add_patch(plt.Circle((0, 0), self.reach, color="#e2e8f0", fill=False, ls="--", lw=1))
+        ax.plot([0, elbow[0]], [0, elbow[1]], color="#334155", lw=6, solid_capstyle="round")
+        ax.plot([elbow[0], tip[0]], [elbow[1], tip[1]], color="#2563eb", lw=6, solid_capstyle="round")
+        ax.plot([0], [0], marker="o", color="#1e293b", ms=9)
+        ax.plot(*self._target, marker="*", color="#f59e0b", ms=18)
+        ax.plot(*tip, marker="o", color="#db2777", ms=7)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame

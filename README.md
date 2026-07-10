@@ -18,8 +18,9 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-24-8A2BE2.svg)](docs/algorithms.md)
-[![Tests](https://img.shields.io/badge/tests-240-brightgreen.svg)](tests)
+[![Algorithms](https://img.shields.io/badge/algorithms-25-8A2BE2.svg)](docs/algorithms.md)
+[![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
+[![Tests](https://img.shields.io/badge/tests-266-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -384,6 +385,56 @@ from reinforce.algorithms import DecisionTransformer
 data = collect_trajectories(CartPole(), policy, n_trajectories=150, seed=0)
 dt = DecisionTransformer(CartPole(), seed=0).learn_offline(data, n_iters=2500)
 dt.evaluate(CartPole(), target_return=500)             # condition on the return you want
+```
+
+## Evolutionary & swarm optimization
+
+A full family of **gradient-free** optimizers under one ask/tell interface —
+evolution strategies **CEM · CMA-ES · Differential Evolution · Genetic Algorithm ·
+OpenAI-ES · ARS · Simulated Annealing** and swarm intelligence **PSO · Firefly ·
+Artificial Bee Colony · Grey Wolf · Bat · Ant Colony (TSP)** — plus a
+`NeuroevolutionAgent` that trains RL policies with any of them (no gradients).
+
+```python
+from reinforce.evolution import CEM, minimize
+from reinforce.evolution.functions import rastrigin
+x, f, history = minimize(rastrigin, CEM(dim=10, bounds=(-5.12, 5.12), seed=0), iters=200)
+
+# Neuroevolution: solve CartPole with a gradient-free optimizer
+from reinforce.evolution import NeuroevolutionAgent
+from reinforce.envs import CartPole
+agent = NeuroevolutionAgent(CartPole(), optimizer="cmaes", seed=0).learn(60_000)
+```
+
+All twelve optimizers converge on the multimodal Rastrigin function (Grey Wolf
+reaches ~1e-9); every neuroevolution optimizer **solves CartPole (return 500) with
+no gradients**; and Ant Colony Optimization finds short TSP tours. Reproduce with
+[`python examples/evolution_demo.py`](examples/evolution_demo.py).
+
+![Gradient-free optimizers on Rastrigin](docs/assets/evolution_benchmark.png)
+
+![Neuroevolution on CartPole](docs/assets/evolution_neuroevolution.png)
+
+![Ant Colony Optimization for the TSP](docs/assets/evolution_aco_tsp.png)
+
+## Serving trained policies
+
+Export any trained agent to **ONNX** (or TorchScript) and serve it over HTTP —
+the serving image needs only `onnxruntime` + FastAPI, no PyTorch.
+
+```python
+from reinforce.algorithms import PPO
+from reinforce.envs import CartPole
+from reinforce.serving import export_onnx, OnnxPolicy
+
+agent = PPO(CartPole(), seed=0).learn(50_000)
+export_onnx(agent, "policy.onnx")            # + policy.onnx.json metadata
+action = OnnxPolicy("policy.onnx").predict(obs)   # inference without torch
+```
+
+```bash
+# FastAPI service (POST /predict, GET /health, GET /info) — see deploy/Dockerfile
+REINFORCE_MODEL=policy.onnx uvicorn reinforce.serving.server:app
 ```
 
 ## Multi-agent

@@ -12,7 +12,17 @@ Quick start
 Every agent shares the same surface: ``predict`` / ``learn`` / ``save`` / ``load``.
 """
 
-from . import algorithms, buffers, envs, exploration, networks, training, utils, wrappers
+from . import (
+    algorithms,
+    buffers,
+    envs,
+    evolution,
+    exploration,
+    networks,
+    training,
+    utils,
+    wrappers,
+)
 from .algorithms import (
     A2C,
     C51,
@@ -68,6 +78,7 @@ __all__ = [
     "algorithms",
     "buffers",
     "envs",
+    "evolution",
     "exploration",
     "networks",
     "training",

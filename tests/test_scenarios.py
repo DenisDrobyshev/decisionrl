@@ -62,6 +62,16 @@ def test_lunar_lander_can_land_and_crash():
     assert saw_terminal or trunc  # episode resolves
 
 
+@pytest.mark.parametrize("env_cls", [ReacherArm, Navigation2D, LunarLander])
+def test_env_render_rgb(env_cls):
+    env = env_cls()
+    env.reset(seed=0)
+    env.step(env.action_space.sample())
+    frame = env.render_rgb()
+    assert frame.ndim == 3 and frame.shape[2] == 3
+    assert frame.dtype == np.uint8
+
+
 def test_portfolio_softmax_weights_are_a_simplex():
     env = PortfolioAllocation(n_assets=4)
     env.reset(seed=0)

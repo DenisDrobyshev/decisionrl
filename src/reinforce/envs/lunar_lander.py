@@ -118,3 +118,29 @@ class LunarLander(Env):
             truncated = True
 
         return self._state.astype(np.float32), float(reward), terminated, truncated, {}
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        x, y, _, _, angle = self._state[0], self._state[1], self._state[2], self._state[3], self._state[4]
+        fig, ax = plt.subplots(figsize=(3.6, 3.2), dpi=64)
+        ax.set_xlim(-1.3, 1.3)
+        ax.set_ylim(-0.1, 1.6)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.add_patch(plt.Rectangle((-1.3, -0.1), 2.6, 0.12, color="#334155"))  # ground
+        ax.plot([-self.pad_half, self.pad_half], [0.02, 0.02], color="#f59e0b", lw=4)  # landing pad
+        # lander body, rotated by angle
+        c, s = np.cos(angle), np.sin(angle)
+        w, h = 0.12, 0.12
+        corners = np.array([[-w, -h], [w, -h], [w, h], [-w, h]])
+        rot = corners @ np.array([[c, s], [-s, c]]).T + np.array([x, y])
+        ax.add_patch(plt.Polygon(rot, color="#2563eb"))
+        ax.plot([x], [y], marker="^", color="#e0e7ff", ms=6)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame

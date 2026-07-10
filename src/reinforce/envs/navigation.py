@@ -139,3 +139,31 @@ class Navigation2D(Env):
             reward += 10.0
         truncated = self._steps >= self.max_steps and not terminated
         return self._obs(), reward, terminated, truncated, {"distance": dist, "collided": collided}
+
+    def render_rgb(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        from ..utils.render import fig_to_rgb
+
+        fig, ax = plt.subplots(figsize=(3.4, 3.4), dpi=64)
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.add_patch(plt.Rectangle((0, 0), 1, 1, color="#f8fafc", ec="#334155", lw=1.5))
+        for x0, y0, x1, y1 in self.OBSTACLES:
+            ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, color="#334155"))
+        # lidar rays from the agent
+        for a in self._ray_angles:
+            d = self._raycast(self._pos, a) * self.max_range
+            ax.plot([self._pos[0], self._pos[0] + d * np.cos(a)],
+                    [self._pos[1], self._pos[1] + d * np.sin(a)],
+                    color="#93c5fd", lw=0.6, alpha=0.7)
+        ax.add_patch(plt.Circle(tuple(self._goal), self.goal_radius, color="#16a34a", alpha=0.4))
+        ax.plot(*self._goal, marker="*", color="#16a34a", ms=16)
+        ax.plot(*self._pos, marker="o", color="#2563eb", ms=10)
+        frame = fig_to_rgb(fig)
+        plt.close(fig)
+        return frame

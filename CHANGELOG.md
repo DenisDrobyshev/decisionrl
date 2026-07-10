@@ -7,6 +7,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Evolutionary & swarm optimization** (`reinforce.evolution`): a unified
+  ask/tell family of gradient-free optimizers — evolution strategies (`CEM`,
+  `CMAES`, `DifferentialEvolution`, `GeneticAlgorithm`, `OpenAIES`, `ARS`,
+  `SimulatedAnnealing`) and swarm intelligence (`PSO`, `FireflyAlgorithm`,
+  `ArtificialBeeColony`, `GreyWolfOptimizer`, `BatAlgorithm`, `AntColonyTSP`) —
+  benchmark functions, and a `NeuroevolutionAgent` that trains RL policies with
+  any optimizer (no gradients; solves CartPole). Figures via
+  `examples/evolution_demo.py`.
+- **Policy serving** (`reinforce.serving`): `export_onnx` / `export_torchscript`
+  freeze the deterministic policy (+ JSON metadata); `OnnxPolicy` runs inference
+  with onnxruntime alone; `create_app` exposes a FastAPI `/predict` service, with
+  a `deploy/Dockerfile`. New `serve` optional-dependency extra.
+- **Renders for the complex scenarios**: `render_rgb()` on `ReacherArm`,
+  `Navigation2D` (with lidar) and `LunarLander` for GIFs/figures.
 - **Complex scenario environments** (self-contained, NumPy-only): `ReacherArm`
   (2-link torque-controlled reaching), `Navigation2D` (continuous maze with lidar
   sensors and hard exploration), `LunarLander` (2-D rigid-body rocket landing with
