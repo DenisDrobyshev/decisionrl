@@ -18,9 +18,9 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-25-8A2BE2.svg)](docs/algorithms.md)
+[![Algorithms](https://img.shields.io/badge/algorithms-26-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-266-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-274-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -169,6 +169,14 @@ Each is self-contained (NumPy only, Gymnasium API) — see the
 [environments docs](docs/environments.md). `Navigation2D` pairs naturally with the
 [curiosity bonuses](#curiosity--return-conditioned-control) for sparse-reward
 exploration.
+
+Trained agents in action (record with [`examples/record_scenario_gifs.py`](examples/record_scenario_gifs.py)):
+
+<p align="center">
+  <img src="docs/assets/scenario_reacher.gif" alt="ReacherArm (SAC)" width="30%">
+  <img src="docs/assets/scenario_navigation.gif" alt="Navigation2D maze with lidar (SAC)" width="30%">
+  <img src="docs/assets/scenario_lander.gif" alt="LunarLander (PPO)" width="30%">
+</p>
 
 ---
 
@@ -367,8 +375,19 @@ from reinforce.rlhf import RewardModelWrapper
 agent = SAC(RewardModelWrapper(env, reward_model), seed=0).learn(20_000)
 ```
 
+Or skip the reward model entirely with **DPO** (Direct Preference Optimization —
+the method behind modern LLM alignment), which optimizes the policy *directly*
+from preference pairs against a frozen reference:
+
+```python
+from reinforce.rlhf import DPO
+dpo = DPO(PointMass(), beta=0.5, seed=0)
+dpo.train(prefs, n_iters=600)     # no reward model, no RL loop
+# on PointMass this lifts the true return from ≈ -43 to ≈ -3.5 (≈ optimal)
+```
+
 `reinforce.rlhf` provides `RewardModel`, `PreferenceDataset`, `collect_segments`,
-`synthetic_preferences`, `train_reward_model` and `RewardModelWrapper`.
+`synthetic_preferences`, `train_reward_model`, `RewardModelWrapper` and `DPO`.
 
 ## Curiosity & return-conditioned control
 

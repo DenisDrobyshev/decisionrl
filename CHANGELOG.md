@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **DPO** (`reinforce.rlhf.DPO`): Direct Preference Optimization — optimize a
+  policy directly from preference pairs against a frozen reference (no reward
+  model, no RL loop). Discrete + continuous; on PointMass it lifts the true
+  return from ≈ -43 to ≈ -3.5.
 - **Evolutionary & swarm optimization** (`reinforce.evolution`): a unified
   ask/tell family of gradient-free optimizers — evolution strategies (`CEM`,
   `CMAES`, `DifferentialEvolution`, `GeneticAlgorithm`, `OpenAIES`, `ARS`,

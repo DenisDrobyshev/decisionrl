@@ -57,8 +57,17 @@ from .data import (
     collect_trajectories,
 )
 from .distributed import DistributedActorLearner
+from .evaluation import (
+    aggregate_metrics,
+    bootstrap_ci,
+    iqm,
+    performance_profile,
+    probability_of_improvement,
+    run_seeds,
+)
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .rlhf import (
+    DPO,
     PreferenceDataset,
     RewardModel,
     RewardModelWrapper,
@@ -130,6 +139,14 @@ __all__ = [
     "synthetic_preferences",
     "train_reward_model",
     "RewardModelWrapper",
+    "DPO",
+    # reliable evaluation statistics
+    "iqm",
+    "bootstrap_ci",
+    "aggregate_metrics",
+    "performance_profile",
+    "probability_of_improvement",
+    "run_seeds",
     # helpers
     "evaluate_policy",
     "set_seed",

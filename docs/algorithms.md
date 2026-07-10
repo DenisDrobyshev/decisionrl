@@ -34,7 +34,8 @@ See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 - **RLHF** (`reinforce.rlhf`): learn a reward from preferences (`RewardModel`,
   `synthetic_preferences`, `train_reward_model`) and optimize any agent against it
   via `RewardModelWrapper`. Pairs with **GRPO**, the policy-optimization method
-  used to align language models.
+  used to align language models. **`DPO`** optimizes the policy directly from
+  preferences with no reward model (Direct Preference Optimization).
 - **Curiosity** (`reinforce.exploration`): `RND` and `ICM` intrinsic rewards, added
   to any environment with `CuriosityWrapper` for exploration on sparse-reward tasks.
 

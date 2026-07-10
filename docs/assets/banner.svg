@@ -33,7 +33,7 @@
     a correctness-first reinforcement learning foundation
   </text>
   <text x="74" y="234" font-size="19" fill="#ffffff" fill-opacity="0.7">
-    25 algorithms · 12 optimizers · PyTorch · dependency-light · typed · tested
+    26 algorithms · 12 optimizers · PyTorch · dependency-light · typed · tested
   </text>
 
   <!-- algorithm family chips -->

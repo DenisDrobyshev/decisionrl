@@ -4,12 +4,14 @@ import numpy as np
 
 from reinforce.envs import PointMass
 from reinforce.rlhf import (
+    DPO,
     RewardModel,
     RewardModelWrapper,
     collect_segments,
     synthetic_preferences,
     train_reward_model,
 )
+from reinforce.training import evaluate_policy
 
 
 def _random_policy(env):
@@ -45,6 +47,52 @@ def test_reward_model_wrapper_reports_true_reward():
     assert isinstance(learned_reward, float)
     # the true reward is the real environment reward (negative distance)
     assert info["true_reward"] <= 0.0
+
+
+def test_dpo_learns_preferences_and_improves_return(quiet_logger):
+    env = PointMass()
+    segments = collect_segments(env, _random_policy(env), n_segments=150, seg_len=20, seed=0)
+    train_prefs = synthetic_preferences(segments[:120], n_pairs=700, seed=1)
+    test_prefs = synthetic_preferences(segments[120:], n_pairs=200, seed=2)
+
+    dpo = DPO(PointMass(), beta=0.5, seed=0, logger=quiet_logger)
+    before, _ = evaluate_policy(dpo, PointMass(), n_episodes=20, seed=100)
+    metrics = dpo.train(train_prefs, n_iters=600, batch_size=32)
+    after, _ = evaluate_policy(dpo, PointMass(), n_episodes=20, seed=100)
+
+    assert metrics["accuracy"] > 0.8
+    # held-out preference accuracy
+    import torch
+
+    oa, aa, ob, ab, lab = test_prefs.sample(200, dpo.device)
+    with torch.no_grad():
+        margin = (dpo._segment_logprob(dpo.actor, oa, aa) - dpo._segment_logprob(dpo.reference, oa, aa)) - (
+            dpo._segment_logprob(dpo.actor, ob, ab) - dpo._segment_logprob(dpo.reference, ob, ab)
+        )
+        held_out_acc = float((((2 * lab - 1) * margin) > 0).float().mean())
+    assert held_out_acc > 0.75
+    # directly optimizing preferences (no reward model) improves the true return
+    assert after > before + 10.0
+
+
+def test_dpo_predict_and_save_load(tmp_path, quiet_logger):
+    env = PointMass()
+    segments = collect_segments(env, _random_policy(env), n_segments=40, seg_len=20, seed=0)
+    prefs = synthetic_preferences(segments, n_pairs=200, seed=1)
+    dpo = DPO(PointMass(), seed=0, logger=quiet_logger)
+    dpo.train(prefs, n_iters=50, batch_size=16)
+
+    obs, _ = PointMass().reset(seed=3)
+    action = np.asarray(dpo.predict(obs, deterministic=True))
+    assert action.shape == (2,)
+    path = str(tmp_path / "dpo.pt")
+    dpo.save(path)
+    loaded = DPO.load(path, env=PointMass())
+    np.testing.assert_allclose(
+        np.asarray(dpo.predict(obs, deterministic=True)),
+        np.asarray(loaded.predict(obs, deterministic=True)),
+        atol=1e-5,
+    )
 
 
 def test_synthetic_preferences_label_higher_return():
