@@ -65,6 +65,7 @@ from .evaluation import (
     probability_of_improvement,
     run_seeds,
 )
+from .evolution import NeuroevolutionAgent
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .rlhf import (
     DPO,
@@ -126,6 +127,7 @@ __all__ = [
     "DecisionTransformer",
     "MBPO",
     "Dreamer",
+    "NeuroevolutionAgent",
     # offline data
     "TransitionDataset",
     "collect_dataset",

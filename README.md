@@ -163,7 +163,7 @@ GPU automatically). Measured results (random start → after training):
 | 🦾 **ReacherArm** | robotic manipulation | Box(10) · Box(2) | SAC | −8.1 → **−5.6** |
 | 🧭 **Navigation2D** (lidar maze) | navigation / hard exploration | Box(14) · Box(2) | SAC | −9.5 → **+5.0** (reaches goal) |
 | 🚀 **LunarLander** | rocket soft-landing | Box(8) · Discrete(4) | PPO | −435 → **+79** (lands) |
-| 📈 **PortfolioAllocation** | finance / allocation | Box(4n) · Box(n) | SAC | beats equal-weight (**+0.10 vs −0.02**) |
+| 📈 **PortfolioAllocation** | finance / allocation | Box(4n) · Box(n) | SAC | beats equal-weight (**≈ +1.5 vs ≈ 0**, momentum market) |
 
 Each is self-contained (NumPy only, Gymnasium API) — see the
 [environments docs](docs/environments.md). `Navigation2D` pairs naturally with the

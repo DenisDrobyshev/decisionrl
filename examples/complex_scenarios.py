@@ -61,14 +61,18 @@ def lander():
 
 def portfolio():
     set_seed(0)
-    agent = SAC(PortfolioAllocation(), device=DEVICE, seed=0, logger=Logger(verbose=0))
-    before, _ = evaluate_policy(agent, PortfolioAllocation(), n_episodes=20, seed=100)
+
+    def make():
+        return PortfolioAllocation(momentum=0.7, vol=0.03)
+
+    agent = SAC(make(), device=DEVICE, seed=0, logger=Logger(verbose=0))
+    before, _ = evaluate_policy(agent, make(), n_episodes=20, seed=100)
     agent.learn(60_000)
-    after, _ = evaluate_policy(agent, PortfolioAllocation(), n_episodes=20, seed=100)
+    after, _ = evaluate_policy(agent, make(), n_episodes=20, seed=100)
 
     # equal-weight (rebalance-to-uniform) baseline
     eq_returns = []
-    env = PortfolioAllocation()
+    env = make()
     for ep in range(20):
         obs, _ = env.reset(seed=100 + ep)
         done, tot = False, 0.0
