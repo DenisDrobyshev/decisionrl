@@ -36,6 +36,7 @@ nav:
   - Benchmarks: benchmarks.md
   - Environments: environments.md
   - Multi-agent: multiagent.md
+  - AlphaZero: alphazero.md
   - Evolution & swarm: evolution.md
   - Serving: serving.md
   - Command-line interface: cli.md

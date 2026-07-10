@@ -29,6 +29,11 @@
 
 See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 
+## Self-play
+
+- **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player games
+  (`TicTacToe`, `Connect4`); a policy+value ResNet trained purely from self-play.
+
 ## RLHF & intrinsic motivation
 
 - **RLHF** (`reinforce.rlhf`): learn a reward from preferences (`RewardModel`,

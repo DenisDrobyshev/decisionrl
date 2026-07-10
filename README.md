@@ -18,9 +18,9 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-26-8A2BE2.svg)](docs/algorithms.md)
+[![Algorithms](https://img.shields.io/badge/algorithms-27-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-274-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-281-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -435,6 +435,26 @@ no gradients**; and Ant Colony Optimization finds short TSP tours. Reproduce wit
 ![Neuroevolution on CartPole](docs/assets/evolution_neuroevolution.png)
 
 ![Ant Colony Optimization for the TSP](docs/assets/evolution_aco_tsp.png)
+
+## AlphaZero (MCTS + self-play)
+
+`reinforce.alphazero` implements AlphaZero for two-player perfect-information
+games — Monte-Carlo Tree Search guided by a policy+value network, trained purely
+by **self-play** (no human games, no reward shaping). Ships `TicTacToe` and
+`Connect4`; add a game by implementing the `Game` interface.
+
+```python
+from reinforce.alphazero import AlphaZero, TicTacToe
+agent = AlphaZero(TicTacToe(), n_simulations=60, seed=0)
+agent.learn(iterations=12, games_per_iter=30)     # self-play + training
+action = agent.predict(state, player=1)            # MCTS-backed move
+```
+
+Trained by self-play alone, it learns Tic-Tac-Toe to near-perfect play (stops
+losing to a random opponent). Reproduce with
+[`python examples/alphazero_demo.py`](examples/alphazero_demo.py).
+
+![AlphaZero learning Tic-Tac-Toe by self-play](docs/assets/alphazero_learning.png)
 
 ## Serving trained policies
 

@@ -14,6 +14,7 @@ Every agent shares the same surface: ``predict`` / ``learn`` / ``save`` / ``load
 
 from . import (
     algorithms,
+    alphazero,
     buffers,
     envs,
     evolution,
@@ -86,6 +87,7 @@ __all__ = [
     "__version__",
     # subpackages
     "algorithms",
+    "alphazero",
     "buffers",
     "envs",
     "evolution",

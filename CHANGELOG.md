@@ -7,6 +7,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player,
+  perfect-information games. Includes `TicTacToe` and `Connect4` (canonical-form
+  `Game` interface), a residual policy+value net (`AlphaZeroNet`), PUCT tree
+  search (`MCTS`) with Dirichlet root noise, and the `AlphaZero` self-play trainer
+  with an MCTS-backed `predict`. Learns Tic-Tac-Toe to near-perfect play from
+  self-play alone; `pit` / `random_player` helpers for evaluation.
 - **DPO** (`reinforce.rlhf.DPO`): Direct Preference Optimization — optimize a
   policy directly from preference pairs against a frozen reference (no reward
   model, no RL loop). Discrete + continuous; on PointMass it lifts the true
