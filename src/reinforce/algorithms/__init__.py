@@ -13,6 +13,7 @@ from .c51 import C51
 from .cql import CQL
 from .ddpg import DDPG
 from .decision_transformer import DecisionTransformer
+from .diffusion_policy import DiffusionPolicy
 from .dqn import DQN
 from .dreamer import Dreamer
 from .grpo import GRPO
@@ -54,6 +55,7 @@ __all__ = [
     "IQL",
     "CQL",
     "DecisionTransformer",
+    "DiffusionPolicy",
     "MBPO",
     "Dreamer",
     "OnPolicyAgent",

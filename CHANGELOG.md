@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **LLM alignment / RLHF on text** (`reinforce.text`): a char-level GPT
+  (`CharGPT` + `CharTokenizer`), supervised pre-training (`sft_train`), and
+  `rlhf_finetune` — the industry RLHF loop (group-normalized advantages, GRPO-style,
+  with a KL penalty to the reference/SFT model). Steers generation toward a reward
+  (e.g. `char_frequency_reward`, `lexicon_reward`) without drifting into gibberish.
+- **Diffusion Policy** (`DiffusionPolicy`): a conditional denoising-diffusion
+  policy over continuous actions (robotics-style), trained by behavior cloning;
+  clones a PointMass expert to within noise of optimal.
 - **Atari convenience** (`make_atari`): standard DQN preprocessing (grayscale,
   84×84 resize, frame-skip, 4-frame stack) in one call, ready for the CNN.
 - **Vectorized (batched) fitness** for evolution: `minimize(..., batched=True)`

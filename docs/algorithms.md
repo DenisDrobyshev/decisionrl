@@ -26,6 +26,7 @@
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
 | Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
 | Offline | Decision Transformer | `DecisionTransformer` | Discrete + Continuous | return-conditioned sequence modeling (causal GPT) |
+| Imitation | Diffusion Policy | `DiffusionPolicy` | Continuous | conditional denoising-diffusion policy (robotics) |
 
 See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 

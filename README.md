@@ -18,9 +18,9 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-27-8A2BE2.svg)](docs/algorithms.md)
+[![Algorithms](https://img.shields.io/badge/algorithms-28-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-286-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-295-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -350,6 +350,7 @@ agent.learn(100_000, callback=CallbackList([
 | Offline | IQL | `IQL` | Continuous | expectile value + advantage-weighted policy |
 | Offline | CQL | `CQL` | Continuous | conservative Q-learning (SAC backbone) |
 | Offline | **Decision Transformer** | `DecisionTransformer` | Discrete + Continuous | return-conditioned sequence modeling (GPT) |
+| Imitation | **Diffusion Policy** | `DiffusionPolicy` | Continuous | conditional denoising-diffusion policy (robotics) |
 
 See [reproduced benchmark scores](docs/benchmarks.md) for all algorithms.
 
@@ -404,6 +405,27 @@ from reinforce.envs import CartPole
 demos = collect_expert_dataset(CartPole(), expert_policy, n_transitions=4000, seed=0)
 bc = BC(CartPole(), seed=0); bc.train(demos, n_iters=1500)          # supervised cloning
 gail = GAIL(CartPole(), demos, seed=0).learn(iterations=10)          # adversarial, reward-free
+```
+
+Or model the policy as a **conditional denoising diffusion** over actions
+(`DiffusionPolicy`, as in robotics) — it clones a PointMass expert to within noise
+of optimal and can represent multimodal action distributions a Gaussian cannot.
+
+## LLM alignment (RLHF on a language model)
+
+The full RLHF loop industry uses to align LLMs, on a tiny char-level GPT:
+pre-train (SFT), then reinforce toward a reward while a **KL penalty keeps the
+policy close to the reference model** (GRPO-style group-normalized advantages, no
+value network). Steering a model toward more `"o"` lifts its frequency from
+**≈0.09 to ≈0.47** while staying readable.
+
+```python
+from reinforce.text import CharTokenizer, CharGPT, sft_train, rlhf_finetune, char_frequency_reward
+
+tok = CharTokenizer(corpus)
+lm = CharGPT(tok.vocab_size, block_size=64)
+sft_train(lm, tok, corpus, n_iters=2000)                       # supervised pre-training
+rlhf_finetune(lm, tok, char_frequency_reward("o"), kl_coef=0.05)  # align to a reward + KL
 ```
 
 ## Curiosity & return-conditioned control
