@@ -1,7 +1,9 @@
 """Standard continuous optimization benchmark functions (global minimum 0).
 
-Each returns a scalar for a 1-D input vector; ``BENCHMARKS`` maps a name to
-``(function, bounds, optimum_location)`` for tests and demos.
+Each is **batch-friendly**: it reduces over the last axis, so it accepts a single
+vector ``(dim,)`` -> scalar *or* a whole population ``(pop, dim)`` -> ``(pop,)``.
+The latter enables vectorized fitness evaluation (``minimize(..., batched=True)``).
+``BENCHMARKS`` maps a name to ``(function, bounds, optimum_location)``.
 """
 
 from __future__ import annotations
@@ -11,36 +13,36 @@ import numpy as np
 __all__ = ["sphere", "rastrigin", "ackley", "rosenbrock", "griewank", "BENCHMARKS"]
 
 
-def sphere(x: np.ndarray) -> float:
+def sphere(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=np.float64)
-    return float(np.sum(x**2))
+    return np.sum(x**2, axis=-1)
 
 
-def rastrigin(x: np.ndarray) -> float:
+def rastrigin(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=np.float64)
-    return float(10 * x.size + np.sum(x**2 - 10 * np.cos(2 * np.pi * x)))
+    n = x.shape[-1]
+    return 10 * n + np.sum(x**2 - 10 * np.cos(2 * np.pi * x), axis=-1)
 
 
-def ackley(x: np.ndarray) -> float:
+def ackley(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=np.float64)
-    n = x.size
-    return float(
-        -20 * np.exp(-0.2 * np.sqrt(np.sum(x**2) / n))
-        - np.exp(np.sum(np.cos(2 * np.pi * x)) / n)
+    return (
+        -20 * np.exp(-0.2 * np.sqrt(np.mean(x**2, axis=-1)))
+        - np.exp(np.mean(np.cos(2 * np.pi * x), axis=-1))
         + 20
         + np.e
     )
 
 
-def rosenbrock(x: np.ndarray) -> float:
+def rosenbrock(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=np.float64)
-    return float(np.sum(100.0 * (x[1:] - x[:-1] ** 2) ** 2 + (1 - x[:-1]) ** 2))
+    return np.sum(100.0 * (x[..., 1:] - x[..., :-1] ** 2) ** 2 + (1 - x[..., :-1]) ** 2, axis=-1)
 
 
-def griewank(x: np.ndarray) -> float:
+def griewank(x: np.ndarray) -> np.ndarray:
     x = np.asarray(x, dtype=np.float64)
-    i = np.arange(1, x.size + 1)
-    return float(np.sum(x**2) / 4000.0 - np.prod(np.cos(x / np.sqrt(i))) + 1)
+    i = np.arange(1, x.shape[-1] + 1)
+    return np.sum(x**2, axis=-1) / 4000.0 - np.prod(np.cos(x / np.sqrt(i)), axis=-1) + 1
 
 
 # name -> (function, (low, high), optimum location)

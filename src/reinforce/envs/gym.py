@@ -17,7 +17,7 @@ import numpy as np
 from ..core.env import Env
 from ..core.spaces import Box, Discrete, Space
 
-__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "convert_space"]
+__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "make_atari", "convert_space"]
 
 
 def convert_space(space) -> Space:
@@ -78,6 +78,36 @@ def make_gym(env_id: str, adapter: bool = True, **kwargs: Any) -> Env:
         ) from exc
 
     env = gym.make(env_id, **kwargs)
+    return GymAdapter(env) if adapter else env  # type: ignore[return-value]
+
+
+def make_atari(env_id: str, n_stack: int = 4, screen_size: int = 84, adapter: bool = True, **kwargs):
+    """Create an Atari environment with the standard DQN preprocessing.
+
+    Applies grayscale + resize-to-84x84 + frame-skip (via Gymnasium's
+    ``AtariPreprocessing``) and stacks ``n_stack`` frames, yielding an
+    ``(n_stack, screen_size, screen_size)`` observation ready for the library's
+    CNN. Requires ``pip install "gymnasium[atari]" ale-py``.
+
+        from reinforce.envs import make_atari
+        from reinforce.algorithms import DQN
+        agent = DQN(make_atari("ALE/Pong-v5"), seed=0)
+    """
+    try:
+        import gymnasium as gym
+        from gymnasium.wrappers import AtariPreprocessing
+    except ImportError as exc:  # pragma: no cover - optional dependency
+        raise ImportError(
+            "Atari support requires: pip install 'gymnasium[atari]' ale-py"
+        ) from exc
+
+    env = gym.make(env_id, frameskip=1, **kwargs)  # AtariPreprocessing does the frame-skip
+    env = AtariPreprocessing(env, screen_size=screen_size, grayscale_obs=True, scale_obs=False)
+    try:  # Gymnasium >= 1.0
+        from gymnasium.wrappers import FrameStackObservation as _FrameStack
+    except ImportError:  # pragma: no cover - older Gymnasium
+        from gymnasium.wrappers import FrameStack as _FrameStack  # type: ignore[no-redef]
+    env = _FrameStack(env, n_stack)
     return GymAdapter(env) if adapter else env  # type: ignore[return-value]
 
 

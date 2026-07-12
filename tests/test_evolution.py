@@ -50,6 +50,17 @@ def test_optimizer_minimizes_sphere(optimizer_cls):
     assert history[-1] <= history[0]  # best-so-far is monotone non-increasing
 
 
+def test_batched_fitness_matches_per_row():
+    # Vectorized (batched) fitness must give identical results to per-row eval.
+    from reinforce.evolution.functions import sphere
+
+    x1, f1, h1 = minimize(sphere, CEM(6, bounds=(-5.12, 5.12), seed=0), 50, batched=False)
+    x2, f2, h2 = minimize(sphere, CEM(6, bounds=(-5.12, 5.12), seed=0), 50, batched=True)
+    np.testing.assert_allclose(h1, h2)
+    np.testing.assert_allclose(x1, x2)
+    assert f1 == f2
+
+
 def test_cem_and_cmaes_solve_rastrigin_well():
     for cls in (CEM, CMAES):
         _, best_f, _ = minimize(rastrigin, cls(6, bounds=(-5.12, 5.12), seed=0), 300)

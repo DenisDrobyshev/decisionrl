@@ -72,6 +72,15 @@ def test_env_render_rgb(env_cls):
     assert frame.dtype == np.uint8
 
 
+def test_make_atari_preprocessing():
+    pytest.importorskip("ale_py")  # skip unless Atari (ale-py) is installed
+    from reinforce.envs import make_atari
+
+    env = make_atari("ALE/Pong-v5")
+    obs, _ = env.reset(seed=0)
+    assert np.asarray(obs).shape == (4, 84, 84)
+
+
 def test_portfolio_softmax_weights_are_a_simplex():
     env = PortfolioAllocation(n_assets=4)
     env.reset(seed=0)

@@ -73,16 +73,22 @@ def minimize(
     optimizer: BlackBoxOptimizer,
     iters: int,
     callback: Optional[Callable[[int, float], None]] = None,
+    batched: bool = False,
 ) -> Tuple[np.ndarray, float, np.ndarray]:
     """Run ``optimizer`` on ``fn`` for ``iters`` generations.
 
-    Returns ``(best_x, best_f, history)`` where ``history[t]`` is the best
-    objective value found through generation ``t``.
+    With ``batched=True`` the whole population ``(popsize, dim)`` is passed to
+    ``fn`` in one call (expecting a ``(popsize,)`` result) — much faster for
+    vectorized objectives. Returns ``(best_x, best_f, history)`` where
+    ``history[t]`` is the best objective value through generation ``t``.
     """
     history = np.empty(iters, dtype=np.float64)
     for t in range(iters):
         population = optimizer.ask()
-        fitnesses = np.array([float(fn(x)) for x in population], dtype=np.float64)
+        if batched:
+            fitnesses = np.asarray(fn(population), dtype=np.float64).reshape(-1)
+        else:
+            fitnesses = np.array([float(fn(x)) for x in population], dtype=np.float64)
         optimizer.tell(population, fitnesses)
         history[t] = optimizer.best_f
         if callback is not None:

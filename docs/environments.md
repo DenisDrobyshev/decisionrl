@@ -74,6 +74,16 @@ It vectorizes Gymnasium *single* envs with reinforce's own vector envs, which us
 correct immediate-autoreset and `final_observation` bootstrapping — stable across
 Gymnasium autoreset-API changes.
 
+For Atari, `make_atari` applies the standard DQN preprocessing (grayscale, resize
+to 84×84, frame-skip, 4-frame stack) — ready for the built-in CNN:
+
+```python
+from reinforce.envs import make_atari
+from reinforce.algorithms import DQN
+
+agent = DQN(make_atari("ALE/Pong-v5"), seed=0)   # needs: pip install "gymnasium[atari]" ale-py
+```
+
 ## Wrappers
 
 `TimeLimit`, `NormalizeObservation`, `NormalizeReward`, `FrameStack`,

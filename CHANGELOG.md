@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Atari convenience** (`make_atari`): standard DQN preprocessing (grayscale,
+  84×84 resize, frame-skip, 4-frame stack) in one call, ready for the CNN.
+- **Vectorized (batched) fitness** for evolution: `minimize(..., batched=True)`
+  evaluates the whole population in one call; the benchmark functions are now
+  batch-friendly (reduce over the last axis).
 - **Imitation learning** (`reinforce.imitation`): `BC` (behavioral cloning),
   `DAgger` (dataset aggregation) and `GAIL` (adversarial imitation via a
   discriminator + PPO), plus `collect_expert_dataset`. On CartPole, BC/DAgger
