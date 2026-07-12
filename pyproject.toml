@@ -45,6 +45,7 @@ dependencies = [
 gym = ["gymnasium>=0.29"]
 logging = ["tensorboard>=2.10"]
 serve = ["onnx>=1.14", "onnxruntime>=1.16", "fastapi>=0.100", "uvicorn>=0.23"]
+dashboard = ["flask>=2.0", "plotly>=5.0"]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -62,6 +63,7 @@ dev = [
     "fastapi>=0.100",
     "uvicorn>=0.23",
     "httpx>=0.24",
+    "flask>=2.0",
 ]
 
 [project.scripts]

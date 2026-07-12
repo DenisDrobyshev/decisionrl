@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Live training dashboard** (`reinforce dashboard run.csv`): a lightweight
+  Flask + Plotly web dashboard that live-reads a `Logger` metrics CSV and
+  auto-refreshes one chart per metric (reward/loss/...). New `dashboard` extra.
 - **LLM alignment / RLHF on text** (`reinforce.text`): a char-level GPT
   (`CharGPT` + `CharTokenizer`), supervised pre-training (`sft_train`), and
   `rlhf_finetune` — the industry RLHF loop (group-normalized advantages, GRPO-style,

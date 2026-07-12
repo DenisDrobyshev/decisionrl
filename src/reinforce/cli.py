@@ -103,6 +103,13 @@ def _cmd_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_dashboard(args: argparse.Namespace) -> int:
+    from .dashboard import run_dashboard
+
+    run_dashboard(args.csv, host=args.host, port=args.port, interval_ms=args.interval)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="reinforce", description="Reinforcement learning CLI")
     parser.add_argument("--version", action="version", version=f"reinforce {__version__}")
@@ -133,6 +140,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--load", required=True, help="path to a saved agent")
     p_eval.add_argument("--episodes", type=int, default=20)
     p_eval.set_defaults(func=_cmd_eval)
+
+    p_dash = sub.add_parser("dashboard", help="serve a live training dashboard from a metrics CSV")
+    p_dash.add_argument("csv", help="path to a Logger CSV (metrics per step)")
+    p_dash.add_argument("--host", default="127.0.0.1")
+    p_dash.add_argument("--port", type=int, default=8050)
+    p_dash.add_argument("--interval", type=int, default=2000, help="refresh interval in ms")
+    p_dash.set_defaults(func=_cmd_dashboard)
 
     return parser
 
