@@ -11,9 +11,10 @@ inference service:
   ``/info`` for the exported policy (see also ``deploy/Dockerfile``).
 """
 
-from .export import OnnxPolicy, build_policy_module, export_onnx, export_torchscript
+from .export import OnnxPolicy, build_policy_module, export_json, export_onnx, export_torchscript
 
-__all__ = ["export_onnx", "export_torchscript", "OnnxPolicy", "build_policy_module", "create_app"]
+__all__ = ["export_onnx", "export_torchscript", "export_json", "OnnxPolicy",
+           "build_policy_module", "create_app"]
 
 
 def create_app(model_path: str):

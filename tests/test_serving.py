@@ -5,7 +5,24 @@ import pytest
 
 from reinforce.algorithms import PPO, SAC, QLearning
 from reinforce.envs import CartPole, GridWorld, PointMass
-from reinforce.serving import OnnxPolicy, build_policy_module, export_onnx, export_torchscript
+from reinforce.serving import (
+    OnnxPolicy,
+    build_policy_module,
+    export_json,
+    export_onnx,
+    export_torchscript,
+)
+
+
+def _json_forward(meta, obs):
+    """Reproduce the browser demo's pure-matmul forward from an export_json file."""
+    x = np.asarray(obs, dtype=np.float64)
+    layers = meta["layers"]
+    for i, layer in enumerate(layers):
+        x = np.asarray(layer["w"]) @ x + np.asarray(layer["b"])
+        if i < len(layers) - 1:
+            x = np.tanh(x) if meta["activation"] == "tanh" else np.maximum(x, 0.0)
+    return int(np.argmax(x))
 
 
 def test_onnx_export_matches_discrete_agent(tmp_path, quiet_logger):
@@ -39,6 +56,21 @@ def test_torchscript_export_loads_and_runs(tmp_path, quiet_logger):
     module = torch.jit.load(path)
     action = module(torch.zeros(1, 2)).detach().numpy()
     assert action.shape == (1, 2) and np.all(np.isfinite(action))
+
+
+def test_export_json_matches_agent(tmp_path, quiet_logger):
+    import json
+
+    agent = PPO(CartPole(), n_steps=64, n_epochs=1, seed=0, logger=quiet_logger)
+    agent.learn(128)
+    path = export_json(agent, str(tmp_path / "policy.json"))
+    with open(path) as f:
+        meta = json.load(f)
+    assert meta["obs_dim"] == 4 and len(meta["layers"]) == 3
+    # the JSON-matmul forward (what the browser demo runs) matches the agent
+    for s in range(20):
+        obs, _ = CartPole().reset(seed=s)
+        assert _json_forward(meta, obs) == agent.predict(obs, deterministic=True)
 
 
 def test_export_rejects_unsupported_agent():

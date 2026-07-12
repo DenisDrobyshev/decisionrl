@@ -84,6 +84,7 @@ from .rlhf import (
 from .training import evaluate_policy
 from .tuning import optuna_search
 from .utils import set_seed
+from .zoo import list_pretrained, load_pretrained, save_to_zoo
 
 __version__ = "0.1.0"
 
@@ -173,4 +174,8 @@ __all__ = [
     "list_algorithms",
     "list_environments",
     "optuna_search",
+    # model zoo
+    "list_pretrained",
+    "load_pretrained",
+    "save_to_zoo",
 ]

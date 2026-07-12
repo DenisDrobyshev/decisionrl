@@ -20,7 +20,7 @@ batteries-included so it runs the moment you `pip install` it.
 
 [![Algorithms](https://img.shields.io/badge/algorithms-28-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-295-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-301-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -517,6 +517,17 @@ action = OnnxPolicy("policy.onnx").predict(obs)   # inference without torch
 ```bash
 # FastAPI service (POST /predict, GET /health, GET /info) — see deploy/Dockerfile
 REINFORCE_MODEL=policy.onnx uvicorn reinforce.serving.server:app
+```
+
+Store and reload pretrained policies with the **model zoo**, and run a policy
+**entirely in the browser** — `examples/make_browser_demo.py` writes a
+self-contained [`docs/demo/cartpole.html`](docs/demo/cartpole.html) that plays
+CartPole with the trained network in pure JavaScript (no server, no CDN):
+
+```python
+from reinforce.zoo import save_to_zoo, load_pretrained, list_pretrained
+save_to_zoo(agent, "cartpole-ppo")            # export to the zoo (ONNX)
+policy = load_pretrained("cartpole-ppo")       # torch-free inference later
 ```
 
 ## Multi-agent

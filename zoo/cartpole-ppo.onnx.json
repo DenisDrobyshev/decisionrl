@@ -1,0 +1,5 @@
+{
+  "action_type": "discrete",
+  "n_actions": 2,
+  "obs_dim": 4
+}

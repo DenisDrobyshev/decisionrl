@@ -22,7 +22,7 @@ from ..networks.policies import (
     SquashedGaussianActor,
 )
 
-__all__ = ["build_policy_module", "export_onnx", "export_torchscript", "OnnxPolicy"]
+__all__ = ["build_policy_module", "export_onnx", "export_torchscript", "export_json", "OnnxPolicy"]
 
 
 class _CategoricalPolicy(nn.Module):
@@ -127,7 +127,8 @@ def _write_meta(path: str, meta: dict) -> None:
 def export_onnx(agent, path: str, opset: int = 17) -> str:
     """Export the deterministic policy to ``path`` (ONNX) + ``path + ".json"``."""
     module, meta = build_policy_module(agent)
-    dummy = torch.zeros(1, meta["obs_dim"], dtype=torch.float32)
+    device = next(module.parameters()).device
+    dummy = torch.zeros(1, meta["obs_dim"], dtype=torch.float32, device=device)
     kwargs = dict(
         input_names=["observation"], output_names=["action"],
         dynamic_axes={"observation": {0: "batch"}, "action": {0: "batch"}},
@@ -142,10 +143,45 @@ def export_onnx(agent, path: str, opset: int = 17) -> str:
     return path
 
 
+def export_json(agent, path: str) -> str:
+    """Export the policy MLP weights as plain JSON (for in-browser inference).
+
+    Writes ``{obs_dim, action_type, activation, layers:[{w, b}], ...}`` — enough to
+    run the deterministic policy with a few matmuls in any language (e.g. a
+    self-contained JavaScript demo), with no PyTorch/ONNX runtime.
+    """
+    _, meta = build_policy_module(agent)
+    net = getattr(agent, "actor", None)
+    if net is not None and hasattr(net, "net"):
+        sequential = net.net            # CategoricalActor
+    elif net is not None and hasattr(net, "mean_net"):
+        sequential = net.mean_net       # GaussianActor
+    elif hasattr(agent, "q_net"):
+        sequential = agent.q_net.net if hasattr(agent.q_net, "net") else agent.q_net
+    else:
+        raise TypeError(f"export_json not supported for {type(agent).__name__}")
+
+    layers = []
+    activation = "tanh"
+    for m in sequential:
+        if isinstance(m, nn.Linear):
+            layers.append({"w": m.weight.detach().cpu().numpy().tolist(),
+                           "b": m.bias.detach().cpu().numpy().tolist()})
+        elif isinstance(m, nn.ReLU):
+            activation = "relu"
+    meta = dict(meta)
+    meta["activation"] = activation
+    meta["layers"] = layers
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(meta, f)
+    return path
+
+
 def export_torchscript(agent, path: str) -> str:
     """Export the deterministic policy to ``path`` (TorchScript) + metadata."""
     module, meta = build_policy_module(agent)
-    dummy = torch.zeros(1, meta["obs_dim"], dtype=torch.float32)
+    device = next(module.parameters()).device
+    dummy = torch.zeros(1, meta["obs_dim"], dtype=torch.float32, device=device)
     scripted = torch.jit.trace(module, dummy)
     scripted.save(path)
     _write_meta(path, meta)

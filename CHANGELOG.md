@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **In-browser demo + model zoo**: `export_json` dumps the policy weights as JSON;
+  `examples/make_browser_demo.py` builds a self-contained `docs/demo/cartpole.html`
+  that runs a trained PPO policy in pure JavaScript on a canvas (no server, no
+  onnxruntime, no CDN). `reinforce.zoo` (`save_to_zoo`/`list_pretrained`/
+  `load_pretrained`) stores and loads pretrained ONNX policies.
 - **Live training dashboard** (`reinforce dashboard run.csv`): a lightweight
   Flask + Plotly web dashboard that live-reads a `Logger` metrics CSV and
   auto-refreshes one chart per metric (reward/loss/...). New `dashboard` extra.
