@@ -67,6 +67,7 @@ from .evaluation import (
     run_seeds,
 )
 from .evolution import NeuroevolutionAgent
+from .imitation import BC, GAIL, DAgger, GAILDiscriminator, collect_expert_dataset
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .rlhf import (
     DPO,
@@ -144,6 +145,12 @@ __all__ = [
     "train_reward_model",
     "RewardModelWrapper",
     "DPO",
+    # imitation learning
+    "BC",
+    "DAgger",
+    "GAIL",
+    "GAILDiscriminator",
+    "collect_expert_dataset",
     # reliable evaluation statistics
     "iqm",
     "bootstrap_ci",

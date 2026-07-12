@@ -20,7 +20,7 @@ batteries-included so it runs the moment you `pip install` it.
 
 [![Algorithms](https://img.shields.io/badge/algorithms-27-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-281-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-286-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -383,11 +383,28 @@ from preference pairs against a frozen reference:
 from reinforce.rlhf import DPO
 dpo = DPO(PointMass(), beta=0.5, seed=0)
 dpo.train(prefs, n_iters=600)     # no reward model, no RL loop
-# on PointMass this lifts the true return from ≈ -43 to ≈ -3.5 (≈ optimal)
+# learns the implicit reward directly — ≈0.9 held-out preference accuracy
 ```
 
 `reinforce.rlhf` provides `RewardModel`, `PreferenceDataset`, `collect_segments`,
 `synthetic_preferences`, `train_reward_model`, `RewardModelWrapper` and `DPO`.
+
+## Imitation learning
+
+Learn from demonstrations instead of rewards — **BC** (behavioral cloning),
+**DAgger** (dataset aggregation, fixes BC's compounding error) and **GAIL**
+(adversarial imitation: a discriminator the policy learns to fool). BC and DAgger
+clone a CartPole expert to a perfect return of 500; GAIL matches it using only
+demonstrations and **no environment reward**.
+
+```python
+from reinforce.imitation import BC, GAIL, collect_expert_dataset
+from reinforce.envs import CartPole
+
+demos = collect_expert_dataset(CartPole(), expert_policy, n_transitions=4000, seed=0)
+bc = BC(CartPole(), seed=0); bc.train(demos, n_iters=1500)          # supervised cloning
+gail = GAIL(CartPole(), demos, seed=0).learn(iterations=10)          # adversarial, reward-free
+```
 
 ## Curiosity & return-conditioned control
 

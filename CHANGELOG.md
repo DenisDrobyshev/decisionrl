@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Imitation learning** (`reinforce.imitation`): `BC` (behavioral cloning),
+  `DAgger` (dataset aggregation) and `GAIL` (adversarial imitation via a
+  discriminator + PPO), plus `collect_expert_dataset`. On CartPole, BC/DAgger
+  clone a heuristic expert to return 500; GAIL reaches ~400 from demonstrations
+  alone with no environment reward.
 - **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player,
   perfect-information games. Includes `TicTacToe` and `Connect4` (canonical-form
   `Game` interface), a residual policy+value net (`AlphaZeroNet`), PUCT tree
@@ -15,8 +20,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   self-play alone; `pit` / `random_player` helpers for evaluation.
 - **DPO** (`reinforce.rlhf.DPO`): Direct Preference Optimization — optimize a
   policy directly from preference pairs against a frozen reference (no reward
-  model, no RL loop). Discrete + continuous; on PointMass it lifts the true
-  return from ≈ -43 to ≈ -3.5.
+  model, no RL loop). Discrete + continuous; learns the implicit reward directly
+  (~0.9 held-out preference accuracy).
 - **Evolutionary & swarm optimization** (`reinforce.evolution`): a unified
   ask/tell family of gradient-free optimizers — evolution strategies (`CEM`,
   `CMAES`, `DifferentialEvolution`, `GeneticAlgorithm`, `OpenAIES`, `ARS`,
