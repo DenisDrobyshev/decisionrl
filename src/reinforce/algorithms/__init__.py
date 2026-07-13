@@ -33,6 +33,7 @@ from .sac_discrete import SACDiscrete
 from .tabular import SARSA, DynaQ, ExpectedSARSA, QLearning
 from .td3 import TD3
 from .td3bc import TD3BC
+from .trpo import TRPO
 
 __all__ = [
     "QLearning",
@@ -46,6 +47,7 @@ __all__ = [
     "REINFORCE",
     "A2C",
     "PPO",
+    "TRPO",
     "GRPO",
     "IMPALA",
     "RecurrentPPO",

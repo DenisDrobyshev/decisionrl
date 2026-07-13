@@ -7,6 +7,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **TRPO** (`reinforce.algorithms.TRPO`): Trust Region Policy Optimization — the
+  natural-gradient step is found by conjugate gradient on the Fisher-vector product
+  (KL Hessian) and scaled by a backtracking line search that enforces the KL trust
+  region and a surrogate improvement, with the value function fit by regression.
+  Built on the shared on-policy rollout machinery (GAE, correct time-limit
+  bootstrapping); solves CartPole. Discrete and continuous.
 - **Migration guide** (`docs/migration.md`): mapping Stable-Baselines3 and CleanRL
   patterns to `reinforce`.
 - **`reinforce play`**: CLI command to watch a trained agent run episodes (or save

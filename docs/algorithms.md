@@ -17,6 +17,7 @@
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | TRPO | `TRPO` | Discrete + Continuous | KL trust region, conjugate gradient on Fisher-vector product, line search |
 | Actor-critic | GRPO | `GRPO` | Discrete + Continuous | critic-free, group-relative advantage (LLM-RLHF) |
 | Actor-critic | IMPALA | `IMPALA` | Discrete + Continuous | V-trace off-policy correction, parallel actors |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability (POMDPs) |
@@ -63,5 +64,6 @@ See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 - Discrete actions, sample-efficient → **DQN** (add `n_step`, `dueling`,
   `prioritized`) or **C51**.
 - Discrete or continuous, robust default → **PPO**.
+- Monotonic-improvement guarantees / hyperparameter-free step size → **TRPO**.
 - Continuous control, sample-efficient → **SAC** or **TD3**.
 - Learning from a fixed dataset → **TD3BC**.
