@@ -46,6 +46,7 @@ from .algorithms import (
     DecisionTransformer,
     DiffusionPolicy,
     Dreamer,
+    DreamerRSSM,
     DynaQ,
     ExpectedSARSA,
     QLearning,
@@ -137,6 +138,7 @@ __all__ = [
     "DiffusionPolicy",
     "MBPO",
     "Dreamer",
+    "DreamerRSSM",
     "NeuroevolutionAgent",
     # offline data
     "TransitionDataset",

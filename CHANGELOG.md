@@ -7,6 +7,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **RSSM world model** (`reinforce.algorithms.RSSM`, `DreamerRSSM`): a proper
+  Recurrent State-Space Model — a GRU deterministic state plus a stochastic latent
+  with learned prior/observation-posterior, trained on sequences via an ELBO
+  (reconstruction + reward + KL with free nats), and actor-critic learned in
+  imagination. The world model demonstrably learns the dynamics (experimental for
+  control; use MBPO for a robust model-based agent).
 - **Ecosystem adapters**: `make_minigrid` (MiniGrid navigation) and
   `make_pettingzoo` (PettingZoo parallel envs -> `MultiAgentEnv`), alongside the
   existing `make_gym` / `make_atari`.

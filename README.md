@@ -18,9 +18,9 @@ batteries-included so it runs the moment you `pip install` it.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
 
-[![Algorithms](https://img.shields.io/badge/algorithms-28-8A2BE2.svg)](docs/algorithms.md)
+[![Algorithms](https://img.shields.io/badge/algorithms-29-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-304-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-307-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 
@@ -336,6 +336,7 @@ agent.learn(100_000, callback=CallbackList([
 | Model-based | Dyna-Q | `DynaQ` | Discrete | learned model + planning (Sutton 1990) |
 | Model-based | MBPO | `MBPO` | Continuous | ensemble dynamics + short rollouts + SAC |
 | Model-based | Dreamer* | `Dreamer` | Continuous | latent world model + imagination (*experimental) |
+| Model-based | DreamerRSSM* | `DreamerRSSM` | Continuous | **RSSM** world model (GRU + stochastic latent + KL) (*experimental) |
 | Value-based | DQN | `DQN` | Discrete | Double · Dueling · PER · **n-step** · CNN |
 | Value-based | C51 | `C51` | Discrete | distributional (categorical) DQN |
 | Value-based | QR-DQN | `QRDQN` | Discrete | distributional (quantile regression) |

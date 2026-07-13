@@ -26,6 +26,7 @@ from .qrdqn import QRDQN
 from .rainbow import Rainbow
 from .recurrent_ppo import RecurrentPPO
 from .reinforce import REINFORCE
+from .rssm import RSSM, DreamerRSSM
 from .sac import SAC
 from .sac_discrete import SACDiscrete
 from .tabular import SARSA, DynaQ, ExpectedSARSA, QLearning
@@ -58,6 +59,8 @@ __all__ = [
     "DiffusionPolicy",
     "MBPO",
     "Dreamer",
+    "DreamerRSSM",
+    "RSSM",
     "OnPolicyAgent",
     "OffPolicyContinuousAgent",
 ]
