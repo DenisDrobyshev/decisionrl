@@ -4,11 +4,26 @@ CartPole is passed as the (picklable) env factory; actors run in separate
 processes with the spawn start method.
 """
 
+import multiprocessing as mp
+
 import pytest
 
-from reinforce.distributed import DistributedActorLearner
+from reinforce.distributed import DistributedActorLearner, _recv_with_timeout
 from reinforce.envs import CartPole
 from reinforce.training import evaluate_policy
+
+
+def test_recv_with_timeout_raises_when_actor_stalls():
+    parent, child = mp.Pipe()
+    # nothing is ever sent on `child` -> a stalled/crashed actor
+    with pytest.raises(TimeoutError):
+        _recv_with_timeout(parent, timeout=0.05)
+
+
+def test_recv_with_timeout_returns_message():
+    parent, child = mp.Pipe()
+    child.send({"ok": 1})
+    assert _recv_with_timeout(parent, timeout=1.0) == {"ok": 1}
 
 
 def test_distributed_smoke(quiet_logger):

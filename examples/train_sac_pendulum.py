@@ -1,6 +1,8 @@
 """Train SAC (with automatic entropy tuning) on the built-in Pendulum.
 
 Run: python examples/train_sac_pendulum.py
+Expected (~1-2 min on CPU): final evaluation return improves to roughly -300..-150
+(closer to 0 is better; a random policy scores about -1200).
 """
 
 from reinforce.algorithms import SAC

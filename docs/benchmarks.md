@@ -23,3 +23,46 @@ evaluation episodes; **random** is a uniform-random policy on the same task for 
 | IQL | PointMass | 10,000 | -2.74 ± 1.25 | -36.84 | 114 |
 
 _Total wall-clock: 1119s. GridWorld optimal ≈ 0.95; CartPole max = 500; Pendulum optimal ≈ -150 (higher is better); PointMass random ≈ -42._
+
+## Comparison vs Stable-Baselines3 / CleanRL
+
+The scores above are on the built-in environments. To compare `reinforce` head-to-head
+against established libraries on the *same* Gymnasium tasks, use
+[`examples/benchmark_vs_baselines.py`](https://github.com/DenisDrobyshev/reinforce/blob/main/examples/benchmark_vs_baselines.py).
+It trains matched algorithms on the same env, over several seeds and an identical step
+budget, and reports mean ± std return and wall-clock side by side (results saved to JSON).
+
+```bash
+pip install stable_baselines3          # the SB3 side is skipped if not installed
+python examples/benchmark_vs_baselines.py --algos ppo --env CartPole-v1 \
+    --seeds 5 --steps 100000
+```
+
+### Methodology
+
+- **Same env, same budget, same seeds.** Both libraries train on the identical
+  Gymnasium id for the identical `total_timesteps`, then evaluate the greedy policy
+  over 20 episodes; each library's own `evaluate_policy` is used.
+- **Library defaults.** Each side uses its own default hyperparameters (this measures
+  the out-of-the-box experience, not a tuned bake-off). For a fair tuned comparison,
+  pass matched hyperparameters to both.
+- **Multiple seeds.** Report the mean and std of the per-seed evaluation returns.
+- **CleanRL.** CleanRL ships single-file reference scripts rather than an installable
+  package, so compare by running the corresponding script (e.g. `ppo.py`) with the same
+  `--env-id`, `--total-timesteps` and `--seed`, and drop its reported return into the
+  table below.
+
+### Results
+
+Run the script on a machine with SB3 installed and paste the emitted table here
+(placeholder — SB3 was not installed in the environment these docs were generated in):
+
+| Algorithm | Environment | Steps | Seeds | reinforce (return) | SB3 (return) | CleanRL (return) |
+|---|---|---:|---:|---:|---:|---:|
+| PPO | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
+| DQN | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
+| SAC | Pendulum-v1 | 30,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
+
+Atari and MuJoCo tasks work the same way once their extras are installed
+(`pip install "gymnasium[atari,accept-rom-license,mujoco]"`); `reinforce` reaches them
+via `make_env("gym:ALE/Breakout-v5")` and `make_atari`.

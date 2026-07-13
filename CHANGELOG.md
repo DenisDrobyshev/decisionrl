@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Baseline comparison harness** (`examples/benchmark_vs_baselines.py`): trains
+  `reinforce` against Stable-Baselines3 on the same Gymnasium env, seeds and step
+  budget, and reports mean ± std return and wall-clock side by side (JSON output).
+  The SB3 side is optional; CleanRL comparison procedure documented in
+  `docs/benchmarks.md`.
 - **Meta-RL / RL²** (`reinforce.meta.RL2Env`, `make_meta_bandit`): meta-learning by
   training a recurrent policy across a task distribution so its hidden state performs
   online adaptation with no test-time gradients. `RL2Env` turns any discrete task
@@ -41,6 +46,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **In-browser demo + model zoo**:
 
 ### Changed
+- **`DistributedActorLearner` robustness**: the learner now polls each actor with a
+  configurable `recv_timeout` (default 60s) instead of blocking on `recv()` forever —
+  a crashed or hung actor raises a clear `TimeoutError`/`RuntimeError` instead of
+  deadlocking the run.
+- **Docstrings**: `BaseAgent.predict` now documents the observation/action contract
+  (single un-batched `np.ndarray` in; `int` for discrete or `np.ndarray` for
+  continuous out); training examples state their expected results.
 - **Prioritized replay**: sum-tree priority updates are now vectorized
   (`SumTree.update_batch`) — a batch costs `O(depth)` NumPy ops instead of a Python
   loop per leaf, much faster for large buffers (identical results). `export_json` dumps the policy weights as JSON;

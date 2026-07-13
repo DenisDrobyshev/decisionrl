@@ -1,6 +1,8 @@
 """Train DQN (Double + Dueling) on a one-hot GridWorld.
 
 Run: python examples/train_dqn_gridworld.py
+Expected (~1 min on CPU): final evaluation return ~0.9 (near-optimal path to the goal;
+the discounted return of the shortest route on a 5x5 grid).
 """
 
 from reinforce.algorithms import DQN

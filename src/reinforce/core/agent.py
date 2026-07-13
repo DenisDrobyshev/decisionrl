@@ -40,7 +40,19 @@ class BaseAgent:
 
     # -- to be implemented by subclasses -----------------------------------
     def predict(self, obs, deterministic: bool = True):
-        """Return an action for ``obs`` (single, un-batched observation)."""
+        """Return an action for a single, un-batched observation.
+
+        Args:
+            obs: One observation as a ``np.ndarray`` (or array-like) matching
+                ``observation_space.shape`` — *not* a batch and *not* a torch
+                tensor; agents convert to tensors internally.
+            deterministic: If ``True`` return the greedy/mean action, otherwise
+                sample from the policy.
+
+        Returns:
+            An ``int`` for discrete action spaces, or a ``np.ndarray`` of shape
+            ``action_space.shape`` for continuous ones.
+        """
         raise NotImplementedError
 
     def reset_states(self) -> None:

@@ -29,6 +29,25 @@ from .utils.torch_utils import get_device, to_tensor
 __all__ = ["DistributedActorLearner"]
 
 
+def _recv_with_timeout(remote, timeout: Optional[float]):
+    """Receive one message from ``remote``, failing loudly if an actor stalls.
+
+    A crashed or hung actor would otherwise block ``recv()`` forever. We first
+    ``poll`` for data (up to ``timeout`` seconds) and turn a stall into a
+    :class:`TimeoutError`, and a closed pipe (the classic symptom of an actor
+    that died mid-trajectory) into a clear :class:`RuntimeError`.
+    """
+    if timeout is not None and not remote.poll(timeout):
+        raise TimeoutError(
+            f"an actor did not return a trajectory within {timeout}s; "
+            "it likely crashed or hung"
+        )
+    try:
+        return remote.recv()
+    except EOFError as exc:  # pragma: no cover - depends on OS process teardown timing
+        raise RuntimeError("an actor closed its pipe unexpectedly (it likely crashed)") from exc
+
+
 def _actor_worker(remote, parent_remote, env_fn, obs_dim, n_actions, hidden_sizes, n_steps) -> None:
     parent_remote.close()
     env = env_fn()
@@ -87,6 +106,7 @@ class DistributedActorLearner:
         hidden_sizes: Sequence[int] = (64, 64),
         device: str = "cpu",
         seed: Optional[int] = None,
+        recv_timeout: Optional[float] = 60.0,
         logger: Optional[Logger] = None,
     ) -> None:
         probe = env_fn()
@@ -101,6 +121,7 @@ class DistributedActorLearner:
         self.gamma, self.ent_coef, self.vf_coef = float(gamma), float(ent_coef), float(vf_coef)
         self.max_grad_norm, self.rho_bar, self.c_bar = float(max_grad_norm), float(rho_bar), float(c_bar)
         self.hidden_sizes = tuple(hidden_sizes)
+        self.recv_timeout = None if recv_timeout is None else float(recv_timeout)
         self.logger = logger if logger is not None else Logger()
         self.num_timesteps = 0
 
@@ -140,7 +161,7 @@ class DistributedActorLearner:
             weights = self._weights()
             for remote in self.remotes:
                 remote.send(("collect", weights))
-            trajs = [remote.recv() for remote in self.remotes]
+            trajs = [_recv_with_timeout(remote, self.recv_timeout) for remote in self.remotes]
 
             T, A = self.n_steps, self.num_actors
             obs = to_tensor(np.stack([t["obs"] for t in trajs], axis=1).reshape(T * A, -1), self.device)
