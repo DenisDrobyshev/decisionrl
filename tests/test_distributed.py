@@ -8,9 +8,9 @@ import multiprocessing as mp
 
 import pytest
 
-from reinforce.distributed import DistributedActorLearner, _recv_with_timeout
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
+from decisionrl.distributed import DistributedActorLearner, _recv_with_timeout
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
 
 
 def test_recv_with_timeout_raises_when_actor_stalls():

@@ -6,35 +6,54 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-14
+
+### Changed
+- **Renamed to `decisionrl`** (was `reinforce` / distributed as `reinforce-rl`). One
+  name everywhere: `pip install decisionrl`, `import decisionrl`, repo `decisionrl`.
+  The old three-name split is gone. **Breaking**: update imports `reinforce.*` →
+  `decisionrl.*`.
+- **Repositioned around applied RL.** The project now leads with reinforcement
+  learning for *operational decisions* — pricing, inventory, energy, queues, supply
+  chains — with the classic baseline shipped alongside each environment so a learned
+  policy can be proved better, not just asserted. The full 31-algorithm library is
+  unchanged underneath.
+
 ### Added
+- **Four applied environments** (NumPy-only, registered in `make_env`, each with a
+  textbook baseline): `DynamicPricing` (revenue management vs best fixed price),
+  `QueueAdmissionControl` (admission control vs admit-all), `EnergyMicrogrid`
+  (battery arbitrage vs no-battery), `SupplyChain` (2-echelon "beer game" vs
+  base-stock). `examples/applied_rl_demo.py` trains all six applied tasks and prints
+  the learned-vs-baseline proof table.
 - **Baseline comparison harness** (`examples/benchmark_vs_baselines.py`): trains
-  `reinforce` against Stable-Baselines3 on the same Gymnasium env, seeds and step
+  `decisionrl` against Stable-Baselines3 on the same Gymnasium env, seeds and step
   budget, and reports mean ± std return and wall-clock side by side (JSON output).
   The SB3 side is optional; CleanRL comparison procedure documented in
   `docs/benchmarks.md`.
-- **Meta-RL / RL²** (`reinforce.meta.RL2Env`, `make_meta_bandit`): meta-learning by
+- **Meta-RL / RL²** (`decisionrl.meta.RL2Env`, `make_meta_bandit`): meta-learning by
   training a recurrent policy across a task distribution so its hidden state performs
   online adaptation with no test-time gradients. `RL2Env` turns any discrete task
   distribution into a single-trial environment (previous action/reward/done fed
   alongside each observation; the same task is kept alive across inner episodes for a
   whole trial). Trained with `RecurrentPPO`, the policy discovers an explore-then-
   exploit bandit algorithm — on held-out 5-arm Bernoulli bandits it pulls the best
-  arm ~2× more often than chance. Adds `reinforce.envs.BernoulliBandit`.
-- **TRPO** (`reinforce.algorithms.TRPO`): Trust Region Policy Optimization — the
+  arm ~2× more often than chance. Adds `decisionrl.envs.BernoulliBandit`.
+- **TRPO** (`decisionrl.algorithms.TRPO`): Trust Region Policy Optimization — the
   natural-gradient step is found by conjugate gradient on the Fisher-vector product
   (KL Hessian) and scaled by a backtracking line search that enforces the KL trust
   region and a surrogate improvement, with the value function fit by regression.
   Built on the shared on-policy rollout machinery (GAE, correct time-limit
   bootstrapping); solves CartPole. Discrete and continuous.
 - **Migration guide** (`docs/migration.md`): mapping Stable-Baselines3 and CleanRL
-  patterns to `reinforce`.
-- **`reinforce play`**: CLI command to watch a trained agent run episodes (or save
+  patterns to `decisionrl`.
+- **`decisionrl play`**: CLI command to watch a trained agent run episodes (or save
   one as a GIF with `--gif`).
-- **Hindsight Experience Replay** (`reinforce.algorithms.HERDQN` + `HERReplayBuffer`,
-  `reinforce.envs.BitFlipping`): goal relabeling ("future" strategy) that makes
+- **Hindsight Experience Replay** (`decisionrl.algorithms.HERDQN` + `HERReplayBuffer`,
+  `decisionrl.envs.BitFlipping`): goal relabeling ("future" strategy) that makes
   sparse-reward goal-conditioned tasks learnable — solves BitFlipping (100% success)
   where vanilla DQN cannot.
-- **RSSM world model** (`reinforce.algorithms.RSSM`, `DreamerRSSM`): a proper
+- **RSSM world model** (`decisionrl.algorithms.RSSM`, `DreamerRSSM`): a proper
   Recurrent State-Space Model — a GRU deterministic state plus a stochastic latent
   with learned prior/observation-posterior, trained on sequences via an ELBO
   (reconstruction + reward + KL with free nats), and actor-critic learned in
@@ -58,12 +77,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   loop per leaf, much faster for large buffers (identical results). `export_json` dumps the policy weights as JSON;
   `examples/make_browser_demo.py` builds a self-contained `docs/demo/cartpole.html`
   that runs a trained PPO policy in pure JavaScript on a canvas (no server, no
-  onnxruntime, no CDN). `reinforce.zoo` (`save_to_zoo`/`list_pretrained`/
+  onnxruntime, no CDN). `decisionrl.zoo` (`save_to_zoo`/`list_pretrained`/
   `load_pretrained`) stores and loads pretrained ONNX policies.
-- **Live training dashboard** (`reinforce dashboard run.csv`): a lightweight
+- **Live training dashboard** (`decisionrl dashboard run.csv`): a lightweight
   Flask + Plotly web dashboard that live-reads a `Logger` metrics CSV and
   auto-refreshes one chart per metric (reward/loss/...). New `dashboard` extra.
-- **LLM alignment / RLHF on text** (`reinforce.text`): a char-level GPT
+- **LLM alignment / RLHF on text** (`decisionrl.text`): a char-level GPT
   (`CharGPT` + `CharTokenizer`), supervised pre-training (`sft_train`), and
   `rlhf_finetune` — the industry RLHF loop (group-normalized advantages, GRPO-style,
   with a KL penalty to the reference/SFT model). Steers generation toward a reward
@@ -76,22 +95,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Vectorized (batched) fitness** for evolution: `minimize(..., batched=True)`
   evaluates the whole population in one call; the benchmark functions are now
   batch-friendly (reduce over the last axis).
-- **Imitation learning** (`reinforce.imitation`): `BC` (behavioral cloning),
+- **Imitation learning** (`decisionrl.imitation`): `BC` (behavioral cloning),
   `DAgger` (dataset aggregation) and `GAIL` (adversarial imitation via a
   discriminator + PPO), plus `collect_expert_dataset`. On CartPole, BC/DAgger
   clone a heuristic expert to return 500; GAIL reaches ~400 from demonstrations
   alone with no environment reward.
-- **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player,
+- **AlphaZero** (`decisionrl.alphazero`): MCTS + self-play for two-player,
   perfect-information games. Includes `TicTacToe` and `Connect4` (canonical-form
   `Game` interface), a residual policy+value net (`AlphaZeroNet`), PUCT tree
   search (`MCTS`) with Dirichlet root noise, and the `AlphaZero` self-play trainer
   with an MCTS-backed `predict`. Learns Tic-Tac-Toe to near-perfect play from
   self-play alone; `pit` / `random_player` helpers for evaluation.
-- **DPO** (`reinforce.rlhf.DPO`): Direct Preference Optimization — optimize a
+- **DPO** (`decisionrl.rlhf.DPO`): Direct Preference Optimization — optimize a
   policy directly from preference pairs against a frozen reference (no reward
   model, no RL loop). Discrete + continuous; learns the implicit reward directly
   (~0.9 held-out preference accuracy).
-- **Evolutionary & swarm optimization** (`reinforce.evolution`): a unified
+- **Evolutionary & swarm optimization** (`decisionrl.evolution`): a unified
   ask/tell family of gradient-free optimizers — evolution strategies (`CEM`,
   `CMAES`, `DifferentialEvolution`, `GeneticAlgorithm`, `OpenAIES`, `ARS`,
   `SimulatedAnnealing`) and swarm intelligence (`PSO`, `FireflyAlgorithm`,
@@ -99,7 +118,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   benchmark functions, and a `NeuroevolutionAgent` that trains RL policies with
   any optimizer (no gradients; solves CartPole). Figures via
   `examples/evolution_demo.py`.
-- **Policy serving** (`reinforce.serving`): `export_onnx` / `export_torchscript`
+- **Policy serving** (`decisionrl.serving`): `export_onnx` / `export_torchscript`
   freeze the deterministic policy (+ JSON metadata); `OnnxPolicy` runs inference
   with onnxruntime alone; `create_app` exposes a FastAPI `/predict` service, with
   a `deploy/Dockerfile`. New `serve` optional-dependency extra.
@@ -111,7 +130,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   shaped + terminal reward), and `PortfolioAllocation` (allocate across correlated
   momentum assets with transaction costs). All registered in `make_env`; trained
   end-to-end in `examples/complex_scenarios.py`.
-- **RLHF pipeline** (`reinforce.rlhf`): learn a reward from *preferences* the way
+- **RLHF pipeline** (`decisionrl.rlhf`): learn a reward from *preferences* the way
   language models are aligned — `collect_segments`, `synthetic_preferences`
   (Bradley-Terry teacher), a `RewardModel` trained on the preference likelihood,
   and `RewardModelWrapper` to optimize any agent against the learned reward while
@@ -119,12 +138,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **GRPO** (`GRPO`): Group Relative Policy Optimization (DeepSeekMath) — the
   critic-free, group-normalized-advantage policy-optimization method behind modern
   LLM RLHF, with a PPO clipped objective and a KL penalty to a reference policy.
-  Pairs directly with `reinforce.rlhf`.
+  Pairs directly with `decisionrl.rlhf`.
 - **Decision Transformer** (`DecisionTransformer`): offline RL as return-conditioned
   sequence modeling (causal GPT over `(return-to-go, state, action)` tokens), with
   a `TrajectoryDataset` / `collect_trajectories` data module and a faithful
   return-conditioned `evaluate`.
-- **Curiosity / intrinsic motivation** (`reinforce.exploration`): `RND` (Random
+- **Curiosity / intrinsic motivation** (`decisionrl.exploration`): `RND` (Random
   Network Distillation) and `ICM` (Intrinsic Curiosity Module), plus a
   `CuriosityWrapper` that adds a normalized novelty bonus to any environment so
   every agent gets exploration for sparse-reward tasks for free.
@@ -139,7 +158,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   schedules and running statistics, and for the **algorithms themselves**:
   predictions stay inside the action space for arbitrary observations, and
   save/load round-trips are a no-op on the deterministic policy.
-- **PyPI packaging**: distributed as `reinforce-rl` (imported as `reinforce`);
+- **PyPI packaging**: distributed as `decisionrl` (imported as `decisionrl`);
   release process documented in [`RELEASING.md`](RELEASING.md) via trusted
   publishing. README gains a hero banner (`docs/assets/banner.svg`).
 - **MBPO** (`MBPO`): model-based policy optimization — an `EnsembleDynamics`
@@ -148,7 +167,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **IMPALA** (`IMPALA`): V-trace off-policy actor-critic for parallel-actor
   training (sync/async vector envs); corrects behaviour/target policy lag across
   update epochs. Discrete and continuous action spaces.
-- **Interactive Plotly dashboards**: `reinforce.utils.plot_dashboard` renders a
+- **Interactive Plotly dashboards**: `decisionrl.utils.plot_dashboard` renders a
   self-contained HTML dashboard (one panel per metric) from a `HistoryLogger`,
   a metrics dict, or a Logger CSV.
 - **Prioritized Experience Replay + n-step for continuous control**: DDPG, TD3 and
@@ -158,13 +177,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   n-step returns, distributional (C51) and Noisy Nets; new `NoisyLinear` /
   `RainbowNetwork` building blocks (C51's projection refactored for reuse).
 - **Gymnasium vectorized training**: `make_gym_vec(id, num_envs, asynchronous)`
-  vectorizes Gymnasium single envs with reinforce's own (correct-autoreset)
+  vectorizes Gymnasium single envs with decisionrl's own (correct-autoreset)
   vector envs for on-policy training.
 - **Model-based RL**: `DynaQ` (tabular Dyna-Q — learned model + planning steps).
 - **Episode GIF recording**: `render_rgb()` on CartPole/Pendulum/GridWorld/
-  MountainCar and `reinforce.utils.record_gif`; animated agent GIFs in the README
+  MountainCar and `decisionrl.utils.record_gif`; animated agent GIFs in the README
   (`examples/record_gifs.py`).
-- **Multi-agent RL** (`reinforce.multiagent`): `MultiAgentEnv` interface,
+- **Multi-agent RL** (`decisionrl.multiagent`): `MultiAgentEnv` interface,
   `RockPaperScissors`, `CoordinationGame` and the multi-step cooperative
   `MultiAgentGridWorld`, and `MultiAgentPPO` supporting both shared-policy
   self-play and independent PPO (IPPO).
@@ -176,7 +195,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `FlattenDictObservation` wrapper (multi-modal observations).
 - **Offline RL**: `IQL` (implicit Q-learning) and `CQL` (conservative Q-learning)
   in addition to TD3+BC.
-- **Optuna** hyperparameter search (`reinforce.tuning.optuna_search`).
+- **Optuna** hyperparameter search (`decisionrl.tuning.optuna_search`).
 - **Weights & Biases** logging sink in `Logger`.
 - Static type checking with **mypy** (config, CI step, badge); **Colab/Jupyter
   quickstart** notebook.
@@ -194,7 +213,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   plus a `TransitionDataset` / `collect_dataset` data module.
 - **Benchmark suite** (`examples/benchmark_scores.py`) reproducing scores for
   every algorithm; results table in `docs/benchmarks.md`.
-- **CLI**: `reinforce train|eval|list` console script and `python -m reinforce`.
+- **CLI**: `decisionrl train|eval|list` console script and `python -m decisionrl`.
 - **Registry & configs**: `make_agent` / `make_env`, per-(algo, env) tuned
   hyperparameters.
 - **AsyncVectorEnv**: subprocess-based vectorized env (spawn) with the same API

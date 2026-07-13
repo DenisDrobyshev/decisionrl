@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import TRPO
-from reinforce.envs import CartPole, PointMass
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import TRPO
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.training import evaluate_policy
 
 
 def cartpole():

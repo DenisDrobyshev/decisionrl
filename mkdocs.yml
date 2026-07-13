@@ -1,8 +1,8 @@
-site_name: reinforce
+site_name: decisionrl
 site_description: A dependency-light, correctness-first reinforcement learning foundation
 site_author: Denis Drobyshev
-repo_url: https://github.com/DenisDrobyshev/reinforce
-repo_name: DenisDrobyshev/reinforce
+repo_url: https://github.com/DenisDrobyshev/decisionrl
+repo_name: DenisDrobyshev/decisionrl
 docs_dir: docs
 edit_uri: ""
 

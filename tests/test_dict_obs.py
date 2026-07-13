@@ -2,10 +2,10 @@ from typing import Optional
 
 import numpy as np
 
-from reinforce.algorithms import PPO
-from reinforce.core.env import Env
-from reinforce.core.spaces import Box, Dict, Discrete, flatdim, flatten
-from reinforce.wrappers import FlattenDictObservation
+from decisionrl.algorithms import PPO
+from decisionrl.core.env import Env
+from decisionrl.core.spaces import Box, Dict, Discrete, flatdim, flatten
+from decisionrl.wrappers import FlattenDictObservation
 
 
 class DictEnv(Env):

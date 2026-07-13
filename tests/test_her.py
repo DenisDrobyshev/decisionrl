@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 import torch
 
-from reinforce.algorithms import HERDQN, HERReplayBuffer
-from reinforce.envs import BitFlipping
+from decisionrl.algorithms import HERDQN, HERReplayBuffer
+from decisionrl.envs import BitFlipping
 
 
 def test_bitflipping_mechanics():

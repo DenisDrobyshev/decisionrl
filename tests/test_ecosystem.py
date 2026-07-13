@@ -5,8 +5,8 @@ import importlib.util
 import numpy as np
 import pytest
 
-from reinforce.envs import make_minigrid
-from reinforce.multiagent import PettingZooParallelAdapter, make_pettingzoo
+from decisionrl.envs import make_minigrid
+from decisionrl.multiagent import PettingZooParallelAdapter, make_pettingzoo
 
 
 def test_make_minigrid_error_or_runs():

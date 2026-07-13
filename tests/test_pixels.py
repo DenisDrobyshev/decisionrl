@@ -6,13 +6,13 @@ import numpy as np
 import pytest
 import torch
 
-from reinforce.algorithms import DQN
-from reinforce.core.env import Env
-from reinforce.core.spaces import Box, Discrete
-from reinforce.envs import GridWorld
-from reinforce.networks import CNNFeatureExtractor, ImageQNetwork, is_image_space
-from reinforce.training import evaluate_policy
-from reinforce.wrappers import FlattenObservation, FrameStack, OneHotObservation
+from decisionrl.algorithms import DQN
+from decisionrl.core.env import Env
+from decisionrl.core.spaces import Box, Discrete
+from decisionrl.envs import GridWorld
+from decisionrl.networks import CNNFeatureExtractor, ImageQNetwork, is_image_space
+from decisionrl.training import evaluate_policy
+from decisionrl.wrappers import FlattenObservation, FrameStack, OneHotObservation
 
 _DELTAS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 

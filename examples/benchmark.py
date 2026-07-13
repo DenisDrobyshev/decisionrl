@@ -26,10 +26,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from reinforce.algorithms import DQN, PPO, SAC, QLearning
-from reinforce.envs import CartPole, GridWorld, Pendulum
-from reinforce.training import evaluate_policy
-from reinforce.utils import HistoryLogger, set_seed
+from decisionrl.algorithms import DQN, PPO, SAC, QLearning
+from decisionrl.envs import CartPole, GridWorld, Pendulum
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import HistoryLogger, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)
@@ -87,7 +87,7 @@ def train_q():
 def plot_learning_curves(results) -> str:
     plt.style.use("seaborn-v0_8-whitegrid")
     fig, axes = plt.subplots(2, 2, figsize=(11, 7))
-    fig.suptitle("reinforce - agents learning applied tasks", fontsize=15, fontweight="bold")
+    fig.suptitle("decisionrl - agents learning applied tasks", fontsize=15, fontweight="bold")
 
     panels = [
         (axes[0, 0], "ppo", "PPO - CartPole (discrete control)", results["ppo"][0], "return (max 500)"),

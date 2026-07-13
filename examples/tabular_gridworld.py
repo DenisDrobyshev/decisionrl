@@ -3,9 +3,9 @@
 Run: python examples/tabular_gridworld.py
 """
 
-from reinforce.algorithms import QLearning
-from reinforce.envs import GridWorld
-from reinforce.utils import set_seed
+from decisionrl.algorithms import QLearning
+from decisionrl.envs import GridWorld
+from decisionrl.utils import set_seed
 
 ARROWS = {0: "^", 1: ">", 2: "v", 3: "<"}
 

@@ -15,7 +15,7 @@ import traceback
 
 import numpy as np
 
-from reinforce.algorithms import (
+from decisionrl.algorithms import (
     A2C,
     C51,
     DDPG,
@@ -32,10 +32,10 @@ from reinforce.algorithms import (
     QLearning,
     SACDiscrete,
 )
-from reinforce.data import collect_dataset
-from reinforce.envs import CartPole, GridWorld, Pendulum, PointMass
-from reinforce.training import evaluate_policy
-from reinforce.utils import Logger, set_seed
+from decisionrl.data import collect_dataset
+from decisionrl.envs import CartPole, GridWorld, Pendulum, PointMass
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import Logger, set_seed
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "docs", "benchmarks.md")
 Q = Logger(verbose=0)
@@ -155,7 +155,7 @@ def _write_table(total_time: float) -> None:
         "",
         "Reproduced scores from "
         "[`examples/benchmark_scores.py`]"
-        "(https://github.com/DenisDrobyshev/reinforce/blob/main/examples/benchmark_scores.py),",
+        "(https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_scores.py),",
         "single seed (0), CPU. Return is the mean +/- std of the final deterministic policy over",
         "evaluation episodes; **random** is a uniform-random policy on the same task for reference.",
         "",

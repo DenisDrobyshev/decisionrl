@@ -5,10 +5,10 @@ Expected (~1-2 min on CPU): final evaluation return improves to roughly -300..-1
 (closer to 0 is better; a random policy scores about -1200).
 """
 
-from reinforce.algorithms import SAC
-from reinforce.envs import Pendulum
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import SAC
+from decisionrl.envs import Pendulum
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 
 def main() -> None:

@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 
-from reinforce import collect_trajectories
-from reinforce.algorithms import DecisionTransformer
-from reinforce.data import TrajectoryDataset
-from reinforce.envs import CartPole, PointMass
+from decisionrl import collect_trajectories
+from decisionrl.algorithms import DecisionTransformer
+from decisionrl.data import TrajectoryDataset
+from decisionrl.envs import CartPole, PointMass
 
 
 def _heuristic(o):

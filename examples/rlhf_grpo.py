@@ -15,17 +15,17 @@ from __future__ import annotations
 
 import numpy as np
 
-from reinforce.algorithms import GRPO, SAC
-from reinforce.envs import CartPole, PointMass
-from reinforce.rlhf import (
+from decisionrl.algorithms import GRPO, SAC
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.rlhf import (
     RewardModel,
     RewardModelWrapper,
     collect_segments,
     synthetic_preferences,
     train_reward_model,
 )
-from reinforce.training import evaluate_policy
-from reinforce.utils import Logger, set_seed
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import Logger, set_seed
 
 
 def rlhf_pointmass() -> None:

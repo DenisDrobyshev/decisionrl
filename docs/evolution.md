@@ -1,12 +1,12 @@
 # Evolutionary & swarm optimization
 
-`reinforce.evolution` provides gradient-free (black-box) optimizers under one
+`decisionrl.evolution` provides gradient-free (black-box) optimizers under one
 **ask / tell** interface, plus a neuroevolution agent that trains RL policies
 without gradients.
 
 ```python
-from reinforce.evolution import CEM, minimize
-from reinforce.evolution.functions import rastrigin
+from decisionrl.evolution import CEM, minimize
+from decisionrl.evolution.functions import rastrigin
 
 opt = CEM(dim=10, bounds=(-5.12, 5.12), seed=0)
 x_best, f_best, history = minimize(rastrigin, opt, iters=200)
@@ -42,8 +42,8 @@ maximize episode return using any optimizer above — no gradients, no replay
 buffer. It implements the standard `predict / learn / save / load` API.
 
 ```python
-from reinforce.evolution import NeuroevolutionAgent
-from reinforce.envs import CartPole
+from decisionrl.evolution import NeuroevolutionAgent
+from decisionrl.envs import CartPole
 
 agent = NeuroevolutionAgent(CartPole(), optimizer="cmaes", hidden_sizes=(16,), seed=0)
 agent.learn(60_000)   # CEM / CMA-ES / PSO all reach return 500
@@ -54,7 +54,7 @@ agent.learn(60_000)   # CEM / CMA-ES / PSO all reach return 500
 ## Ant Colony Optimization (TSP)
 
 ```python
-from reinforce.evolution import AntColonyTSP, random_cities, distance_matrix
+from decisionrl.evolution import AntColonyTSP, random_cities, distance_matrix
 
 cities = random_cities(20, seed=3)
 tour, length, history = AntColonyTSP(distance_matrix(cities), seed=0).solve(iters=120)

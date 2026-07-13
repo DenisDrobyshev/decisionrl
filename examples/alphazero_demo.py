@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from reinforce.alphazero import AlphaZero, TicTacToe, pit, random_player
-from reinforce.utils import set_seed
+from decisionrl.alphazero import AlphaZero, TicTacToe, pit, random_player
+from decisionrl.utils import set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)

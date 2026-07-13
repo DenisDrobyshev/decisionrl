@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 import torch
 
-from reinforce.buffers import PrioritizedReplayBuffer, ReplayBuffer, RolloutBuffer, SumTree
-from reinforce.core.spaces import Box, Discrete
+from decisionrl.buffers import PrioritizedReplayBuffer, ReplayBuffer, RolloutBuffer, SumTree
+from decisionrl.core.spaces import Box, Discrete
 
 
 def make_replay(cls=ReplayBuffer, capacity=100, **kw):
@@ -181,7 +181,7 @@ def test_rollout_get_minibatches_cover_all():
 
 
 def test_sumtree_batch_update_matches_sequential():
-    from reinforce.buffers.prioritized import SumTree
+    from decisionrl.buffers.prioritized import SumTree
 
     rng = np.random.default_rng(0)
     for cap in (8, 100, 1000):  # power-of-two and not

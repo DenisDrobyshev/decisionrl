@@ -1,13 +1,13 @@
 # AlphaZero (MCTS + self-play)
 
-`reinforce.alphazero` implements AlphaZero (Silver et al., 2017) for two-player,
+`decisionrl.alphazero` implements AlphaZero (Silver et al., 2017) for two-player,
 perfect-information games. It learns **purely from self-play**: Monte-Carlo Tree
 Search guided by a policy+value network acts as a policy-improvement operator, and
 the network is trained to imitate the improved (visit-count) policy and predict
 the game outcome. No human games, no reward shaping.
 
 ```python
-from reinforce.alphazero import AlphaZero, TicTacToe, pit, random_player
+from decisionrl.alphazero import AlphaZero, TicTacToe, pit, random_player
 import numpy as np
 
 game = TicTacToe()

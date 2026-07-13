@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from reinforce.algorithms import DQN
-from reinforce.envs import CartPole
-from reinforce.exploration import ICM, RND, CuriosityWrapper
-from reinforce.utils import Logger, set_seed
+from decisionrl.algorithms import DQN
+from decisionrl.envs import CartPole
+from decisionrl.exploration import ICM, RND, CuriosityWrapper
+from decisionrl.utils import Logger, set_seed
 
 
 def rnd_novelty_demo() -> None:

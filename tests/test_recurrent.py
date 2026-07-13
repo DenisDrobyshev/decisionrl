@@ -1,9 +1,9 @@
 import pytest
 
-from reinforce.algorithms import RecurrentPPO
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import RecurrentPPO
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
+from decisionrl.wrappers import SyncVectorEnv
 
 
 def test_recurrent_ppo_predict_and_reset(quiet_logger):

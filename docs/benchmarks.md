@@ -1,6 +1,6 @@
 # Benchmarks
 
-Reproduced scores from [`examples/benchmark_scores.py`](https://github.com/DenisDrobyshev/reinforce/blob/main/examples/benchmark_scores.py),
+Reproduced scores from [`examples/benchmark_scores.py`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_scores.py),
 single seed (0), CPU. Return is the mean +/- std of the final deterministic policy over
 evaluation episodes; **random** is a uniform-random policy on the same task for reference.
 
@@ -26,9 +26,9 @@ _Total wall-clock: 1119s. GridWorld optimal ≈ 0.95; CartPole max = 500; Pendul
 
 ## Comparison vs Stable-Baselines3 / CleanRL
 
-The scores above are on the built-in environments. To compare `reinforce` head-to-head
+The scores above are on the built-in environments. To compare `decisionrl` head-to-head
 against established libraries on the *same* Gymnasium tasks, use
-[`examples/benchmark_vs_baselines.py`](https://github.com/DenisDrobyshev/reinforce/blob/main/examples/benchmark_vs_baselines.py).
+[`examples/benchmark_vs_baselines.py`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_vs_baselines.py).
 It trains matched algorithms on the same env, over several seeds and an identical step
 budget, and reports mean ± std return and wall-clock side by side (results saved to JSON).
 
@@ -57,12 +57,12 @@ python examples/benchmark_vs_baselines.py --algos ppo --env CartPole-v1 \
 Run the script on a machine with SB3 installed and paste the emitted table here
 (placeholder — SB3 was not installed in the environment these docs were generated in):
 
-| Algorithm | Environment | Steps | Seeds | reinforce (return) | SB3 (return) | CleanRL (return) |
+| Algorithm | Environment | Steps | Seeds | decisionrl (return) | SB3 (return) | CleanRL (return) |
 |---|---|---:|---:|---:|---:|---:|
 | PPO | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
 | DQN | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
 | SAC | Pendulum-v1 | 30,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
 
 Atari and MuJoCo tasks work the same way once their extras are installed
-(`pip install "gymnasium[atari,accept-rom-license,mujoco]"`); `reinforce` reaches them
+(`pip install "gymnasium[atari,accept-rom-license,mujoco]"`); `decisionrl` reaches them
 via `make_env("gym:ALE/Breakout-v5")` and `make_atari`.

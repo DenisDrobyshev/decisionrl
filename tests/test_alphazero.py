@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from reinforce.alphazero import (
+from decisionrl.alphazero import (
     AlphaZero,
     AlphaZeroNet,
     Connect4,
@@ -11,7 +11,7 @@ from reinforce.alphazero import (
     pit,
     random_player,
 )
-from reinforce.alphazero.mcts import MCTS
+from decisionrl.alphazero.mcts import MCTS
 
 
 def test_tictactoe_mechanics():

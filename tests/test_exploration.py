@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.exploration import (
+from decisionrl.exploration import (
     ConstantSchedule,
     ExponentialSchedule,
     GaussianNoise,

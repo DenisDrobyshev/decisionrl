@@ -11,11 +11,11 @@ from __future__ import annotations
 
 import numpy as np
 
-from reinforce import collect_trajectories
-from reinforce.algorithms import DecisionTransformer
-from reinforce.data import TrajectoryDataset
-from reinforce.envs import CartPole
-from reinforce.utils import set_seed
+from decisionrl import collect_trajectories
+from decisionrl.algorithms import DecisionTransformer
+from decisionrl.data import TrajectoryDataset
+from decisionrl.envs import CartPole
+from decisionrl.utils import set_seed
 
 
 def heuristic(o):

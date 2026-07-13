@@ -4,10 +4,10 @@ Run: python examples/train_ppo_cartpole.py
 Expected (~1 min on CPU): final evaluation return 500.0 +/- 0.0 (CartPole solved).
 """
 
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 
 def main() -> None:

@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import RecurrentPPO
-from reinforce.envs import BernoulliBandit
-from reinforce.meta import make_meta_bandit
-from reinforce.utils.logger import Logger
+from decisionrl.algorithms import RecurrentPPO
+from decisionrl.envs import BernoulliBandit
+from decisionrl.meta import make_meta_bandit
+from decisionrl.utils.logger import Logger
 
 
 def test_bernoulli_bandit_rewards_and_optimal():
@@ -71,7 +71,7 @@ def test_rl2_meta_learns_to_adapt():
     # A recurrent policy meta-trained across Bernoulli bandits should, at test
     # time and with no gradient steps, pull the best arm far more often than
     # chance -- online adaptation driven purely by its hidden state.
-    from reinforce.wrappers import SyncVectorEnv
+    from decisionrl.wrappers import SyncVectorEnv
 
     n_arms, horizon = 5, 30
 

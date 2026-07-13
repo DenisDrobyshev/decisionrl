@@ -20,10 +20,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from reinforce.algorithms import PPO, SAC
-from reinforce.envs import InventoryManagement, Thermostat
-from reinforce.training import EvalCallback, evaluate_policy
-from reinforce.utils import Logger, set_seed
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.envs import InventoryManagement, Thermostat
+from decisionrl.training import EvalCallback, evaluate_policy
+from decisionrl.utils import Logger, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)

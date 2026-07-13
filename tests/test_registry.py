@@ -1,8 +1,8 @@
 import pytest
 
-from reinforce import make_agent, make_env, make_vec_env
-from reinforce.algorithms import PPO, QLearning
-from reinforce.registry import list_algorithms, list_environments
+from decisionrl import make_agent, make_env, make_vec_env
+from decisionrl.algorithms import PPO, QLearning
+from decisionrl.registry import list_algorithms, list_environments
 
 
 def test_make_env_builtin():
@@ -58,7 +58,7 @@ def test_make_env_gym_prefix():
 
 def test_make_gym_vec_trains_ppo():
     pytest.importorskip("gymnasium")
-    from reinforce.envs import make_gym_vec
+    from decisionrl.envs import make_gym_vec
 
     venv = make_gym_vec("CartPole-v1", num_envs=4)
     try:

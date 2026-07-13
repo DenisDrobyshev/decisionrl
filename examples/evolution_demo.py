@@ -19,8 +19,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from reinforce.envs import CartPole
-from reinforce.evolution import (
+from decisionrl.envs import CartPole
+from decisionrl.evolution import (
     CEM,
     CMAES,
     PSO,
@@ -35,8 +35,8 @@ from reinforce.evolution import (
     minimize,
     random_cities,
 )
-from reinforce.evolution.functions import rastrigin
-from reinforce.utils import Logger, set_seed
+from decisionrl.evolution.functions import rastrigin
+from decisionrl.utils import Logger, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)

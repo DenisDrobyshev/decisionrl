@@ -17,10 +17,10 @@ from __future__ import annotations
 import numpy as np
 import torch
 
-from reinforce.algorithms import PPO, SAC
-from reinforce.envs import LunarLander, Navigation2D, PortfolioAllocation, ReacherArm
-from reinforce.training import evaluate_policy
-from reinforce.utils import Logger, set_seed
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.envs import LunarLander, Navigation2D, PortfolioAllocation, ReacherArm
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import Logger, set_seed
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 

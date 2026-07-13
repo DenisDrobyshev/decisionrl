@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import CQL, IQL, TD3BC
-from reinforce.data import TransitionDataset, collect_dataset
-from reinforce.envs import PointMass
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import CQL, IQL, TD3BC
+from decisionrl.data import TransitionDataset, collect_dataset
+from decisionrl.envs import PointMass
+from decisionrl.training import evaluate_policy
 
 
 def _random_return(env_fn, episodes=20, seed=100):

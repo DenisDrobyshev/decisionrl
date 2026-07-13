@@ -5,10 +5,10 @@ Expected (~1 min on CPU): final evaluation return ~0.9 (near-optimal path to the
 the discounted return of the shortest route on a 5x5 grid).
 """
 
-from reinforce.algorithms import DQN
-from reinforce.envs import GridWorld
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import DQN
+from decisionrl.envs import GridWorld
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 
 def make_env():

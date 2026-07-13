@@ -1,4 +1,4 @@
-# reinforce
+# decisionrl
 
 **A dependency-light, correctness-first reinforcement learning foundation.**
 
@@ -26,9 +26,9 @@ so it runs the moment you `pip install` it.
 ## Install
 
 ```bash
-pip install git+https://github.com/DenisDrobyshev/reinforce.git
+pip install git+https://github.com/DenisDrobyshev/decisionrl.git
 # with Gymnasium environments:
-pip install "reinforce[gym] @ git+https://github.com/DenisDrobyshev/reinforce.git"
+pip install "decisionrl[gym] @ git+https://github.com/DenisDrobyshev/decisionrl.git"
 ```
 
 See [Getting started](getting-started.md) for a first training run.

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.core.spaces import Box, Discrete, flatdim, is_discrete
+from decisionrl.core.spaces import Box, Discrete, flatdim, is_discrete
 
 
 def test_discrete_basic():

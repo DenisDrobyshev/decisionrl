@@ -8,8 +8,8 @@ from functools import partial
 
 import numpy as np
 
-from reinforce.envs import CartPole, PointMass
-from reinforce.wrappers import AsyncVectorEnv
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.wrappers import AsyncVectorEnv
 
 
 def test_async_vector_reset_and_step():

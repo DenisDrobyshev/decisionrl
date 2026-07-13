@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from reinforce.envs import CartPole
-from reinforce.imitation import BC, GAIL, DAgger, GAILDiscriminator, collect_expert_dataset
-from reinforce.training import evaluate_policy
+from decisionrl.envs import CartPole
+from decisionrl.imitation import BC, GAIL, DAgger, GAILDiscriminator, collect_expert_dataset
+from decisionrl.training import evaluate_policy
 
 
 def _expert(o):

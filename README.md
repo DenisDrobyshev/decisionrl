@@ -1,34 +1,64 @@
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="reinforce — a correctness-first reinforcement learning foundation" width="100%">
+<img src="docs/assets/banner.svg" alt="decisionrl — a correctness-first reinforcement learning foundation" width="100%">
 
-# reinforce
+# decisionrl
 
-**A dependency-light, correctness-first reinforcement learning foundation.**
+**Reinforcement learning for operational decisions.**
 
-Readable like [CleanRL](https://github.com/vwxyzjn/cleanrl), composable like
-[Stable-Baselines3](https://github.com/DLR-RM/stable-baselines3), and
-batteries-included so it runs the moment you `pip install` it.
+Most RL libraries are built for games and robots — Atari, MuJoCo, control suites.
+`decisionrl` is built for the decisions businesses actually make: **pricing,
+inventory, energy, queueing and supply chains.** It ships the environments, the
+baselines to beat, and the proof — on top of a dependency-light, correctness-first
+library of 31 algorithms.
 
-[![CI](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/reinforce/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/reinforce/)
+[![CI](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/decisionrl/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/lint-ruff-orange.svg)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/reinforce/blob/main/examples/quickstart.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/quickstart.ipynb)
 
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
+[![Environments](https://img.shields.io/badge/environments-18%20(6%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-317-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-345-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
-[![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
+[![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/decisionrl/)
 
-<em>Tabular · value-based · policy-gradient · actor-critic · continuous control · offline · model-based · multi-agent · distributed — one clean, tested, typed library.</em>
+<em>Applied environments with baselines · a correctness-first library of 31 algorithms · one clean, tested, typed package.</em>
 
 </div>
 
 ---
+
+## Why decisionrl
+
+Pick up SB3 or CleanRL and you get Atari and MuJoCo. Real operational problems —
+"what price today?", "how much to reorder?", "charge or discharge the battery?",
+"admit this job or shed it?" — you build yourself. `decisionrl` ships them as
+first-class environments, each with the classic baseline (base-stock, bang-bang,
+best fixed price, admit-all) so you can *prove* the learned policy is better, not
+just assert it:
+
+| Applied task | Learned (RL) | Classic baseline |
+|---|---:|---:|
+| 📦 Inventory management | **194.5** profit | 196.7 · best base-stock |
+| 🏷️ Dynamic pricing | **24.6** revenue | 11.5 · random pricing |
+| 🎛️ Queue admission control | **25.6** value | −16.2 · admit-all |
+| 🌡️ Thermostat / HVAC | **−35.8** return | −304.0 · bang-bang |
+| 🔋 Energy microgrid (battery) | **21.3** return | 13.1 · no battery |
+| 🚚 Supply chain (2-echelon) | **−31.3** return | −175.5 · order-nothing |
+
+RL beats the naive baseline on five of six and **recovers the operations-research
+optimum** on inventory (it matches the analytic base-stock policy from scratch,
+with no domain knowledge).
+
+Every number above is reproduced by [`examples/applied_rl_demo.py`](examples/applied_rl_demo.py)
+on CPU in a few minutes. Under the hood it's a full RL library — 31 algorithms,
+from tabular Q-learning to PPO/SAC/TRPO, offline RL, model-based, multi-agent and
+meta-RL — so once a problem outgrows the built-ins you don't switch tools.
 
 ## Overview
 
@@ -54,7 +84,7 @@ flowchart LR
 
 ```mermaid
 mindmap
-  root(("reinforce"))
+  root(("decisionrl"))
     Tabular
       Q-Learning
       SARSA
@@ -126,9 +156,20 @@ The tabular agent recovers the optimal navigation policy (every arrow flows to t
 
 ## Applied solutions
 
-Beyond classic control, `reinforce` ships two **applied** environments that mirror
-real decision problems. Reproduce everything below with
-[`python examples/applied_demo.py`](examples/applied_demo.py).
+The flagship of `decisionrl`: **six environments that model real operational
+decisions**, each shipped with the classic operations-research baseline so a
+learned policy can be *proved* better. Train all six and print the proof table with
+[`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py); the two flagship
+figures below come from [`python examples/applied_demo.py`](examples/applied_demo.py).
+
+| Applied task | What the agent decides | Baseline to beat |
+|---|---|---|
+| 📦 Inventory management | how much to reorder | base-stock ("order up to S") |
+| 🏷️ Dynamic pricing | what price to set | best fixed price |
+| 🎛️ Queue admission control | admit or shed each job | admit-all |
+| 🌡️ Thermostat / HVAC | heating/cooling power | bang-bang |
+| 🔋 Energy microgrid | charge/discharge a battery | no battery |
+| 🚚 Supply chain (2-echelon) | orders across the chain | per-echelon base-stock |
 
 ### 📦 Inventory management (operations research)
 
@@ -153,7 +194,7 @@ energy **≈ 59 vs 200**).
 
 ## Complex scenarios
 
-Beyond the toy tasks, `reinforce` ships four **harder, higher-dimensional
+Beyond the toy tasks, `decisionrl` ships four **harder, higher-dimensional
 environments** from distinct domains — richer observations, non-linear dynamics
 and real exploration / credit-assignment challenges. Train them all with
 [`python examples/complex_scenarios.py`](examples/complex_scenarios.py) (uses the
@@ -181,14 +222,11 @@ Trained agents in action (record with [`examples/record_scenario_gifs.py`](examp
 
 ---
 
-## Why another RL library?
+## Design principles
 
-Most RL code forces a trade-off: either it is a single readable file you cannot
-reuse, or it is a powerful framework you cannot read. `reinforce` aims for the
-middle: **every algorithm is short and legible, but built from shared,
-swappable components** (buffers, networks, policies, schedules, wrappers).
-
-Three principles guide it:
+The applied focus sits on a deliberately engineered core: **every algorithm is
+short and legible, but built from shared, swappable components** (buffers,
+networks, policies, schedules, wrappers). Three principles guide it:
 
 1. **Correctness-first.** The subtle things that quietly break RL agents are
    handled properly — most notably the Gymnasium `terminated` vs `truncated`
@@ -207,31 +245,31 @@ Three principles guide it:
 ## Installation
 
 ```bash
-# from PyPI — distributed as "reinforce-rl", imported as "reinforce"
-pip install reinforce-rl
+# from PyPI — distributed as "decisionrl", imported as "decisionrl"
+pip install decisionrl
 
 # with Gymnasium environments
-pip install "reinforce-rl[gym]"
+pip install "decisionrl[gym]"
 
 # latest from source
-pip install git+https://github.com/DenisDrobyshev/reinforce.git
+pip install git+https://github.com/DenisDrobyshev/decisionrl.git
 
 # local dev install
-git clone https://github.com/DenisDrobyshev/reinforce.git
-cd reinforce
+git clone https://github.com/DenisDrobyshev/decisionrl.git
+cd decisionrl
 pip install -e ".[dev]"
 ```
 
-> The import package is always `reinforce` (`import reinforce`); the PyPI
-> distribution is named `reinforce-rl` because `reinforce` was already taken.
+> The import package is always `decisionrl` (`import decisionrl`); the PyPI
+> distribution is named `decisionrl` because `decisionrl` was already taken.
 
 ## Quick start
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 set_seed(0)
 agent = PPO(CartPole(), n_steps=1024, seed=0)
@@ -247,8 +285,8 @@ agent = PPO.load("ppo_cartpole.pt", env=CartPole())
 Tabular control is just as simple:
 
 ```python
-from reinforce.algorithms import QLearning
-from reinforce.envs import GridWorld
+from decisionrl.algorithms import QLearning
+from decisionrl.envs import GridWorld
 
 agent = QLearning(GridWorld(rows=5, cols=5), seed=0)
 agent.learn(total_steps=20_000)
@@ -257,8 +295,8 @@ agent.learn(total_steps=20_000)
 Continuous control with SAC:
 
 ```python
-from reinforce.algorithms import SAC
-from reinforce.envs import Pendulum
+from decisionrl.algorithms import SAC
+from decisionrl.envs import Pendulum
 
 agent = SAC(Pendulum(), seed=0)
 agent.learn(total_steps=20_000)
@@ -267,8 +305,8 @@ agent.learn(total_steps=20_000)
 Use a Gymnasium environment (optional extra):
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import make_gym
+from decisionrl.algorithms import PPO
+from decisionrl.envs import make_gym
 
 agent = PPO(make_gym("CartPole-v1"), seed=0)
 agent.learn(total_steps=100_000)
@@ -277,9 +315,9 @@ agent.learn(total_steps=100_000)
 Scale on-policy training with vectorized environments:
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.wrappers import SyncVectorEnv
 
 venv = SyncVectorEnv([lambda: CartPole() for _ in range(8)])
 agent = PPO(venv, n_steps=256, seed=0)   # 8 x 256 = 2048 steps per update
@@ -292,23 +330,23 @@ Train and evaluate without writing a script — tuned default hyperparameters ar
 applied automatically per (algorithm, environment) and can be overridden:
 
 ```bash
-reinforce list                                          # show algorithms & envs
-reinforce train ppo CartPole --steps 50000 --save ppo.pt --progress
-reinforce train dqn CartPole --set learning_rate=5e-4 --set buffer_size=100000
-reinforce train ppo CartPole --n-envs 8 --async         # parallel data collection
-reinforce eval ppo --env CartPole --load ppo.pt --episodes 20
-reinforce play ppo --env CartPole --load ppo.pt        # watch the trained agent
-reinforce train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
-reinforce dashboard run.csv                             # live web dashboard (reward/loss)
+decisionrl list                                          # show algorithms & envs
+decisionrl train ppo CartPole --steps 50000 --save ppo.pt --progress
+decisionrl train dqn CartPole --set learning_rate=5e-4 --set buffer_size=100000
+decisionrl train ppo CartPole --n-envs 8 --async         # parallel data collection
+decisionrl eval ppo --env CartPole --load ppo.pt --episodes 20
+decisionrl play ppo --env CartPole --load ppo.pt        # watch the trained agent
+decisionrl train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
+decisionrl dashboard run.csv                             # live web dashboard (reward/loss)
 ```
 
-`reinforce dashboard <metrics.csv>` serves a lightweight live dashboard (Flask +
+`decisionrl dashboard <metrics.csv>` serves a lightweight live dashboard (Flask +
 Plotly) that auto-refreshes one chart per metric as training writes the CSV.
 
 Programmatic equivalents via the registry:
 
 ```python
-from reinforce import make_env, make_agent, make_vec_env
+from decisionrl import make_env, make_agent, make_vec_env
 agent = make_agent("ppo", make_env("CartPole"), seed=0).learn(50_000)
 venv = make_vec_env("CartPole", n_envs=8, asynchronous=True)   # one-line vectorization
 ```
@@ -316,9 +354,9 @@ venv = make_vec_env("CartPole", n_envs=8, asynchronous=True)   # one-line vector
 ## Training utilities & callbacks
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
 
 agent = PPO(CartPole(), anneal_lr=True, seed=0)      # linear LR decay (best practice)
 agent.learn(100_000, callback=CallbackList([
@@ -370,9 +408,9 @@ from **preferences**, then optimize a policy against it with **GRPO** — the
 critic-free method behind modern LLM RLHF.
 
 ```python
-from reinforce.envs import PointMass
-from reinforce.rlhf import collect_segments, synthetic_preferences, RewardModel, train_reward_model
-from reinforce.algorithms import SAC
+from decisionrl.envs import PointMass
+from decisionrl.rlhf import collect_segments, synthetic_preferences, RewardModel, train_reward_model
+from decisionrl.algorithms import SAC
 
 env = PointMass()
 segments = collect_segments(env, lambda o: env.action_space.sample(), n_segments=120, seg_len=25, seed=0)
@@ -381,7 +419,7 @@ prefs = synthetic_preferences(segments, n_pairs=800, seed=1)          # a prefer
 reward_model = RewardModel(obs_dim=2, action_space=env.action_space, use_action=False)
 train_reward_model(reward_model, prefs, n_iters=500)                  # Bradley-Terry likelihood
 # -> learned reward correlates ≈0.98 with the true reward; optimize any agent on it:
-from reinforce.rlhf import RewardModelWrapper
+from decisionrl.rlhf import RewardModelWrapper
 agent = SAC(RewardModelWrapper(env, reward_model), seed=0).learn(20_000)
 ```
 
@@ -390,13 +428,13 @@ the method behind modern LLM alignment), which optimizes the policy *directly*
 from preference pairs against a frozen reference:
 
 ```python
-from reinforce.rlhf import DPO
+from decisionrl.rlhf import DPO
 dpo = DPO(PointMass(), beta=0.5, seed=0)
 dpo.train(prefs, n_iters=600)     # no reward model, no RL loop
 # learns the implicit reward directly — ≈0.9 held-out preference accuracy
 ```
 
-`reinforce.rlhf` provides `RewardModel`, `PreferenceDataset`, `collect_segments`,
+`decisionrl.rlhf` provides `RewardModel`, `PreferenceDataset`, `collect_segments`,
 `synthetic_preferences`, `train_reward_model`, `RewardModelWrapper` and `DPO`.
 
 ## Imitation learning
@@ -408,8 +446,8 @@ clone a CartPole expert to a perfect return of 500; GAIL matches it using only
 demonstrations and **no environment reward**.
 
 ```python
-from reinforce.imitation import BC, GAIL, collect_expert_dataset
-from reinforce.envs import CartPole
+from decisionrl.imitation import BC, GAIL, collect_expert_dataset
+from decisionrl.envs import CartPole
 
 demos = collect_expert_dataset(CartPole(), expert_policy, n_transitions=4000, seed=0)
 bc = BC(CartPole(), seed=0); bc.train(demos, n_iters=1500)          # supervised cloning
@@ -423,13 +461,13 @@ of optimal and can represent multimodal action distributions a Gaussian cannot.
 ## LLM alignment (RLHF on a language model)
 
 The full RLHF loop industry uses to align LLMs, on a tiny char-level GPT:
-pre-train (SFT), then reinforce toward a reward while a **KL penalty keeps the
+pre-train (SFT), then decisionrl toward a reward while a **KL penalty keeps the
 policy close to the reference model** (GRPO-style group-normalized advantages, no
 value network). Steering a model toward more `"o"` lifts its frequency from
 **≈0.09 to ≈0.47** while staying readable.
 
 ```python
-from reinforce.text import CharTokenizer, CharGPT, sft_train, rlhf_finetune, char_frequency_reward
+from decisionrl.text import CharTokenizer, CharGPT, sft_train, rlhf_finetune, char_frequency_reward
 
 tok = CharTokenizer(corpus)
 lm = CharGPT(tok.vocab_size, block_size=64)
@@ -441,14 +479,14 @@ rlhf_finetune(lm, tok, char_frequency_reward("o"), kl_coef=0.05)  # align to a r
 
 ```python
 # Intrinsic motivation: any agent gets exploration on sparse-reward tasks for free.
-from reinforce.exploration import RND, CuriosityWrapper
-from reinforce.algorithms import DQN
+from decisionrl.exploration import RND, CuriosityWrapper
+from decisionrl.algorithms import DQN
 env = CuriosityWrapper(CartPole(), RND(obs_dim=4))      # or ICM(...)
 DQN(env, seed=0).learn(50_000)
 
 # Decision Transformer: offline RL as return-conditioned sequence modeling.
-from reinforce import collect_trajectories
-from reinforce.algorithms import DecisionTransformer
+from decisionrl import collect_trajectories
+from decisionrl.algorithms import DecisionTransformer
 data = collect_trajectories(CartPole(), policy, n_trajectories=150, seed=0)
 dt = DecisionTransformer(CartPole(), seed=0).learn_offline(data, n_iters=2500)
 dt.evaluate(CartPole(), target_return=500)             # condition on the return you want
@@ -463,13 +501,13 @@ Artificial Bee Colony · Grey Wolf · Bat · Ant Colony (TSP)** — plus a
 `NeuroevolutionAgent` that trains RL policies with any of them (no gradients).
 
 ```python
-from reinforce.evolution import CEM, minimize
-from reinforce.evolution.functions import rastrigin
+from decisionrl.evolution import CEM, minimize
+from decisionrl.evolution.functions import rastrigin
 x, f, history = minimize(rastrigin, CEM(dim=10, bounds=(-5.12, 5.12), seed=0), iters=200)
 
 # Neuroevolution: solve CartPole with a gradient-free optimizer
-from reinforce.evolution import NeuroevolutionAgent
-from reinforce.envs import CartPole
+from decisionrl.evolution import NeuroevolutionAgent
+from decisionrl.envs import CartPole
 agent = NeuroevolutionAgent(CartPole(), optimizer="cmaes", seed=0).learn(60_000)
 ```
 
@@ -486,13 +524,13 @@ no gradients**; and Ant Colony Optimization finds short TSP tours. Reproduce wit
 
 ## AlphaZero (MCTS + self-play)
 
-`reinforce.alphazero` implements AlphaZero for two-player perfect-information
+`decisionrl.alphazero` implements AlphaZero for two-player perfect-information
 games — Monte-Carlo Tree Search guided by a policy+value network, trained purely
 by **self-play** (no human games, no reward shaping). Ships `TicTacToe` and
 `Connect4`; add a game by implementing the `Game` interface.
 
 ```python
-from reinforce.alphazero import AlphaZero, TicTacToe
+from decisionrl.alphazero import AlphaZero, TicTacToe
 agent = AlphaZero(TicTacToe(), n_simulations=60, seed=0)
 agent.learn(iterations=12, games_per_iter=30)     # self-play + training
 action = agent.predict(state, player=1)            # MCTS-backed move
@@ -506,16 +544,16 @@ losing to a random opponent). Reproduce with
 
 ## Meta-RL (RL²)
 
-`reinforce.meta` implements **RL²** — meta-learning by training a *recurrent*
+`decisionrl.meta` implements **RL²** — meta-learning by training a *recurrent*
 policy across a distribution of tasks so its hidden state adapts online, with **no
 gradient steps at test time**. The mechanism is all in the environment: `RL2Env`
 feeds the previous action/reward/done alongside each observation and keeps one task
 alive for a whole "trial".
 
 ```python
-from reinforce.algorithms import RecurrentPPO
-from reinforce.meta import make_meta_bandit
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import RecurrentPPO
+from decisionrl.meta import make_meta_bandit
+from decisionrl.wrappers import SyncVectorEnv
 
 # a distribution of 5-armed Bernoulli bandits (arm odds resampled each trial)
 venv = SyncVectorEnv([lambda i=i: make_meta_bandit(n_arms=5, horizon=30, seed=i)
@@ -533,9 +571,9 @@ Export any trained agent to **ONNX** (or TorchScript) and serve it over HTTP —
 the serving image needs only `onnxruntime` + FastAPI, no PyTorch.
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.serving import export_onnx, OnnxPolicy
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.serving import export_onnx, OnnxPolicy
 
 agent = PPO(CartPole(), seed=0).learn(50_000)
 export_onnx(agent, "policy.onnx")            # + policy.onnx.json metadata
@@ -544,7 +582,7 @@ action = OnnxPolicy("policy.onnx").predict(obs)   # inference without torch
 
 ```bash
 # FastAPI service (POST /predict, GET /health, GET /info) — see deploy/Dockerfile
-REINFORCE_MODEL=policy.onnx uvicorn reinforce.serving.server:app
+REINFORCE_MODEL=policy.onnx uvicorn decisionrl.serving.server:app
 ```
 
 Store and reload pretrained policies with the **model zoo**, and run a policy
@@ -553,7 +591,7 @@ self-contained [`docs/demo/cartpole.html`](docs/demo/cartpole.html) that plays
 CartPole with the trained network in pure JavaScript (no server, no CDN):
 
 ```python
-from reinforce.zoo import save_to_zoo, load_pretrained, list_pretrained
+from decisionrl.zoo import save_to_zoo, load_pretrained, list_pretrained
 save_to_zoo(agent, "cartpole-ppo")            # export to the zoo (ONNX)
 policy = load_pretrained("cartpole-ppo")       # torch-free inference later
 ```
@@ -561,7 +599,7 @@ policy = load_pretrained("cartpole-ppo")       # torch-free inference later
 ## Multi-agent
 
 ```python
-from reinforce.multiagent import MultiAgentPPO, RockPaperScissors, CoordinationGame
+from decisionrl.multiagent import MultiAgentPPO, RockPaperScissors, CoordinationGame
 
 # self-play (one shared policy controls every agent)
 selfplay = MultiAgentPPO(RockPaperScissors(), shared_policy=True, seed=0).learn(40_000)
@@ -570,14 +608,14 @@ selfplay = MultiAgentPPO(RockPaperScissors(), shared_policy=True, seed=0).learn(
 ippo = MultiAgentPPO(CoordinationGame(), shared_policy=False, seed=0).learn(20_000)
 ```
 
-`reinforce.multiagent` adds a `MultiAgentEnv` interface, example games, and
+`decisionrl.multiagent` adds a `MultiAgentEnv` interface, example games, and
 `MultiAgentPPO` (self-play or IPPO). See the [multi-agent docs](docs/multiagent.md).
 
 ## Distributed training
 
 ```python
-from reinforce import DistributedActorLearner
-from reinforce.envs import CartPole
+from decisionrl import DistributedActorLearner
+from decisionrl.envs import CartPole
 
 # real actor processes stream trajectories to a central V-trace learner
 learner = DistributedActorLearner(CartPole, num_actors=8, seed=0).learn(200_000)
@@ -591,7 +629,7 @@ iteration.
 ## Components you can reuse
 
 ```
-reinforce
+decisionrl
 ├── core         # Env, Wrapper, Space (Box/Discrete), BaseAgent, Transition
 ├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass,
 │                 #   InventoryManagement, Thermostat (applied), make_gym
@@ -608,13 +646,13 @@ reinforce
 └── algorithms   # the ten agents above
 ```
 
-Everything is duck-typed against the Gymnasium API, so `reinforce` components and
+Everything is duck-typed against the Gymnasium API, so `decisionrl` components and
 Gymnasium environments interoperate freely in either direction.
 
 ## Reproducibility
 
 ```python
-from reinforce.utils import set_seed
+from decisionrl.utils import set_seed
 set_seed(42, deterministic=True)   # seeds Python, NumPy, PyTorch (+ deterministic kernels)
 ```
 

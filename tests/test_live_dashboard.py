@@ -2,8 +2,8 @@
 
 import pytest
 
-from reinforce.dashboard import create_app, read_metrics
-from reinforce.utils import Logger
+from decisionrl.dashboard import create_app, read_metrics
+from decisionrl.utils import Logger
 
 
 def test_read_metrics_parses_logger_csv(tmp_path):
@@ -33,7 +33,7 @@ def test_dashboard_app_serves_page_and_data(tmp_path):
     client = create_app(csv_path, interval_ms=1000).test_client()
 
     index = client.get("/")
-    assert index.status_code == 200 and b"reinforce" in index.data
+    assert index.status_code == 200 and b"decisionrl" in index.data
 
     data = client.get("/data").get_json()
     assert data["series"]["reward"] == [5.0]

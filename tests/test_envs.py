@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from reinforce.core.spaces import is_discrete
-from reinforce.envs import (
+from decisionrl.core.spaces import is_discrete
+from decisionrl.envs import (
     Acrobot,
     CartPole,
     GridWorld,
@@ -142,7 +142,7 @@ def test_thermostat_truncates_and_power_clip():
 
 def test_gym_adapter():
     pytest.importorskip("gymnasium")
-    from reinforce.envs import make_gym
+    from decisionrl.envs import make_gym
 
     env = make_gym("CartPole-v1")
     obs, info = env.reset(seed=0)

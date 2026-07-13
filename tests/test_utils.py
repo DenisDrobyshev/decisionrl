@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from reinforce.utils import (
+from decisionrl.utils import (
     HistoryLogger,
     RunningMeanStd,
     explained_variance,

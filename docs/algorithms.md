@@ -35,24 +35,24 @@ See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 
 ## Self-play
 
-- **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player games
+- **AlphaZero** (`decisionrl.alphazero`): MCTS + self-play for two-player games
   (`TicTacToe`, `Connect4`); a policy+value ResNet trained purely from self-play.
 
 ## Meta-RL
 
-- **RL²** (`reinforce.meta`): meta-learning via a recurrent policy trained across a
+- **RL²** (`decisionrl.meta`): meta-learning via a recurrent policy trained across a
   task distribution — its hidden state adapts online with no test-time gradients.
   `RL2Env` wraps any discrete task distribution (see `make_meta_bandit`); train with
   `RecurrentPPO`. See [Meta-RL (RL²)](meta.md).
 
 ## RLHF & intrinsic motivation
 
-- **RLHF** (`reinforce.rlhf`): learn a reward from preferences (`RewardModel`,
+- **RLHF** (`decisionrl.rlhf`): learn a reward from preferences (`RewardModel`,
   `synthetic_preferences`, `train_reward_model`) and optimize any agent against it
   via `RewardModelWrapper`. Pairs with **GRPO**, the policy-optimization method
   used to align language models. **`DPO`** optimizes the policy directly from
   preferences with no reward model (Direct Preference Optimization).
-- **Curiosity** (`reinforce.exploration`): `RND` and `ICM` intrinsic rewards, added
+- **Curiosity** (`decisionrl.exploration`): `RND` and `ICM` intrinsic rewards, added
   to any environment with `CuriosityWrapper` for exploration on sparse-reward tasks.
 
 ## Correctness details

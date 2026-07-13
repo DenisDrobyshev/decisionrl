@@ -4,8 +4,8 @@ Requires: pip install optuna
 Run: python examples/tune_optuna.py
 """
 
-from reinforce.envs import CartPole
-from reinforce.tuning import optuna_search
+from decisionrl.envs import CartPole
+from decisionrl.tuning import optuna_search
 
 
 def main() -> None:

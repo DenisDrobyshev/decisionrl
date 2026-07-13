@@ -14,9 +14,9 @@ import os
 
 import torch
 
-from reinforce.algorithms import PPO, SAC
-from reinforce.envs import LunarLander, Navigation2D, ReacherArm
-from reinforce.utils import Logger, record_gif, set_seed
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.envs import LunarLander, Navigation2D, ReacherArm
+from decisionrl.utils import Logger, record_gif, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)

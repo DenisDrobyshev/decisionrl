@@ -6,8 +6,8 @@ Run: python examples/multiagent_selfplay.py
 
 import numpy as np
 
-from reinforce.multiagent import CoordinationGame, MultiAgentPPO, RockPaperScissors
-from reinforce.utils import set_seed
+from decisionrl.multiagent import CoordinationGame, MultiAgentPPO, RockPaperScissors
+from decisionrl.utils import set_seed
 
 
 def main() -> None:

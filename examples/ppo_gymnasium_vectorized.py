@@ -1,14 +1,14 @@
 """Train PPO on a vectorized Gymnasium environment.
 
-Requires the optional extra: pip install "reinforce[gym]"
+Requires the optional extra: pip install "decisionrl[gym]"
 Run: python examples/ppo_gymnasium_vectorized.py
 """
 
-from reinforce.algorithms import PPO
-from reinforce.envs import make_gym
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import PPO
+from decisionrl.envs import make_gym
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
+from decisionrl.wrappers import SyncVectorEnv
 
 
 def main() -> None:

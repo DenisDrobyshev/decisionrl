@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import IMPALA
-from reinforce.envs import CartPole, PointMass
-from reinforce.training import evaluate_policy
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import IMPALA
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.training import evaluate_policy
+from decisionrl.wrappers import SyncVectorEnv
 
 
 def test_impala_discrete_predict(quiet_logger):

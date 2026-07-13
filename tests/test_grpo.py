@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import GRPO
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import GRPO
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
 
 
 def test_grpo_predicts_valid_actions(quiet_logger):

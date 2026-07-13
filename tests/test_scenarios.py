@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import PPO, SAC
-from reinforce.envs import LunarLander, Navigation2D, PortfolioAllocation, ReacherArm
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.envs import LunarLander, Navigation2D, PortfolioAllocation, ReacherArm
+from decisionrl.training import evaluate_policy
 
 ENV_CLASSES = [ReacherArm, Navigation2D, LunarLander, PortfolioAllocation]
 
@@ -74,7 +74,7 @@ def test_env_render_rgb(env_cls):
 
 def test_make_atari_preprocessing():
     pytest.importorskip("ale_py")  # skip unless Atari (ale-py) is installed
-    from reinforce.envs import make_atari
+    from decisionrl.envs import make_atari
 
     env = make_atari("ALE/Pong-v5")
     obs, _ = env.reset(seed=0)

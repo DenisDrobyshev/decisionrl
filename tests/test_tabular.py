@@ -1,8 +1,8 @@
 import pytest
 
-from reinforce.algorithms import SARSA, DynaQ, ExpectedSARSA, QLearning
-from reinforce.envs import GridWorld
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import SARSA, DynaQ, ExpectedSARSA, QLearning
+from decisionrl.envs import GridWorld
+from decisionrl.training import evaluate_policy
 
 ALGOS = [QLearning, SARSA, ExpectedSARSA, DynaQ]
 

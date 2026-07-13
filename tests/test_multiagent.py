@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reinforce.multiagent import (
+from decisionrl.multiagent import (
     CoordinationGame,
     MultiAgentGridWorld,
     MultiAgentPPO,

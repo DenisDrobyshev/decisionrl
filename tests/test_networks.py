@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from reinforce.networks import (
+from decisionrl.networks import (
     CategoricalActor,
     ContinuousQ,
     DeterministicActor,

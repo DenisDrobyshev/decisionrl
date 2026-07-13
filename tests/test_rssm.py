@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 import torch
 
-from reinforce.algorithms import RSSM, DreamerRSSM
-from reinforce.envs import Pendulum
+from decisionrl.algorithms import RSSM, DreamerRSSM
+from decisionrl.envs import Pendulum
 
 
 def _pendulum_sequences(n_seq=40, length=20, seed=0):

@@ -1,6 +1,6 @@
 import pytest
 
-from reinforce.cli import _coerce, _parse_overrides, build_parser, main
+from decisionrl.cli import _coerce, _parse_overrides, build_parser, main
 
 
 def test_coerce_types():
@@ -39,7 +39,7 @@ def test_cli_version(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["--version"])
     assert exc.value.code == 0
-    assert "reinforce" in capsys.readouterr().out
+    assert "decisionrl" in capsys.readouterr().out
 
 
 def test_cli_train_with_progress(tmp_path):

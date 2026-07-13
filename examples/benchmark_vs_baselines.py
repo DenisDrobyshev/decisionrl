@@ -1,11 +1,11 @@
-"""Head-to-head benchmark: ``reinforce`` vs Stable-Baselines3 (and CleanRL).
+"""Head-to-head benchmark: ``decisionrl`` vs Stable-Baselines3 (and CleanRL).
 
 Trains matched algorithms on the *same* Gymnasium environments, over several
 seeds and an identical step budget, then reports mean +/- std evaluation return
 and wall-clock time side by side. Results are written to JSON so runs are
 reproducible and comparable across machines.
 
-The ``reinforce`` side always runs (Gymnasium is the only requirement). The
+The ``decisionrl`` side always runs (Gymnasium is the only requirement). The
 Stable-Baselines3 side runs only if SB3 is installed (`pip install
 stable_baselines3`); otherwise it is skipped with a note. CleanRL is a collection
 of single-file scripts rather than a package, so it is compared by running its
@@ -13,7 +13,7 @@ reference scripts separately — see ``docs/benchmarks.md`` for the procedure.
 
 Examples
 --------
-    # reinforce vs SB3 on CartPole, 3 seeds, 50k steps each
+    # decisionrl vs SB3 on CartPole, 3 seeds, 50k steps each
     python examples/benchmark_vs_baselines.py --algos ppo --env CartPole-v1 \
         --seeds 3 --steps 50000
 
@@ -34,11 +34,11 @@ from typing import Optional
 
 import numpy as np
 
-from reinforce import make_agent, make_env
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl import make_agent, make_env
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
-# reinforce algo name -> Stable-Baselines3 class name (only algos both libraries have)
+# decisionrl algo name -> Stable-Baselines3 class name (only algos both libraries have)
 SB3_EQUIVALENT = {
     "ppo": "PPO",
     "a2c": "A2C",
@@ -113,7 +113,7 @@ def main() -> None:
         for seed in range(args.seeds):
             rl = run_reinforce(algo, args.env, args.steps, seed)
             rl_runs.append(rl)
-            print(f"  reinforce seed {seed}: {rl['mean']:.1f} +/- {rl['std']:.1f} "
+            print(f"  decisionrl seed {seed}: {rl['mean']:.1f} +/- {rl['std']:.1f} "
                   f"({rl['wall_s']:.0f}s)")
             sb3 = run_sb3(algo, args.env, args.steps, seed)
             if sb3 is not None:
@@ -121,16 +121,16 @@ def main() -> None:
                 print(f"  SB3       seed {seed}: {sb3['mean']:.1f} +/- {sb3['std']:.1f} "
                       f"({sb3['wall_s']:.0f}s)")
 
-        entry = {"reinforce": aggregate(rl_runs)}
+        entry = {"decisionrl": aggregate(rl_runs)}
         if sb3_runs:
             entry["sb3"] = aggregate(sb3_runs)
         results["algos"][algo] = entry
 
     # markdown comparison table
-    print("\n| Algo | Env | reinforce (return) | SB3 (return) | reinforce (s) | SB3 (s) |")
+    print("\n| Algo | Env | decisionrl (return) | SB3 (return) | decisionrl (s) | SB3 (s) |")
     print("|---|---|---|---|---|---|")
     for algo, entry in results["algos"].items():
-        rl = entry["reinforce"]
+        rl = entry["decisionrl"]
         sb3 = entry.get("sb3")
         rl_ret = f"{rl['return_mean']:.1f} ± {rl['return_std']:.1f}"
         rl_wall = f"{rl['wall_s_mean']:.0f}"
@@ -139,7 +139,7 @@ def main() -> None:
         print(f"| {algo.upper()} | {args.env} | {rl_ret} | {sb3_ret} | {rl_wall} | {sb3_wall} |")
 
     if not SB3_AVAILABLE:
-        print("\nNote: Stable-Baselines3 is not installed, so only reinforce was run.")
+        print("\nNote: Stable-Baselines3 is not installed, so only decisionrl was run.")
         print("      `pip install stable_baselines3` to fill in the comparison column.")
 
     out_path = out_dir / f"{args.env}_{'_'.join(args.algos)}.json"

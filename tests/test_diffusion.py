@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import DiffusionPolicy
-from reinforce.data import collect_dataset
-from reinforce.envs import PointMass
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import DiffusionPolicy
+from decisionrl.data import collect_dataset
+from decisionrl.envs import PointMass
+from decisionrl.training import evaluate_policy
 
 
 def _expert(o):

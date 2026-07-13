@@ -1,7 +1,7 @@
 # Releasing
 
-The package is distributed on PyPI as **`reinforce-rl`** (the import name stays
-`reinforce`). Publishing is automated: pushing a **GitHub Release** triggers
+The package is distributed on PyPI as **`decisionrl`** (the import name stays
+`decisionrl`). Publishing is automated: pushing a **GitHub Release** triggers
 [`.github/workflows/publish.yml`](.github/workflows/publish.yml), which builds the
 sdist + wheel and uploads them via **PyPI Trusted Publishing** (OIDC — no API
 token or secret stored in the repo).
@@ -14,9 +14,9 @@ the project name is still unclaimed ("pending publisher"):
 1. Sign in at <https://pypi.org> → **Your projects** → **Publishing** →
    **Add a pending publisher**.
 2. Fill in exactly:
-   - **PyPI Project Name:** `reinforce-rl`
+   - **PyPI Project Name:** `decisionrl`
    - **Owner:** `DenisDrobyshev`
-   - **Repository name:** `reinforce`
+   - **Repository name:** `decisionrl`
    - **Workflow name:** `publish.yml`
    - **Environment name:** `pypi`
 3. Save. (The GitHub side already declares `environment: pypi` and
@@ -36,7 +36,7 @@ the project name is still unclaimed ("pending publisher"):
 3. On GitHub: **Releases → Draft a new release**, pick the tag, publish.
 4. The **Publish to PyPI** workflow runs automatically. When it goes green:
    ```bash
-   pip install reinforce-rl
+   pip install decisionrl
    ```
 
 ## Verifying the build locally

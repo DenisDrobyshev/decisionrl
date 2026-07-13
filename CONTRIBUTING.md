@@ -1,13 +1,13 @@
-# Contributing to reinforce
+# Contributing to decisionrl
 
-Thanks for your interest in improving `reinforce`! Contributions of all kinds are
+Thanks for your interest in improving `decisionrl`! Contributions of all kinds are
 welcome — bug reports, new algorithms, environments, docs and tests.
 
 ## Development setup
 
 ```bash
-git clone https://github.com/DenisDrobyshev/reinforce.git
-cd reinforce
+git clone https://github.com/DenisDrobyshev/decisionrl.git
+cd decisionrl
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 ```
@@ -37,10 +37,10 @@ pytest                    # full suite incl. learning tests (a few minutes)
 
 ## Adding an algorithm
 
-1. Add `src/reinforce/algorithms/<name>.py`.
+1. Add `src/decisionrl/algorithms/<name>.py`.
 2. Reuse existing components (`buffers`, `networks`, `exploration`, the
    `OnPolicyAgent` / `OffPolicyContinuousAgent` bases) where possible.
-3. Export it from `src/reinforce/algorithms/__init__.py` and the top-level
-   `src/reinforce/__init__.py`.
+3. Export it from `src/decisionrl/algorithms/__init__.py` and the top-level
+   `src/decisionrl/__init__.py`.
 4. Add tests and an example.
 5. Update the algorithm table in `README.md`.

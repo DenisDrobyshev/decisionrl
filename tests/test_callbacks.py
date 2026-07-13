@@ -1,8 +1,8 @@
 import os
 
-from reinforce.algorithms import QLearning
-from reinforce.envs import GridWorld
-from reinforce.training import (
+from decisionrl.algorithms import QLearning
+from decisionrl.envs import GridWorld
+from decisionrl.training import (
     CallbackList,
     CheckpointCallback,
     EvalCallback,

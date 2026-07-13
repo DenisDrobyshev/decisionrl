@@ -1,14 +1,14 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>reinforce — watch a trained agent play</title>
+<title>decisionrl — watch a trained agent play</title>
 <style>
  body{font-family:system-ui,Segoe UI,sans-serif;background:#0b1020;color:#e2e8f0;text-align:center;margin:0;padding:24px}
  h1{font-size:20px;font-weight:800}.sub{color:#94a3b8;font-size:14px;margin-bottom:16px}
  canvas{background:#f8fafc;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
  .stat{margin-top:12px;font-variant-numeric:tabular-nums}button{margin-top:14px;padding:8px 16px;border:0;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
 </style></head><body>
-<h1>reinforce &mdash; PPO plays CartPole</h1>
-<div class="sub">A policy trained with <code>reinforce</code>, running entirely in your browser (no server).</div>
+<h1>decisionrl &mdash; PPO plays CartPole</h1>
+<div class="sub">A policy trained with <code>decisionrl</code>, running entirely in your browser (no server).</div>
 <canvas id="c" width="520" height="320"></canvas>
 <div class="stat">episode steps: <b id="steps">0</b> &nbsp;|&nbsp; best: <b id="best">0</b></div>
 <button onclick="reset()">restart</button>
@@ -26,7 +26,7 @@ function act(obs){
   }
   let best=0;for(let i=1;i<x.length;i++)if(x[i]>x[best])best=i;return best;
 }
-// --- CartPole dynamics (matches reinforce.envs.CartPole) ---
+// --- CartPole dynamics (matches decisionrl.envs.CartPole) ---
 const g=9.8,mc=1.0,mp=0.1,l=0.5,fm=10.0,tau=0.02,tot=mc+mp,pml=mp*l;
 const xthr=2.4,ththr=12*2*Math.PI/360;
 let s,steps,best=0;

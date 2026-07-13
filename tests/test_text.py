@@ -5,7 +5,7 @@ import math
 import pytest
 import torch
 
-from reinforce.text import (
+from decisionrl.text import (
     CharGPT,
     CharTokenizer,
     char_frequency_reward,

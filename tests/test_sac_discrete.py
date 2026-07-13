@@ -1,8 +1,8 @@
 import pytest
 
-from reinforce.algorithms import SACDiscrete
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import SACDiscrete
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
 
 
 def test_sac_discrete_predict(quiet_logger):

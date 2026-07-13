@@ -1,21 +1,21 @@
 # Serving trained policies
 
-`reinforce.serving` turns a trained agent into a portable artifact and a tiny
+`decisionrl.serving` turns a trained agent into a portable artifact and a tiny
 inference service. The serving runtime needs only `onnxruntime` + FastAPI — no
 PyTorch — so deployment images stay small.
 
 Install the extra:
 
 ```bash
-pip install "reinforce-rl[serve]"
+pip install "decisionrl[serve]"
 ```
 
 ## Export
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.serving import export_onnx, export_torchscript, OnnxPolicy
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.serving import export_onnx, export_torchscript, OnnxPolicy
 
 agent = PPO(CartPole(), seed=0).learn(50_000)
 export_onnx(agent, "policy.onnx")          # writes policy.onnx + policy.onnx.json
@@ -32,7 +32,7 @@ DDPG, TD3 and DQN.
 ## Serve over HTTP
 
 ```bash
-REINFORCE_MODEL=policy.onnx uvicorn reinforce.serving.server:app --port 8000
+REINFORCE_MODEL=policy.onnx uvicorn decisionrl.serving.server:app --port 8000
 ```
 
 | Method | Path | Description |
@@ -42,7 +42,7 @@ REINFORCE_MODEL=policy.onnx uvicorn reinforce.serving.server:app --port 8000
 | POST | `/predict` | `{"observation": [...]}` → `{"action": ...}` |
 
 ```python
-from reinforce.serving import create_app       # FastAPI app for the model
+from decisionrl.serving import create_app       # FastAPI app for the model
 app = create_app("policy.onnx")
 ```
 
@@ -51,6 +51,6 @@ app = create_app("policy.onnx")
 `deploy/Dockerfile` builds a slim image (onnxruntime + FastAPI, no torch):
 
 ```bash
-docker build -f deploy/Dockerfile -t reinforce-serve .
-docker run -p 8000:8000 -e REINFORCE_MODEL=/models/policy.onnx reinforce-serve
+docker build -f deploy/Dockerfile -t decisionrl-serve .
+docker run -p 8000:8000 -e REINFORCE_MODEL=/models/policy.onnx decisionrl-serve
 ```

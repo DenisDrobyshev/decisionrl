@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from reinforce.envs import PointMass
-from reinforce.rlhf import (
+from decisionrl.envs import PointMass
+from decisionrl.rlhf import (
     DPO,
     RewardModel,
     RewardModelWrapper,

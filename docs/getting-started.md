@@ -3,10 +3,10 @@
 ## Your first agent
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 set_seed(0)
 agent = PPO(CartPole(), n_steps=1024, seed=0)
@@ -30,7 +30,7 @@ Every agent exposes the same four methods regardless of family:
 ## Reproducibility
 
 ```python
-from reinforce.utils import set_seed
+from decisionrl.utils import set_seed
 set_seed(42, deterministic=True)   # seeds Python, NumPy and PyTorch
 ```
 
@@ -40,9 +40,9 @@ every buffer/space has its own seedable RNG.
 ## Vectorized training
 
 ```python
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.wrappers import SyncVectorEnv, AsyncVectorEnv
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.wrappers import SyncVectorEnv, AsyncVectorEnv
 
 # in-process:
 venv = SyncVectorEnv([lambda: CartPole() for _ in range(8)])
@@ -55,9 +55,9 @@ agent = PPO(venv, n_steps=256, seed=0).learn(200_000)
 ## Offline RL
 
 ```python
-from reinforce.algorithms import TD3BC
-from reinforce.data import collect_dataset
-from reinforce.envs import PointMass
+from decisionrl.algorithms import TD3BC
+from decisionrl.data import collect_dataset
+from decisionrl.envs import PointMass
 
 dataset = collect_dataset(PointMass(), behaviour_policy, n_transitions=20_000)
 agent = TD3BC(PointMass(), seed=0)
@@ -67,7 +67,7 @@ agent.learn_offline(dataset, total_steps=10_000)   # no env interaction
 ## Callbacks & training utilities
 
 ```python
-from reinforce.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
+from decisionrl.training import ProgressBarCallback, EvalCallback, CheckpointCallback, CallbackList
 
 agent.learn(100_000, callback=CallbackList([
     ProgressBarCallback(),                              # live tqdm progress bar
@@ -83,7 +83,7 @@ On-policy agents (PPO/A2C) also support linear learning-rate annealing via
 Turn logged metrics into an interactive HTML dashboard (Plotly):
 
 ```python
-from reinforce.utils import HistoryLogger, plot_dashboard
+from decisionrl.utils import HistoryLogger, plot_dashboard
 log = HistoryLogger()
 agent = PPO(CartPole(), logger=log); agent.learn(50_000)
 plot_dashboard(log, "dashboard.html")   # one interactive panel per metric
@@ -94,6 +94,6 @@ plot_dashboard(log, "dashboard.html")   # one interactive panel per metric
 DQN automatically uses a CNN when the observation space is an image `(C, H, W)`:
 
 ```python
-from reinforce.algorithms import DQN
+from decisionrl.algorithms import DQN
 agent = DQN(my_image_env, features_dim=64, seed=0).learn(50_000)
 ```

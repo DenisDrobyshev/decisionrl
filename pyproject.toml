@@ -3,11 +3,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-# PyPI distribution name (the import package stays `reinforce`); "reinforce" is
-# already taken on PyPI, so we distribute as "reinforce-rl": pip install reinforce-rl
-name = "reinforce-rl"
-version = "0.1.0"
-description = "A dependency-light, correctness-first reinforcement learning foundation: readable algorithms, composable components, batteries-included environments."
+# One name everywhere: pip install decisionrl / import decisionrl.
+name = "decisionrl"
+version = "0.2.0"
+description = "Applied reinforcement learning for operational decisions: pricing, inventory, energy, queues and supply chains — plus a correctness-first library of 31 algorithms."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -67,18 +66,18 @@ dev = [
 ]
 
 [project.scripts]
-reinforce = "reinforce.cli:main"
+decisionrl = "decisionrl.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/DenisDrobyshev/reinforce"
-Repository = "https://github.com/DenisDrobyshev/reinforce"
-Issues = "https://github.com/DenisDrobyshev/reinforce/issues"
+Homepage = "https://github.com/DenisDrobyshev/decisionrl"
+Repository = "https://github.com/DenisDrobyshev/decisionrl"
+Issues = "https://github.com/DenisDrobyshev/decisionrl/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/reinforce"]
+packages = ["src/decisionrl"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/reinforce", "README.md", "LICENSE"]
+include = ["src/decisionrl", "README.md", "LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -101,11 +100,11 @@ select = ["E", "F", "I", "W", "B", "C4", "SIM"]
 ignore = ["E501", "B008", "C401", "C408"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["reinforce"]
+known-first-party = ["decisionrl"]
 
 [tool.mypy]
 python_version = "3.9"
-files = ["src/reinforce"]
+files = ["src/decisionrl"]
 ignore_missing_imports = true
 implicit_optional = true
 follow_imports_for_stubs = true

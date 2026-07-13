@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import PPO, SAC
-from reinforce.envs import InventoryManagement, Thermostat
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.envs import InventoryManagement, Thermostat
+from decisionrl.training import evaluate_policy
 
 
 def _policy_return(env_fn, policy, episodes=20, seed=1):

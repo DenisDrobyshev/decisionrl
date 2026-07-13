@@ -1,7 +1,7 @@
 import numpy as np
 
-from reinforce.algorithms import DQN, PPO, SAC, QLearning
-from reinforce.envs import CartPole, GridWorld, PointMass
+from decisionrl.algorithms import DQN, PPO, SAC, QLearning
+from decisionrl.envs import CartPole, GridWorld, PointMass
 
 
 def test_qlearning_save_load(tmp_path, quiet_logger):

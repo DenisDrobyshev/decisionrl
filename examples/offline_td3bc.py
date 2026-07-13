@@ -6,11 +6,11 @@ the recorded transitions. Run: python examples/offline_td3bc.py
 
 import numpy as np
 
-from reinforce.algorithms import TD3BC
-from reinforce.data import collect_dataset
-from reinforce.envs import PointMass
-from reinforce.training import evaluate_policy
-from reinforce.utils import set_seed
+from decisionrl.algorithms import TD3BC
+from decisionrl.data import collect_dataset
+from decisionrl.envs import PointMass
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import set_seed
 
 
 def main() -> None:

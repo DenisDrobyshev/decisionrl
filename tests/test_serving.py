@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import PPO, SAC, QLearning
-from reinforce.envs import CartPole, GridWorld, PointMass
-from reinforce.serving import (
+from decisionrl.algorithms import PPO, SAC, QLearning
+from decisionrl.envs import CartPole, GridWorld, PointMass
+from decisionrl.serving import (
     OnnxPolicy,
     build_policy_module,
     export_json,
@@ -82,7 +82,7 @@ def test_export_rejects_unsupported_agent():
 def test_fastapi_server_serves_predictions(tmp_path, quiet_logger):
     from fastapi.testclient import TestClient
 
-    from reinforce.serving import create_app
+    from decisionrl.serving import create_app
 
     agent = PPO(CartPole(), n_steps=64, n_epochs=1, seed=0, logger=quiet_logger)
     agent.learn(128)

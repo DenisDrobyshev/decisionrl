@@ -1,6 +1,6 @@
 # Imitation learning
 
-`reinforce.imitation` learns policies from **demonstrations** rather than rewards.
+`decisionrl.imitation` learns policies from **demonstrations** rather than rewards.
 
 | Method | Class | Idea |
 |---|---|---|
@@ -9,8 +9,8 @@
 | GAIL | `GAIL` | a discriminator separates expert vs policy transitions; the policy (PPO) is trained to fool it |
 
 ```python
-from reinforce.imitation import BC, DAgger, GAIL, collect_expert_dataset
-from reinforce.envs import CartPole
+from decisionrl.imitation import BC, DAgger, GAIL, collect_expert_dataset
+from decisionrl.envs import CartPole
 
 demos = collect_expert_dataset(CartPole(), expert_policy, n_transitions=4000, seed=0)
 
@@ -30,4 +30,4 @@ gail.learn(iterations=10)
 On CartPole with a heuristic expert, BC and DAgger reach the maximum return (500);
 GAIL matches the expert from demonstrations alone, never seeing a reward.
 Complements the offline-RL agents (`TD3BC`, `IQL`, `CQL`, `DecisionTransformer`)
-and the preference-based methods (`reinforce.rlhf`).
+and the preference-based methods (`decisionrl.rlhf`).

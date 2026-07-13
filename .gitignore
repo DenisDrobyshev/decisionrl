@@ -41,6 +41,7 @@ site/
 # Experiment artifacts
 runs/
 logs/
+benchmark_results/
 *.pt
 *.pth
 *.ckpt

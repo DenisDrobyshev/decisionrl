@@ -7,10 +7,10 @@ from __future__ import annotations
 
 import os
 
-from reinforce.algorithms import PPO, SAC, QLearning
-from reinforce.envs import CartPole, GridWorld, Pendulum
-from reinforce.training import evaluate_policy
-from reinforce.utils import record_gif, set_seed
+from decisionrl.algorithms import PPO, SAC, QLearning
+from decisionrl.envs import CartPole, GridWorld, Pendulum
+from decisionrl.training import evaluate_policy
+from decisionrl.utils import record_gif, set_seed
 
 ASSETS = os.path.join(os.path.dirname(__file__), "..", "docs", "assets")
 os.makedirs(ASSETS, exist_ok=True)

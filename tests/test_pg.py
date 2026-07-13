@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import A2C, PPO, REINFORCE
-from reinforce.envs import CartPole, PointMass
-from reinforce.training import evaluate_policy
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import A2C, PPO, REINFORCE
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.training import evaluate_policy
+from decisionrl.wrappers import SyncVectorEnv
 
 
 def cartpole():

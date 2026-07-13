@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import C51, DQN, QRDQN, Rainbow
-from reinforce.envs import GridWorld
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import C51, DQN, QRDQN, Rainbow
+from decisionrl.envs import GridWorld
+from decisionrl.training import evaluate_policy
 
 
 def make_env(**kw):

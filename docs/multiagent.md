@@ -1,6 +1,6 @@
 # Multi-agent RL
 
-`reinforce.multiagent` provides a small multi-agent layer: an environment
+`decisionrl.multiagent` provides a small multi-agent layer: an environment
 interface, two example games, and a PPO-based learner that runs either as
 **self-play** (one shared policy) or as **independent PPO** (a policy per agent).
 
@@ -23,7 +23,7 @@ reach its own target under a dense distance reward).
 ## Self-play
 
 ```python
-from reinforce.multiagent import MultiAgentPPO, RockPaperScissors
+from decisionrl.multiagent import MultiAgentPPO, RockPaperScissors
 
 agent = MultiAgentPPO(RockPaperScissors(), shared_policy=True, seed=0)
 agent.learn(40_000)
@@ -36,7 +36,7 @@ once (agents become parallel columns of one rollout buffer).
 ## Independent PPO (IPPO)
 
 ```python
-from reinforce.multiagent import MultiAgentPPO, CoordinationGame
+from decisionrl.multiagent import MultiAgentPPO, CoordinationGame
 
 agent = MultiAgentPPO(CoordinationGame(), shared_policy=False, seed=0)
 agent.learn(20_000)   # each agent has its own policy/value/buffer

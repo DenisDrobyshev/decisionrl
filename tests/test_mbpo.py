@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import MBPO
-from reinforce.envs import PointMass
-from reinforce.networks import EnsembleDynamics
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import MBPO
+from decisionrl.envs import PointMass
+from decisionrl.networks import EnsembleDynamics
+from decisionrl.training import evaluate_policy
 
 
 def test_mbpo_constructs_and_rolls_out(quiet_logger):

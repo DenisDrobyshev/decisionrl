@@ -1,15 +1,15 @@
 # Meta-RL (RL²)
 
-`reinforce.meta` implements **RL²** (Duan et al., 2016; Wang et al., 2016) — meta-
+`decisionrl.meta` implements **RL²** (Duan et al., 2016; Wang et al., 2016) — meta-
 reinforcement learning where a *recurrent* policy is trained across a whole
 distribution of tasks so that its hidden state performs online adaptation. At test
 time there are **no gradient steps**: the recurrent dynamics *are* the learning
 algorithm the agent discovered.
 
 ```python
-from reinforce.algorithms import RecurrentPPO
-from reinforce.meta import make_meta_bandit
-from reinforce.wrappers import SyncVectorEnv
+from decisionrl.algorithms import RecurrentPPO
+from decisionrl.meta import make_meta_bandit
+from decisionrl.wrappers import SyncVectorEnv
 
 # a distribution of 5-armed Bernoulli bandits, 30 pulls per trial
 venv = SyncVectorEnv([lambda i=i: make_meta_bandit(n_arms=5, horizon=30, seed=i)
@@ -54,7 +54,7 @@ space is the task's flattened observation plus `n_actions + 2` extra dimensions.
 
 An `RL2Env` over Bernoulli bandits whose arm probabilities `p_i ~ U(0, 1)` are
 resampled each trial — the classic RL² benchmark. Uses
-[`reinforce.envs.BernoulliBandit`](environments.md).
+[`decisionrl.envs.BernoulliBandit`](environments.md).
 
 ## Result
 

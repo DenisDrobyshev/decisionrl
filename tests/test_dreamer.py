@@ -8,9 +8,9 @@ agents (see the class docstring).
 
 import numpy as np
 
-from reinforce.algorithms import Dreamer
-from reinforce.envs import PointMass
-from reinforce.utils import HistoryLogger
+from decisionrl.algorithms import Dreamer
+from decisionrl.envs import PointMass
+from decisionrl.utils import HistoryLogger
 
 
 def test_dreamer_constructs_and_predicts(quiet_logger):

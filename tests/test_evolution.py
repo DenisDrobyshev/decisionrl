@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from reinforce.envs import CartPole, PointMass
-from reinforce.evolution import (
+from decisionrl.envs import CartPole, PointMass
+from decisionrl.evolution import (
     ARS,
     CEM,
     CMAES,
@@ -23,8 +23,8 @@ from reinforce.evolution import (
     minimize,
     random_cities,
 )
-from reinforce.evolution.functions import ackley, rastrigin, rosenbrock, sphere
-from reinforce.training import evaluate_policy
+from decisionrl.evolution.functions import ackley, rastrigin, rosenbrock, sphere
+from decisionrl.training import evaluate_policy
 
 CONTINUOUS_OPTIMIZERS = [
     CEM, CMAES, DifferentialEvolution, GeneticAlgorithm, OpenAIES, ARS,
@@ -52,7 +52,7 @@ def test_optimizer_minimizes_sphere(optimizer_cls):
 
 def test_batched_fitness_matches_per_row():
     # Vectorized (batched) fitness must give identical results to per-row eval.
-    from reinforce.evolution.functions import sphere
+    from decisionrl.evolution.functions import sphere
 
     x1, f1, h1 = minimize(sphere, CEM(6, bounds=(-5.12, 5.12), seed=0), 50, batched=False)
     x2, f2, h2 = minimize(sphere, CEM(6, bounds=(-5.12, 5.12), seed=0), 50, batched=True)

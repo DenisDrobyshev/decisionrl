@@ -1,9 +1,9 @@
 """Tests for the model zoo (save / list / load pretrained policies)."""
 
 
-from reinforce.algorithms import PPO
-from reinforce.envs import CartPole
-from reinforce.zoo import list_pretrained, load_pretrained, save_to_zoo
+from decisionrl.algorithms import PPO
+from decisionrl.envs import CartPole
+from decisionrl.zoo import list_pretrained, load_pretrained, save_to_zoo
 
 
 def test_save_list_load_roundtrip(tmp_path, quiet_logger):

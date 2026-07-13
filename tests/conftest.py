@@ -2,7 +2,7 @@
 
 import pytest
 
-from reinforce.utils import Logger, set_seed
+from decisionrl.utils import Logger, set_seed
 
 
 @pytest.fixture(autouse=True)

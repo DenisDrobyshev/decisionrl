@@ -7,12 +7,12 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from hypothesis.extra import numpy as hnp
 
-from reinforce import make_agent, make_env
-from reinforce.algorithms import PPO, SAC
-from reinforce.buffers import ReplayBuffer
-from reinforce.core.spaces import Box, Discrete
-from reinforce.exploration import LinearSchedule
-from reinforce.utils import RunningMeanStd
+from decisionrl import make_agent, make_env
+from decisionrl.algorithms import PPO, SAC
+from decisionrl.buffers import ReplayBuffer
+from decisionrl.core.spaces import Box, Discrete
+from decisionrl.exploration import LinearSchedule
+from decisionrl.utils import RunningMeanStd
 
 SETTINGS = settings(max_examples=50, deadline=None)
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from reinforce.envs import CartPole, GridWorld, PointMass
-from reinforce.wrappers import (
+from decisionrl.envs import CartPole, GridWorld, PointMass
+from decisionrl.wrappers import (
     NormalizeObservation,
     NormalizeReward,
     SyncVectorEnv,

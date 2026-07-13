@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from reinforce.algorithms import DDPG, SAC, TD3
-from reinforce.envs import PointMass
-from reinforce.training import evaluate_policy
+from decisionrl.algorithms import DDPG, SAC, TD3
+from decisionrl.envs import PointMass
+from decisionrl.training import evaluate_policy
 
 ALGOS = [DDPG, TD3, SAC]
 
@@ -20,7 +20,7 @@ def test_continuous_predict_within_bounds(cls, quiet_logger):
 
 @pytest.mark.parametrize("cls", ALGOS)
 def test_continuous_prioritized_nstep_constructs(cls, quiet_logger):
-    from reinforce.buffers import PrioritizedReplayBuffer
+    from decisionrl.buffers import PrioritizedReplayBuffer
 
     agent = cls(PointMass(), prioritized=True, n_step=3, learning_starts=10, batch_size=8,
                 seed=0, logger=quiet_logger)
