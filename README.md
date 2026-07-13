@@ -20,7 +20,7 @@ batteries-included so it runs the moment you `pip install` it.
 
 [![Algorithms](https://img.shields.io/badge/algorithms-28-8A2BE2.svg)](docs/algorithms.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-301-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-304-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/reinforce/)
 

@@ -7,7 +7,7 @@ from .acrobot import Acrobot
 from .bandit import MultiArmedBandit
 from .cartpole import CartPole
 from .grid_world import GridWorld
-from .gym import GymAdapter, convert_space, make_atari, make_gym, make_gym_vec
+from .gym import GymAdapter, convert_space, make_atari, make_gym, make_gym_vec, make_minigrid
 from .inventory import InventoryManagement
 from .lunar_lander import LunarLander
 from .mountain_car import MountainCar, MountainCarContinuous
@@ -41,5 +41,6 @@ __all__ = [
     "make_gym",
     "make_gym_vec",
     "make_atari",
+    "make_minigrid",
     "convert_space",
 ]

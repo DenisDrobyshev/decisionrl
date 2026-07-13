@@ -17,7 +17,7 @@ import numpy as np
 from ..core.env import Env
 from ..core.spaces import Box, Discrete, Space
 
-__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "make_atari", "convert_space"]
+__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "make_atari", "make_minigrid", "convert_space"]
 
 
 def convert_space(space) -> Space:
@@ -108,6 +108,28 @@ def make_atari(env_id: str, n_stack: int = 4, screen_size: int = 84, adapter: bo
     except ImportError:  # pragma: no cover - older Gymnasium
         from gymnasium.wrappers import FrameStack as _FrameStack  # type: ignore[no-redef]
     env = _FrameStack(env, n_stack)
+    return GymAdapter(env) if adapter else env  # type: ignore[return-value]
+
+
+def make_minigrid(env_id: str, flatten: bool = True, adapter: bool = True, **kwargs):
+    """Create a MiniGrid navigation environment.
+
+    With ``flatten=True`` (default) applies MiniGrid's ``FlatObsWrapper`` to expose
+    a flat vector observation usable by any MLP agent; otherwise ``ImgObsWrapper``
+    for the image grid (pair with the CNN). Requires ``pip install minigrid``.
+
+        from reinforce.envs import make_minigrid
+        from reinforce.algorithms import PPO
+        agent = PPO(make_minigrid("MiniGrid-Empty-5x5-v0"), seed=0)
+    """
+    try:
+        import gymnasium as gym
+        from minigrid.wrappers import FlatObsWrapper, ImgObsWrapper
+    except ImportError as exc:  # pragma: no cover - optional dependency
+        raise ImportError("MiniGrid support requires: pip install minigrid") from exc
+
+    env = gym.make(env_id, **kwargs)
+    env = FlatObsWrapper(env) if flatten else ImgObsWrapper(env)
     return GymAdapter(env) if adapter else env  # type: ignore[return-value]
 
 

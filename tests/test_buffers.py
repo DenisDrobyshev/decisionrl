@@ -178,3 +178,23 @@ def test_rollout_get_minibatches_cover_all():
     buf.compute_returns_and_advantages(np.zeros(2), np.zeros(2))
     seen = sum(len(b.obs) for b in buf.get(batch_size=3))
     assert seen == 4 * 2  # every transition yielded exactly once
+
+
+def test_sumtree_batch_update_matches_sequential():
+    from reinforce.buffers.prioritized import SumTree
+
+    rng = np.random.default_rng(0)
+    for cap in (8, 100, 1000):  # power-of-two and not
+        seq, batch = SumTree(cap), SumTree(cap)
+        init = rng.random(cap)
+        for i in range(cap):
+            seq.update(i, float(init[i]))
+        batch.update_batch(np.arange(cap), init)
+
+        idx = rng.integers(0, cap, size=64)  # includes duplicates
+        pri = rng.random(64)
+        for i, p in zip(idx, pri):
+            seq.update(int(i), float(p))
+        batch.update_batch(idx, pri)
+
+        np.testing.assert_allclose(seq.tree, batch.tree)

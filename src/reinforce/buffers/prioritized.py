@@ -50,6 +50,31 @@ class SumTree:
                 idx = right
         return idx - (self.capacity - 1)
 
+    def update_batch(self, data_idxs: np.ndarray, priorities: np.ndarray) -> None:
+        """Vectorized version of :meth:`update` for a batch of leaves.
+
+        Propagates all changes level-by-level with a scatter-add, so a batch of
+        updates costs ``O(depth)`` NumPy ops instead of a Python loop per leaf —
+        much faster for large buffers. Duplicate ``data_idxs`` keep the last value
+        (matching sequential :meth:`update` calls).
+        """
+        data_idxs = np.asarray(data_idxs, dtype=np.int64)
+        priorities = np.asarray(priorities, dtype=np.float64)
+        if data_idxs.size == 0:
+            return
+        # keep the last occurrence of each data index (sequential "last write wins")
+        _, first_in_reversed = np.unique(data_idxs[::-1], return_index=True)
+        keep = data_idxs.size - 1 - first_in_reversed
+        idxs = data_idxs[keep] + self.capacity - 1
+        changes = priorities[keep] - self.tree[idxs]
+        self.tree[idxs] = priorities[keep]
+        active = idxs > 0
+        while active.any():
+            parents = (idxs[active] - 1) // 2
+            np.add.at(self.tree, parents, changes[active])
+            idxs[active] = parents
+            active = idxs > 0
+
 
 class PrioritizedReplayBuffer(ReplayBuffer):
     """Replay buffer that samples transitions in proportion to their TD-error.
@@ -113,7 +138,6 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         return batch
 
     def update_priorities(self, indices: np.ndarray, td_errors: np.ndarray) -> None:
-        priorities = np.abs(td_errors) + self.epsilon
+        priorities = np.abs(np.asarray(td_errors, dtype=np.float64)) + self.epsilon
         self.max_priority = max(self.max_priority, float(priorities.max()))
-        for idx, priority in zip(indices, priorities):
-            self.tree.update(int(idx), float(priority) ** self.alpha)
+        self.tree.update_batch(np.asarray(indices), priorities**self.alpha)

@@ -7,7 +7,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
-- **In-browser demo + model zoo**: `export_json` dumps the policy weights as JSON;
+- **Ecosystem adapters**: `make_minigrid` (MiniGrid navigation) and
+  `make_pettingzoo` (PettingZoo parallel envs -> `MultiAgentEnv`), alongside the
+  existing `make_gym` / `make_atari`.
+- **In-browser demo + model zoo**:
+
+### Changed
+- **Prioritized replay**: sum-tree priority updates are now vectorized
+  (`SumTree.update_batch`) — a batch costs `O(depth)` NumPy ops instead of a Python
+  loop per leaf, much faster for large buffers (identical results). `export_json` dumps the policy weights as JSON;
   `examples/make_browser_demo.py` builds a self-contained `docs/demo/cartpole.html`
   that runs a trained PPO policy in pure JavaScript on a canvas (no server, no
   onnxruntime, no CDN). `reinforce.zoo` (`save_to_zoo`/`list_pretrained`/

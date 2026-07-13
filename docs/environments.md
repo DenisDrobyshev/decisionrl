@@ -84,6 +84,10 @@ from reinforce.algorithms import DQN
 agent = DQN(make_atari("ALE/Pong-v5"), seed=0)   # needs: pip install "gymnasium[atari]" ale-py
 ```
 
+`make_minigrid("MiniGrid-Empty-5x5-v0")` (needs `pip install minigrid`) wraps
+MiniGrid navigation envs, and `reinforce.multiagent.make_pettingzoo(...)` (needs
+`pip install pettingzoo`) adapts PettingZoo parallel envs to `MultiAgentEnv`.
+
 ## Wrappers
 
 `TimeLimit`, `NormalizeObservation`, `NormalizeReward`, `FrameStack`,
