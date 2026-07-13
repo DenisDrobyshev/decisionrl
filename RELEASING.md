@@ -29,8 +29,8 @@ the project name is still unclaimed ("pending publisher"):
    version + date.
 2. Commit and tag:
    ```bash
-   git commit -am "release: v0.1.0"
-   git tag v0.1.0
+   git commit -am "release: v0.2.0"
+   git tag v0.2.0
    git push origin main --tags
    ```
 3. On GitHub: **Releases → Draft a new release**, pick the tag, publish.
@@ -42,7 +42,7 @@ the project name is still unclaimed ("pending publisher"):
 ## Verifying the build locally
 
 ```bash
-python -m build            # -> dist/reinforce_rl-<ver>-py3-none-any.whl + .tar.gz
+python -m build            # -> dist/decisionrl-<ver>-py3-none-any.whl + .tar.gz
 python -m twine check dist/*   # metadata sanity check (should PASS)
 ```
 
