@@ -65,7 +65,7 @@ meta-RL — so once a problem outgrows the built-ins you don't switch tools.
 ```mermaid
 flowchart LR
     subgraph Interaction
-        Env["Environment<br/>(GridWorld · CartPole · Pendulum<br/>Inventory · Thermostat · Gymnasium)"]
+        Env["Environment<br/>Applied: Pricing · Inventory · Energy · Queue · SupplyChain<br/>Control: CartPole · Pendulum · GridWorld · Gymnasium"]
         Agent["Agent<br/>predict / learn / save / load"]
         Env -- "obs, reward, done" --> Agent
         Agent -- "action" --> Env
@@ -123,11 +123,13 @@ mindmap
 
 ---
 
-## See it learn
+## Core RL sanity checks
 
-Every figure below is produced by a **single command** —
+The applied results above are the point; these are the classic-control sanity
+checks every RL library is expected to pass — reassurance that the algorithms are
+correct. Each figure is produced by a **single command** —
 [`python examples/benchmark.py`](examples/benchmark.py) — which trains four agents
-on four applied tasks *from scratch on CPU* in a few minutes and renders the plots.
+on four control tasks *from scratch on CPU* in a few minutes and renders the plots.
 
 ![Agents learning applied tasks](docs/assets/learning_curves.png)
 
@@ -175,8 +177,8 @@ figures below come from [`python examples/applied_demo.py`](examples/applied_dem
 
 An agent sets weekly re-order quantities under stochastic (Poisson) demand,
 trading off holding cost, ordering cost and stockouts. **PPO recovers the optimal
-base-stock policy from scratch** — it matches a hand-tuned analytic heuristic
-(**≈ 197 vs 199** profit) and crushes a random policy (**≈ 160**), with zero
+base-stock policy from scratch** — it matches the analytic heuristic
+(**≈ 195 vs 197** profit) and crushes a random policy (**≈ 160**), with zero
 domain knowledge.
 
 ![Inventory management with PPO](docs/assets/applied_inventory.png)
@@ -185,7 +187,7 @@ domain knowledge.
 
 An agent modulates a heating/cooling unit to hold a room at its setpoint while the
 outdoor temperature swings on a daily cycle. **SAC tracks the setpoint smoothly
-using about ⅓ of the energy of a bang-bang thermostat** (return **≈ −40 vs −303**;
+using about ⅓ of the energy of a bang-bang thermostat** (return **≈ −36 vs −304**;
 energy **≈ 59 vs 200**).
 
 ![Thermostat / HVAC control with SAC](docs/assets/applied_thermostat.png)
@@ -260,10 +262,26 @@ cd decisionrl
 pip install -e ".[dev]"
 ```
 
-> The import package is always `decisionrl` (`import decisionrl`); the PyPI
-> distribution is named `decisionrl` because `decisionrl` was already taken.
+One name everywhere: the PyPI distribution, the import package and the repo are
+all `decisionrl`.
 
 ## Quick start
+
+**Applied RL** — learn an operational policy and beat the textbook heuristic:
+
+```python
+from decisionrl import make_env, make_agent
+from decisionrl.training import evaluate_policy
+
+# how much to reorder each week under stochastic demand
+env = make_env("InventoryManagement")
+agent = make_agent("ppo", env, seed=0).learn(40_000)
+print(evaluate_policy(agent, make_env("InventoryManagement"), n_episodes=20))
+# -> profit on par with the optimal base-stock policy, learned from scratch
+```
+
+The same four-method API (`predict` / `learn` / `save` / `load`) covers classic
+control too:
 
 ```python
 from decisionrl.algorithms import PPO
@@ -631,8 +649,9 @@ iteration.
 ```
 decisionrl
 ├── core         # Env, Wrapper, Space (Box/Discrete), BaseAgent, Transition
-├── envs         # GridWorld, MultiArmedBandit, CartPole, Pendulum, PointMass,
-│                 #   InventoryManagement, Thermostat (applied), make_gym
+├── envs         # applied: Inventory, DynamicPricing, QueueAdmissionControl,
+│                 #   EnergyMicrogrid, SupplyChain, Thermostat;
+│                 #   control: GridWorld, CartPole, Pendulum, PointMass; make_gym
 ├── buffers      # ReplayBuffer, PrioritizedReplayBuffer (sum-tree), RolloutBuffer (GAE)
 ├── networks     # build_mlp, QNetwork, Dueling/CategoricalQNetwork (C51),
 │                 #   CNNFeatureExtractor + ImageQNetwork (pixels),
@@ -643,7 +662,7 @@ decisionrl
 │                 #   FrameStack, FlattenObservation, OneHotObservation
 ├── utils        # set_seed, Logger (stdout/CSV/TensorBoard), RunningMeanStd, torch helpers
 ├── training     # evaluate_policy, Callback, EvalCallback, StopOnRewardThreshold
-└── algorithms   # the ten agents above
+└── algorithms   # all 31 agents above
 ```
 
 Everything is duck-typed against the Gymnasium API, so `decisionrl` components and
