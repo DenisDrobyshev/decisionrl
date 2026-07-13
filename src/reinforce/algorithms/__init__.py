@@ -17,6 +17,7 @@ from .diffusion_policy import DiffusionPolicy
 from .dqn import DQN
 from .dreamer import Dreamer
 from .grpo import GRPO
+from .her import HERDQN, HERReplayBuffer
 from .impala import IMPALA
 from .iql import IQL
 from .mbpo import MBPO
@@ -55,6 +56,8 @@ __all__ = [
     "TD3BC",
     "IQL",
     "CQL",
+    "HERDQN",
+    "HERReplayBuffer",
     "DecisionTransformer",
     "DiffusionPolicy",
     "MBPO",

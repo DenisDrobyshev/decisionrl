@@ -16,6 +16,7 @@ truncated, info)`) and need no external dependencies.
 | Mountain Car | `MountainCar` | Box(2) | Discrete(3) |
 | Mountain Car (continuous) | `MountainCarContinuous` | Box(2) | Box(1) |
 | Acrobot | `Acrobot` | Box(6) | Discrete(3) |
+| Bit-flipping (goal, sparse) | `BitFlipping` | Box(2n) | Discrete(n) |
 
 ## Complex scenarios
 

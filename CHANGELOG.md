@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Hindsight Experience Replay** (`reinforce.algorithms.HERDQN` + `HERReplayBuffer`,
+  `reinforce.envs.BitFlipping`): goal relabeling ("future" strategy) that makes
+  sparse-reward goal-conditioned tasks learnable — solves BitFlipping (100% success)
+  where vanilla DQN cannot.
 - **RSSM world model** (`reinforce.algorithms.RSSM`, `DreamerRSSM`): a proper
   Recurrent State-Space Model — a GRU deterministic state plus a stochastic latent
   with learned prior/observation-posterior, trained on sequences via an ELBO
