@@ -45,3 +45,10 @@ def test_cli_version(capsys):
 def test_cli_train_with_progress(tmp_path):
     assert main(["train", "qlearning", "GridWorld", "--steps", "1000",
                  "--eval-episodes", "2", "--progress"]) == 0
+
+
+def test_cli_play(tmp_path):
+    path = str(tmp_path / "q.pkl")
+    assert main(["train", "qlearning", "GridWorld", "--steps", "2000", "--eval-episodes", "1",
+                 "--save", path]) == 0
+    assert main(["play", "qlearning", "--env", "GridWorld", "--load", path, "--episodes", "2"]) == 0

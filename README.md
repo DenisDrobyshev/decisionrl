@@ -296,6 +296,7 @@ reinforce train ppo CartPole --steps 50000 --save ppo.pt --progress
 reinforce train dqn CartPole --set learning_rate=5e-4 --set buffer_size=100000
 reinforce train ppo CartPole --n-envs 8 --async         # parallel data collection
 reinforce eval ppo --env CartPole --load ppo.pt --episodes 20
+reinforce play ppo --env CartPole --load ppo.pt        # watch the trained agent
 reinforce train ppo gym:LunarLander-v2 --steps 200000   # any Gymnasium env
 reinforce dashboard run.csv                             # live web dashboard (reward/loss)
 ```

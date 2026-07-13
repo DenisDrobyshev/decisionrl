@@ -103,6 +103,32 @@ def _cmd_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_play(args: argparse.Namespace) -> int:
+    key = args.algo.lower()
+    if key not in ALGORITHMS:
+        raise SystemExit(f"unknown algorithm {args.algo!r}")
+    env = make_env(args.env)
+    agent = ALGORITHMS[key].load(args.load, env=env)
+    if args.gif:
+        from .utils import record_gif
+
+        record_gif(agent, env, args.gif, seed=args.seed)
+        print(f"Saved episode GIF to {args.gif}")
+        return 0
+    for ep in range(args.episodes):
+        obs, _ = env.reset(seed=args.seed + ep)
+        if hasattr(agent, "reset_states"):
+            agent.reset_states()
+        done, total, steps = False, 0.0, 0
+        while not done:
+            obs, reward, terminated, truncated, _ = env.step(agent.predict(obs, deterministic=True))
+            total += reward
+            steps += 1
+            done = terminated or truncated
+        print(f"episode {ep + 1}: return={total:.2f} length={steps}")
+    return 0
+
+
 def _cmd_dashboard(args: argparse.Namespace) -> int:
     from .dashboard import run_dashboard
 
@@ -140,6 +166,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--load", required=True, help="path to a saved agent")
     p_eval.add_argument("--episodes", type=int, default=20)
     p_eval.set_defaults(func=_cmd_eval)
+
+    p_play = sub.add_parser("play", help="watch a trained agent play episodes")
+    p_play.add_argument("algo", help="algorithm name")
+    p_play.add_argument("--env", required=True, help="environment name or gym:<id>")
+    p_play.add_argument("--load", required=True, help="path to a saved agent")
+    p_play.add_argument("--episodes", type=int, default=5)
+    p_play.add_argument("--seed", type=int, default=0)
+    p_play.add_argument("--gif", type=str, default=None, help="save one episode as a GIF instead of printing")
+    p_play.set_defaults(func=_cmd_play)
 
     p_dash = sub.add_parser("dashboard", help="serve a live training dashboard from a metrics CSV")
     p_dash.add_argument("csv", help="path to a Logger CSV (metrics per step)")

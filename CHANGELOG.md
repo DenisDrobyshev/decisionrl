@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Migration guide** (`docs/migration.md`): mapping Stable-Baselines3 and CleanRL
+  patterns to `reinforce`.
+- **`reinforce play`**: CLI command to watch a trained agent run episodes (or save
+  one as a GIF with `--gif`).
 - **Hindsight Experience Replay** (`reinforce.algorithms.HERDQN` + `HERReplayBuffer`,
   `reinforce.envs.BitFlipping`): goal relabeling ("future" strategy) that makes
   sparse-reward goal-conditioned tasks learnable — solves BitFlipping (100% success)

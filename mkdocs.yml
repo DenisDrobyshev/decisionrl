@@ -32,6 +32,7 @@ theme:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Migrating from SB3/CleanRL: migration.md
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md
   - Environments: environments.md
