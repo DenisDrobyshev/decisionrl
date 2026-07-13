@@ -13,6 +13,7 @@ baselines to beat, and the proof — on top of a dependency-light, correctness-f
 library of 31 algorithms.
 
 [![CI](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/decisionrl.svg)](https://pypi.org/project/decisionrl/)
 [![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/decisionrl/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
