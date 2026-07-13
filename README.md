@@ -480,7 +480,7 @@ of optimal and can represent multimodal action distributions a Gaussian cannot.
 ## LLM alignment (RLHF on a language model)
 
 The full RLHF loop industry uses to align LLMs, on a tiny char-level GPT:
-pre-train (SFT), then decisionrl toward a reward while a **KL penalty keeps the
+pre-train (SFT), then fine-tune it toward a reward while a **KL penalty keeps the
 policy close to the reference model** (GRPO-style group-normalized advantages, no
 value network). Steering a model toward more `"o"` lifts its frequency from
 **≈0.09 to ≈0.47** while staying readable.
@@ -601,7 +601,7 @@ action = OnnxPolicy("policy.onnx").predict(obs)   # inference without torch
 
 ```bash
 # FastAPI service (POST /predict, GET /health, GET /info) — see deploy/Dockerfile
-REINFORCE_MODEL=policy.onnx uvicorn decisionrl.serving.server:app
+DECISIONRL_MODEL=policy.onnx uvicorn decisionrl.serving.server:app
 ```
 
 Store and reload pretrained policies with the **model zoo**, and run a policy

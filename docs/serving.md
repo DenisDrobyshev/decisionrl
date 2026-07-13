@@ -32,7 +32,7 @@ DDPG, TD3 and DQN.
 ## Serve over HTTP
 
 ```bash
-REINFORCE_MODEL=policy.onnx uvicorn decisionrl.serving.server:app --port 8000
+DECISIONRL_MODEL=policy.onnx uvicorn decisionrl.serving.server:app --port 8000
 ```
 
 | Method | Path | Description |
@@ -52,5 +52,5 @@ app = create_app("policy.onnx")
 
 ```bash
 docker build -f deploy/Dockerfile -t decisionrl-serve .
-docker run -p 8000:8000 -e REINFORCE_MODEL=/models/policy.onnx decisionrl-serve
+docker run -p 8000:8000 -e DECISIONRL_MODEL=/models/policy.onnx decisionrl-serve
 ```

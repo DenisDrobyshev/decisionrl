@@ -53,5 +53,5 @@ def create_app(model_path: str):
 
 
 # Module-level app for `uvicorn decisionrl.serving.server:app`, driven by env var.
-if os.environ.get("REINFORCE_MODEL"):  # pragma: no cover - runtime entrypoint
-    app = create_app(os.environ["REINFORCE_MODEL"])
+if os.environ.get("DECISIONRL_MODEL"):  # pragma: no cover - runtime entrypoint
+    app = create_app(os.environ["DECISIONRL_MODEL"])
