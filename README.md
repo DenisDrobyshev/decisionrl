@@ -347,6 +347,7 @@ agent.learn(100_000, callback=CallbackList([
 | Policy gradient | REINFORCE | `REINFORCE` | Discrete + Continuous | learned baseline |
 | Actor-critic | A2C | `A2C` | Discrete + Continuous | GAE, vectorized |
 | Actor-critic | PPO | `PPO` | Discrete + Continuous | clipped objective, GAE, KL early-stop |
+| Actor-critic | **TRPO** | `TRPO` | Discrete + Continuous | KL trust region, conjugate-gradient natural step, line search |
 | Actor-critic | **GRPO** | `GRPO` | Discrete + Continuous | critic-free, group-relative advantage (LLM-RLHF) |
 | Actor-critic | IMPALA | `IMPALA` | Discrete + Continuous | V-trace, parallel actors |
 | Actor-critic | Recurrent PPO | `RecurrentPPO` | Discrete | LSTM policy for partial observability |
@@ -502,6 +503,29 @@ losing to a random opponent). Reproduce with
 [`python examples/alphazero_demo.py`](examples/alphazero_demo.py).
 
 ![AlphaZero learning Tic-Tac-Toe by self-play](docs/assets/alphazero_learning.png)
+
+## Meta-RL (RL²)
+
+`reinforce.meta` implements **RL²** — meta-learning by training a *recurrent*
+policy across a distribution of tasks so its hidden state adapts online, with **no
+gradient steps at test time**. The mechanism is all in the environment: `RL2Env`
+feeds the previous action/reward/done alongside each observation and keeps one task
+alive for a whole "trial".
+
+```python
+from reinforce.algorithms import RecurrentPPO
+from reinforce.meta import make_meta_bandit
+from reinforce.wrappers import SyncVectorEnv
+
+# a distribution of 5-armed Bernoulli bandits (arm odds resampled each trial)
+venv = SyncVectorEnv([lambda i=i: make_meta_bandit(n_arms=5, horizon=30, seed=i)
+                      for i in range(32)])
+agent = RecurrentPPO(venv, n_steps=30, gae_lambda=0.3, seed=0).learn(500_000)
+```
+
+On held-out bandits the meta-trained policy explores then locks onto the best arm —
+pulling it far more often than chance — a bandit algorithm discovered by gradient
+descent. See [docs](docs/meta.md).
 
 ## Serving trained policies
 

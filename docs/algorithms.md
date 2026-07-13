@@ -38,6 +38,13 @@ See [Benchmarks](benchmarks.md) for reproduced scores across all algorithms.
 - **AlphaZero** (`reinforce.alphazero`): MCTS + self-play for two-player games
   (`TicTacToe`, `Connect4`); a policy+value ResNet trained purely from self-play.
 
+## Meta-RL
+
+- **RL²** (`reinforce.meta`): meta-learning via a recurrent policy trained across a
+  task distribution — its hidden state adapts online with no test-time gradients.
+  `RL2Env` wraps any discrete task distribution (see `make_meta_bandit`); train with
+  `RecurrentPPO`. See [Meta-RL (RL²)](meta.md).
+
 ## RLHF & intrinsic motivation
 
 - **RLHF** (`reinforce.rlhf`): learn a reward from preferences (`RewardModel`,

@@ -4,7 +4,7 @@ Also exposes optional Gymnasium interop via :func:`make_gym` / :class:`GymAdapte
 """
 
 from .acrobot import Acrobot
-from .bandit import MultiArmedBandit
+from .bandit import BernoulliBandit, MultiArmedBandit
 from .bitflipping import BitFlipping
 from .cartpole import CartPole
 from .grid_world import GridWorld
@@ -24,6 +24,7 @@ __all__ = [
     "GridWorld",
     "BitFlipping",
     "MultiArmedBandit",
+    "BernoulliBandit",
     "CartPole",
     "Pendulum",
     "PointMass",

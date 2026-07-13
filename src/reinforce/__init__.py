@@ -74,6 +74,7 @@ from .evaluation import (
 )
 from .evolution import NeuroevolutionAgent
 from .imitation import BC, GAIL, DAgger, GAILDiscriminator, collect_expert_dataset
+from .meta import RL2Env, make_meta_bandit
 from .registry import list_algorithms, list_environments, make_agent, make_env, make_vec_env
 from .rlhf import (
     DPO,
@@ -164,6 +165,9 @@ __all__ = [
     "GAIL",
     "GAILDiscriminator",
     "collect_expert_dataset",
+    # meta-RL (RL^2)
+    "RL2Env",
+    "make_meta_bandit",
     # reliable evaluation statistics
     "iqm",
     "bootstrap_ci",

@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **Meta-RL / RL²** (`reinforce.meta.RL2Env`, `make_meta_bandit`): meta-learning by
+  training a recurrent policy across a task distribution so its hidden state performs
+  online adaptation with no test-time gradients. `RL2Env` turns any discrete task
+  distribution into a single-trial environment (previous action/reward/done fed
+  alongside each observation; the same task is kept alive across inner episodes for a
+  whole trial). Trained with `RecurrentPPO`, the policy discovers an explore-then-
+  exploit bandit algorithm — on held-out 5-arm Bernoulli bandits it pulls the best
+  arm ~2× more often than chance. Adds `reinforce.envs.BernoulliBandit`.
 - **TRPO** (`reinforce.algorithms.TRPO`): Trust Region Policy Optimization — the
   natural-gradient step is found by conjugate gradient on the Fisher-vector product
   (KL Hessian) and scaled by a backtracking line search that enforces the KL trust
