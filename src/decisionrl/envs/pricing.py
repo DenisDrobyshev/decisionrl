@@ -82,41 +82,42 @@ class DynamicPricing(Env):
         truncated = self._steps >= self.horizon
         info = {"price": price, "demand": demand, "sales": sales, "inventory": self._inventory}
         return self._obs(), float(reward), terminated, truncated, info
-    
+
 
     def render_rgb(self):
-        # Force matplotlib to use a non-interactive backend so we don't 
+        # Force matplotlib to use a non-interactive backend so we don't
         # accidentally pop up GUI windows during headless training loops.
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+
         from ..utils.render import fig_to_rgb
 
         # Set up a small, low-res canvas specifically for GIF generation
         fig, ax1 = plt.subplots(figsize=(4.0, 3.2), dpi=64)
-        
+
         # Plot the inventory draining over time on the primary left y-axis
         x_inv = np.arange(len(self._history_inventory))
         ax1.plot(x_inv, self._history_inventory, color="#2563eb", lw=4, solid_capstyle="round")
         ax1.set_xlim(0, self.horizon)
         ax1.set_ylim(0, self.initial_inventory * 1.05) # Add a tiny bit of visual headroom
         ax1.set_ylabel("Inventory", color="#2563eb", fontweight="bold")
-        
+
         # If we've taken steps, overlay the price history on a secondary right y-axis
         if self._history_price:
             ax2 = ax1.twinx()
             x_price = np.arange(1, len(self._history_price) + 1)
-            
+
             # Using a step plot here makes more sense since prices are discrete decisions
             ax2.step(x_price, self._history_price, color="#f59e0b", lw=3, where="pre")
             ax2.set_ylim(self.price_min * 0.9, self.price_max * 1.1)
             ax2.set_ylabel("Price", color="#f59e0b", fontweight="bold")
             ax2.spines["right"].set_color("#f59e0b")
-            
+
         # Match spine colors to their respective lines for readability
         ax1.spines["left"].set_color("#2563eb")
         fig.tight_layout() # Prevent axis labels from getting chopped off in the final array
-        
+
         # Rasterize the figure to a numpy array and explicitly close it to prevent memory leaks
         frame = fig_to_rgb(fig)
         plt.close(fig)
