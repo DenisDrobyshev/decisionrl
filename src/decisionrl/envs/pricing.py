@@ -46,8 +46,8 @@ class DynamicPricing(Env):
         self._rng = np.random.default_rng()
         self._inventory = self.initial_inventory
         self._steps = 0
-        self._history_inventory=[]
-        self._history_price=[]
+        self._history_inventory: list[int] = []
+        self._history_price: list[float] = []
 
     def _obs(self) -> np.ndarray:
         return np.array(
