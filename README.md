@@ -22,13 +22,13 @@ library of 31 algorithms.
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/quickstart.ipynb)
 
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
-[![Environments](https://img.shields.io/badge/environments-18%20(6%20applied)-2ea043.svg)](docs/environments.md)
+[![Environments](https://img.shields.io/badge/environments-19%20(7%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
 [![Tests](https://img.shields.io/badge/tests-345-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/decisionrl/)
 
-<em>Applied environments with baselines · a correctness-first library of 31 algorithms · one clean, tested, typed package.</em>
+<em>Operational-decision environments, each with the baseline it beats — on a typed, tested RL library.</em>
 
 </div>
 
@@ -39,27 +39,50 @@ library of 31 algorithms.
 Pick up SB3 or CleanRL and you get Atari and MuJoCo. Real operational problems —
 "what price today?", "how much to reorder?", "charge or discharge the battery?",
 "admit this job or shed it?" — you build yourself. `decisionrl` ships them as
-first-class environments, each with the classic baseline (base-stock, bang-bang,
-best fixed price, admit-all) so you can *prove* the learned policy is better, not
-just assert it:
+first-class environments, each with the classic baseline, so you can *prove* the
+learned policy rather than assert it.
 
-| Applied task | Learned (RL) | Classic baseline |
+**Where classical methods break — RL wins** (non-stationarity, coupled decisions):
+
+| Applied task | Learned (RL) | Strong baseline |
 |---|---:|---:|
-| 📦 Inventory management | **194.5** profit | 196.7 · best base-stock |
-| 🏷️ Dynamic pricing | **24.6** revenue | 11.5 · random pricing |
+| 📈 Non-stationary inventory (drifting demand) | **322** profit | 257 · best fixed base-stock |
+| 🚚 Supply chain (2-echelon) | **−31.3** cost | −48.6 · per-echelon base-stock |
 | 🎛️ Queue admission control | **25.6** value | −16.2 · admit-all |
-| 🌡️ Thermostat / HVAC | **−35.8** return | −304.0 · bang-bang |
 | 🔋 Energy microgrid (battery) | **21.3** return | 13.1 · no battery |
-| 🚚 Supply chain (2-echelon) | **−31.3** return | −175.5 · order-nothing |
+| 🌡️ Thermostat / HVAC | **−35.8** return | −304.0 · bang-bang (⅓ the energy) |
 
-RL beats the naive baseline on five of six and **recovers the operations-research
-optimum** on inventory (it matches the analytic base-stock policy from scratch,
-with no domain knowledge).
+**Where the classic tool is already optimal — RL matches it** (honest sanity checks):
+
+| Applied task | Learned (RL) | Optimal baseline |
+|---|---:|---:|
+| 📦 Inventory (stationary demand) | 194.5 profit | 196.7 · base-stock *(provably optimal)* |
+| 🏷️ Dynamic pricing | 24.6 revenue | 24.9 · best fixed price *(2× a no-strategy price)* |
+
+The point isn't "RL beats operations research" — often it can't, and the README says
+so. The point is the **top table**: when demand drifts or decisions couple, the
+closed-form breaks and a learned policy pulls ahead.
 
 Every number above is reproduced by [`examples/applied_rl_demo.py`](examples/applied_rl_demo.py)
-on CPU in a few minutes. Under the hood it's a full RL library — 31 algorithms,
-from tabular Q-learning to PPO/SAC/TRPO, offline RL, model-based, multi-agent and
-meta-RL — so once a problem outgrows the built-ins you don't switch tools.
+on CPU in a few minutes. (There's a full, typed RL library underneath — see
+[Beyond operations](#beyond-operations) — but the operational core is the point.)
+
+## Why RL, and not a solver?
+
+Fair question — and the honest answer is *often you shouldn't*. If a problem is
+**stationary and fully observed**, reach for the classic tool: a base-stock formula,
+an LP/MIP solver (Gurobi, OR-Tools) or queueing theory is interpretable and provably
+optimal. `decisionrl` doesn't hide this — on stationary inventory the learned policy
+only **matches** the base-stock optimum, it doesn't beat it.
+
+RL earns its place where those assumptions break: **non-stationary / drifting demand,
+partial observability, coupled decisions with no closed form, or dynamics you can't
+write as a clean program.** The sharpest example here is
+[`NonstationaryInventory`](docs/environments.md) — the demand rate switches between
+regimes, so *no single base-stock level is right*, and an adaptive policy that reads
+recent demand and tracks the regime beats the best fixed base-stock by **~25%** (322
+vs 257, stable across seeds), with no per-regime formula derived by hand. That gap is
+the reason to reach for learning; when it isn't there, use the solver.
 
 ## Overview
 
@@ -81,48 +104,6 @@ flowchart LR
     Tune["Optuna search · CLI · tuned configs"] -.-> Agent
 ```
 
-## Algorithm zoo
-
-```mermaid
-mindmap
-  root(("decisionrl"))
-    Tabular
-      Q-Learning
-      SARSA
-      Expected SARSA
-    Model-based
-      Dyna-Q
-      MBPO
-      Dreamer exp
-    Value-based
-      DQN
-      C51
-      QR-DQN
-      Rainbow
-    Policy actor-critic
-      REINFORCE
-      A2C
-      PPO
-      TRPO
-      GRPO
-      IMPALA
-      Recurrent PPO
-      SAC-Discrete
-    Continuous
-      DDPG
-      TD3
-      SAC
-    Offline
-      TD3-BC
-      IQL
-      CQL
-      Decision Transformer
-    Multi-agent
-      MAPPO
-      self-play IPPO
-```
-
----
 
 ## Core RL sanity checks
 
@@ -159,20 +140,22 @@ The tabular agent recovers the optimal navigation policy (every arrow flows to t
 
 ## Applied solutions
 
-The flagship of `decisionrl`: **six environments that model real operational
+The flagship of `decisionrl`: **seven environments that model real operational
 decisions**, each shipped with the classic operations-research baseline so a
-learned policy can be *proved* better. Train all six and print the proof table with
-[`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py); the two flagship
-figures below come from [`python examples/applied_demo.py`](examples/applied_demo.py).
+learned policy can be *proved* better (or honestly shown to match). Train them and
+print the proof table with
+[`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py); the two figures
+below come from [`python examples/applied_demo.py`](examples/applied_demo.py).
 
-| Applied task | What the agent decides | Baseline to beat |
+| Applied task | What the agent decides | Baseline |
 |---|---|---|
-| 📦 Inventory management | how much to reorder | base-stock ("order up to S") |
-| 🏷️ Dynamic pricing | what price to set | best fixed price |
-| 🎛️ Queue admission control | admit or shed each job | admit-all |
-| 🌡️ Thermostat / HVAC | heating/cooling power | bang-bang |
-| 🔋 Energy microgrid | charge/discharge a battery | no battery |
-| 🚚 Supply chain (2-echelon) | orders across the chain | per-echelon base-stock |
+| 📈 Non-stationary inventory | how much to reorder as demand drifts | best fixed base-stock *(RL wins)* |
+| 🚚 Supply chain (2-echelon) | orders across the chain | per-echelon base-stock *(RL wins)* |
+| 🎛️ Queue admission control | admit or shed each job | admit-all *(RL wins)* |
+| 🔋 Energy microgrid | charge/discharge a battery | no battery *(RL wins)* |
+| 🌡️ Thermostat / HVAC | heating/cooling power | bang-bang *(RL wins)* |
+| 📦 Inventory (stationary) | how much to reorder | base-stock *(RL matches the optimum)* |
+| 🏷️ Dynamic pricing | what price to set | best fixed price *(RL matches the optimum)* |
 
 ### 📦 Inventory management (operations research)
 
@@ -384,6 +367,62 @@ agent.learn(100_000, callback=CallbackList([
     CheckpointCallback(save_freq=20_000, save_dir="checkpoints"),
 ]))
 ```
+
+## Beyond operations
+
+Everything above is the operational core. But `decisionrl` is also a full,
+correctness-first reinforcement-learning library — the same components implement the
+broader RL curriculum. It's here for two reasons: occasionally an operational problem
+needs one of these, and a working, tested implementation of each is evidence the
+fundamentals are right. **If you only care about operations, you can stop here.**
+
+<details>
+<summary><b>What else is in the box</b> (31 algorithms + tooling)</summary>
+
+## Algorithm zoo
+
+```mermaid
+mindmap
+  root(("decisionrl"))
+    Tabular
+      Q-Learning
+      SARSA
+      Expected SARSA
+    Model-based
+      Dyna-Q
+      MBPO
+      Dreamer exp
+    Value-based
+      DQN
+      C51
+      QR-DQN
+      Rainbow
+    Policy actor-critic
+      REINFORCE
+      A2C
+      PPO
+      TRPO
+      GRPO
+      IMPALA
+      Recurrent PPO
+      SAC-Discrete
+    Continuous
+      DDPG
+      TD3
+      SAC
+    Offline
+      TD3-BC
+      IQL
+      CQL
+      Decision Transformer
+    Multi-agent
+      MAPPO
+      self-play IPPO
+```
+
+Value-based (DQN/C51/QR-DQN/Rainbow), policy-gradient & actor-critic (REINFORCE/A2C/PPO/TRPO/GRPO/IMPALA/Recurrent-PPO/SAC), continuous control (DDPG/TD3/SAC), offline RL (TD3+BC/IQL/CQL/Decision Transformer), model-based (Dyna-Q/MBPO/Dreamer), **RLHF & DPO**, char-GPT LLM alignment, imitation (BC/DAgger/GAIL), diffusion policies, curiosity (RND/ICM), **AlphaZero** (MCTS + self-play), meta-RL (RL²), 12 gradient-free optimizers, multi-agent (self-play/IPPO), distributed IMPALA actors, and ONNX/TorchScript serving.
+
+</details>
 
 ## Algorithms
 

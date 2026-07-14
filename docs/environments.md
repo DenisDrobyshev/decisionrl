@@ -50,12 +50,18 @@ Each pairs with a classic operations-research baseline so a learned policy can b
 | Env | Class | Obs | Action | Problem | Baseline to beat |
 |---|---|---|---|---|---|
 | Inventory management | `InventoryManagement` | Box(1) | Discrete | order under stochastic demand | base-stock ("order up to S") |
+| Non-stationary inventory | `NonstationaryInventory` | Box(2) | Discrete | order as the demand rate drifts between regimes | best fixed base-stock (RL beats it) |
 | Thermostat / HVAC | `Thermostat` | Box(2) | Box(1) | hold a setpoint at minimal energy | bang-bang |
 | Dynamic pricing | `DynamicPricing` | Box(2) | Discrete | price a finite stock over a deadline | best fixed price |
 | Queue admission control | `QueueAdmissionControl` | Box(2) | Discrete(2) | admit/reject jobs at a busy server | admit-all |
 | Energy microgrid | `EnergyMicrogrid` | Box(6) | Box(1) | charge/discharge a battery vs price & solar | no battery |
 | Supply chain (2-echelon) | `SupplyChain` | Box(5) | Box(2) | coordinate orders across retailer + warehouse | per-echelon base-stock |
 
+- **NonstationaryInventory** — the case where the classic formula *breaks*: the demand
+  rate switches between a low and a high regime, so no single base-stock level is right.
+  The agent sees inventory plus an EWMA of recent demand (a read on the current regime)
+  and learns an adaptive order-up-to level that beats the best fixed base-stock — the
+  clearest "why RL, not a solver" example.
 - **DynamicPricing** — revenue management: sell limited inventory before a deadline
   under price-elastic, stochastic demand; the optimal price rises as stock gets
   scarce relative to time (airline/hotel pricing).

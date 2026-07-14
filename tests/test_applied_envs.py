@@ -6,13 +6,16 @@ import pytest
 from decisionrl.envs import (
     DynamicPricing,
     EnergyMicrogrid,
+    NonstationaryInventory,
     QueueAdmissionControl,
     SupplyChain,
 )
 from decisionrl.registry import make_env
 
-APPLIED = [DynamicPricing, QueueAdmissionControl, EnergyMicrogrid, SupplyChain]
-APPLIED_NAMES = ["DynamicPricing", "QueueAdmissionControl", "EnergyMicrogrid", "SupplyChain"]
+APPLIED = [DynamicPricing, QueueAdmissionControl, EnergyMicrogrid, SupplyChain,
+           NonstationaryInventory]
+APPLIED_NAMES = ["DynamicPricing", "QueueAdmissionControl", "EnergyMicrogrid",
+                 "SupplyChain", "NonstationaryInventory"]
 
 
 @pytest.mark.parametrize("cls", APPLIED)
@@ -119,3 +122,33 @@ def test_supply_chain_beats_order_nothing(quiet_logger):
     agent.learn(20_000)
     learned = evaluate_policy(agent, SupplyChain(), n_episodes=40, seed=1)[0]
     assert learned > nothing + 60, f"learned={learned:.1f} order_nothing={nothing:.1f}"
+
+
+@pytest.mark.slow
+def test_nonstationary_inventory_beats_best_fixed_base_stock(quiet_logger):
+    # The whole point of this env: under drifting demand, no fixed base-stock is
+    # right, so an adaptive learned policy should beat the *best* fixed one. DQN is
+    # used because it is stable here across seeds (PPO collapses on some seeds).
+    from decisionrl.algorithms import DQN
+    from decisionrl.training import evaluate_policy
+
+    def base_stock_return(S, episodes=30):
+        rs = []
+        for ep in range(episodes):
+            env = NonstationaryInventory()
+            obs, _ = env.reset(seed=ep)
+            done, tot = False, 0.0
+            while not done:
+                order = int(np.clip(round(S - obs[0] * env.max_inventory), 0, env.max_order))
+                obs, r, term, trunc, _ = env.step(order)
+                tot += r
+                done = term or trunc
+            rs.append(tot)
+        return float(np.mean(rs))
+
+    best_fixed = max(base_stock_return(S) for S in range(8, 24))
+    agent = DQN(NonstationaryInventory(), learning_rate=5e-4, buffer_size=50_000,
+                learning_starts=1000, target_update_interval=500, seed=0, logger=quiet_logger)
+    agent.learn(100_000)
+    learned = evaluate_policy(agent, NonstationaryInventory(), n_episodes=40, seed=1)[0]
+    assert learned > best_fixed + 15, f"learned={learned:.1f} best_fixed_base_stock={best_fixed:.1f}"

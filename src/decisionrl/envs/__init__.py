@@ -14,6 +14,7 @@ from .inventory import InventoryManagement
 from .lunar_lander import LunarLander
 from .mountain_car import MountainCar, MountainCarContinuous
 from .navigation import Navigation2D
+from .nonstationary_inventory import NonstationaryInventory
 from .pendulum import Pendulum
 from .point_mass import PointMass
 from .portfolio import PortfolioAllocation
@@ -47,6 +48,7 @@ __all__ = [
     "QueueAdmissionControl",
     "EnergyMicrogrid",
     "SupplyChain",
+    "NonstationaryInventory",
     # gymnasium interop
     "GymAdapter",
     "make_gym",

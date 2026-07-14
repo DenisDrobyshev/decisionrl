@@ -6,6 +6,23 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- **`NonstationaryInventory`** environment — the "classical methods break" case: the
+  demand rate switches between regimes, so no fixed base-stock is right. An adaptive
+  DQN policy that reads an EWMA of recent demand beats the best fixed base-stock by
+  ~25% (322 vs 257, stable across seeds) — the clearest "why RL, not a solver"
+  example. 19 environments (7 applied) now.
+
+### Changed
+- **README repositioned end-to-end** (not just the header): the broad RL library
+  (RLHF, AlphaZero, char-GPT, swarm optimizers, meta-RL, serving, …) is now under a
+  clearly-secondary **"Beyond operations"** section; the operational core leads.
+- **Honest proof table**: split into "RL wins (classical method breaks)" vs "RL matches
+  the known optimum", with the supply-chain baseline strengthened from order-nothing to
+  per-echelon base-stock. Added a **"Why RL, and not a solver?"** section.
+- Repaired rename artifacts: `REINFORCE_MODEL` env var → `DECISIONRL_MODEL`, and a
+  broken phrase in the RLHF section.
+
 ## [0.2.0] - 2026-07-14
 
 ### Changed

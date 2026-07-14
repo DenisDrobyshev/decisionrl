@@ -52,6 +52,7 @@ from .envs import (
     MountainCarContinuous,
     MultiArmedBandit,
     Navigation2D,
+    NonstationaryInventory,
     Pendulum,
     PointMass,
     PortfolioAllocation,
@@ -114,6 +115,7 @@ ENVIRONMENTS: Dict[str, Callable[..., Env]] = {
     "QueueAdmissionControl": QueueAdmissionControl,
     "EnergyMicrogrid": EnergyMicrogrid,
     "SupplyChain": SupplyChain,
+    "NonstationaryInventory": NonstationaryInventory,
 }
 
 
