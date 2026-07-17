@@ -93,7 +93,7 @@ from .tuning import optuna_search
 from .utils import set_seed
 from .zoo import list_pretrained, load_pretrained, save_to_zoo
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "__version__",

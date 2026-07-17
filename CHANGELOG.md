@@ -6,43 +6,39 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-18
+
 ### Added
-- **`decisionrl.baselines`** — reusable classical baselines (base-stock + exact
-  newsvendor level, best fixed price, best value threshold, greedy price-threshold
-  battery, per-echelon base-stock) with `rollout_return` / `best_of` helpers.
+- **`decisionrl.baselines`** — reusable classical baselines (base-stock + the exact
+  newsvendor `analytic_base_stock_level`, best fixed price, best value threshold,
+  greedy price-threshold battery, per-echelon base-stock) with `rollout_return` /
+  `best_of` helpers.
+- **`NonstationaryInventory`** environment — the "classical methods break" case: the
+  demand rate switches between regimes, so no fixed base-stock is right. An adaptive
+  DQN policy that reads an EWMA of recent demand beats the best fixed base-stock
+  (**278.5 ± 2.4 vs 240.7, +16%, over 3 seeds**) — the clearest "why RL, not a solver"
+  example. Now 19 environments (7 applied).
 - **`decisionrl.config`** — declarative experiments from YAML/JSON/dict (`build`,
   `run`, CLI `decisionrl run <config>`); new `config` extra.
 - **`decisionrl.tracking`** — reproducibility manifests (git SHA, library versions,
   seed, config, metrics → JSON).
-- **`render_rgb`** on every applied environment; `bars_frame`/`line_frame` render
+- **`render_rgb`** on every applied environment; `bars_frame` / `line_frame` render
   helpers; correctness tests for the applied env dynamics.
-- **Applied RL notebook** (`examples/applied_rl.ipynb`) and a multi-seed verification
-  script (`examples/verify_applied_claims.py`).
+- **Applied RL notebook** (`examples/applied_rl.ipynb`, Colab) and a multi-seed
+  verification script (`examples/verify_applied_claims.py`).
 
 ### Changed
-- **Honest, multi-seed proof table.** README numbers are now mean ± std over 3 seeds
-  against the *strong* classical baseline (queue vs best value-threshold; energy vs
-  greedy price-threshold; inventory vs exact base-stock), not single-seed figures or
-  straw-man defaults. RL wins five (e.g. non-stationary inventory 278.5 ± 2.4 vs 240.7)
-  and matches the optimum on two.
-- **Real Stable-Baselines3 benchmark** numbers in `docs/benchmarks.md` (PPO CartPole
-  parity 500/500; DQN CartPole 327 ± 122 vs 96 ± 57), replacing placeholders.
+- **Honest, multi-seed proof.** README numbers are now mean ± std over 3 seeds against
+  the *strong* classical baseline (queue vs best value-threshold; energy vs greedy
+  price-threshold; inventory vs the exact base-stock optimum), not single-seed figures
+  or straw-man defaults. RL wins five and matches the optimum on two.
+- **Repositioned end-to-end**: the broad RL library (RLHF, AlphaZero, char-GPT, swarm
+  optimizers, meta-RL, serving, …) now sits under a clearly-secondary "Beyond
+  operations" section; the operational core leads. Added a "Why RL, and not a solver?"
+  section.
+- **Real Stable-Baselines3 benchmark** in `docs/benchmarks.md` (PPO CartPole parity
+  500/500; DQN CartPole 327 ± 122 vs 96 ± 57), replacing placeholders.
 - **CI**: the slow learning job runs in parallel via `pytest-xdist`.
-
-### Added (env)
-- **`NonstationaryInventory`** environment — the "classical methods break" case: the
-  demand rate switches between regimes, so no fixed base-stock is right. An adaptive
-  DQN policy that reads an EWMA of recent demand beats the best fixed base-stock by
-  ~25% (322 vs 257, stable across seeds) — the clearest "why RL, not a solver"
-  example. 19 environments (7 applied) now.
-
-### Changed
-- **README repositioned end-to-end** (not just the header): the broad RL library
-  (RLHF, AlphaZero, char-GPT, swarm optimizers, meta-RL, serving, …) is now under a
-  clearly-secondary **"Beyond operations"** section; the operational core leads.
-- **Honest proof table**: split into "RL wins (classical method breaks)" vs "RL matches
-  the known optimum", with the supply-chain baseline strengthened from order-nothing to
-  per-echelon base-stock. Added a **"Why RL, and not a solver?"** section.
 - Repaired rename artifacts: `REINFORCE_MODEL` env var → `DECISIONRL_MODEL`, and a
   broken phrase in the RLHF section.
 
