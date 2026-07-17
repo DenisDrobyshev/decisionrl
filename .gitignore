@@ -55,3 +55,4 @@ tensorboard/
 *.swp
 .DS_Store
 Thumbs.db
+verify_applied_claims.json

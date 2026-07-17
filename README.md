@@ -42,29 +42,33 @@ Pick up SB3 or CleanRL and you get Atari and MuJoCo. Real operational problems �
 first-class environments, each with the classic baseline, so you can *prove* the
 learned policy rather than assert it.
 
-**Where classical methods break — RL wins** (non-stationarity, coupled decisions):
+**Where classical methods break — RL wins.** Compared against the *strong* classical
+baseline (not a straw man), 3 seeds, mean ± std:
 
 | Applied task | Learned (RL) | Strong baseline |
 |---|---:|---:|
-| 📈 Non-stationary inventory (drifting demand) | **322** profit | 257 · best fixed base-stock |
-| 🚚 Supply chain (2-echelon) | **−31.3** cost | −48.6 · per-echelon base-stock |
-| 🎛️ Queue admission control | **25.6** value | −16.2 · admit-all |
-| 🔋 Energy microgrid (battery) | **21.3** return | 13.1 · no battery |
-| 🌡️ Thermostat / HVAC | **−35.8** return | −304.0 · bang-bang (⅓ the energy) |
+| 📈 Non-stationary inventory (drifting demand) | **278.5 ± 2.4** profit | 240.7 · best fixed base-stock |
+| 🔋 Energy microgrid (battery) | **20.3 ± 0.3** return | 16.7 · greedy price-threshold |
+| 🚚 Supply chain (2-echelon) | **−31.1 ± 0.3** cost | −35.3 · per-echelon base-stock |
+| 🎛️ Queue admission control | **24.7 ± 0.2** value | 23.0 · best value threshold |
+| 🌡️ Thermostat / HVAC | **−40 ± 18** return | −305 · bang-bang (⅓ the energy) |
 
 **Where the classic tool is already optimal — RL matches it** (honest sanity checks):
 
 | Applied task | Learned (RL) | Optimal baseline |
 |---|---:|---:|
-| 📦 Inventory (stationary demand) | 194.5 profit | 196.7 · base-stock *(provably optimal)* |
-| 🏷️ Dynamic pricing | 24.6 revenue | 24.9 · best fixed price *(2× a no-strategy price)* |
+| 📦 Inventory (stationary demand) | 193.3 ± 5.3 profit | 199.4 · base-stock *(provably optimal)* |
+| 🏷️ Dynamic pricing | 25.3 ± 0.0 revenue | 25.5 · best fixed price |
 
 The point isn't "RL beats operations research" — often it can't, and the README says
-so. The point is the **top table**: when demand drifts or decisions couple, the
-closed-form breaks and a learned policy pulls ahead.
+so (bottom table). The point is the **top table**: when demand drifts or decisions
+couple, the closed-form breaks and a learned policy pulls ahead — even against the
+*best* fixed rule, not a naive default.
 
-Every number above is reproduced by [`examples/applied_rl_demo.py`](examples/applied_rl_demo.py)
-on CPU in a few minutes. (There's a full, typed RL library underneath — see
+Every number above is reproduced over multiple seeds by
+[`examples/verify_applied_claims.py`](examples/verify_applied_claims.py) (or the
+single-seed [`examples/applied_rl_demo.py`](examples/applied_rl_demo.py)) on CPU.
+(There's a full, typed RL library underneath — see
 [Beyond operations](#beyond-operations) — but the operational core is the point.)
 
 ## Why RL, and not a solver?
@@ -80,8 +84,8 @@ partial observability, coupled decisions with no closed form, or dynamics you ca
 write as a clean program.** The sharpest example here is
 [`NonstationaryInventory`](docs/environments.md) — the demand rate switches between
 regimes, so *no single base-stock level is right*, and an adaptive policy that reads
-recent demand and tracks the regime beats the best fixed base-stock by **~25%** (322
-vs 257, stable across seeds), with no per-regime formula derived by hand. That gap is
+recent demand and tracks the regime beats the best fixed base-stock by **~16%** (278.5
+± 2.4 vs 240.7 over 3 seeds), with no per-regime formula derived by hand. That gap is
 the reason to reach for learning; when it isn't there, use the solver.
 
 ## Overview

@@ -7,6 +7,29 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **`decisionrl.baselines`** — reusable classical baselines (base-stock + exact
+  newsvendor level, best fixed price, best value threshold, greedy price-threshold
+  battery, per-echelon base-stock) with `rollout_return` / `best_of` helpers.
+- **`decisionrl.config`** — declarative experiments from YAML/JSON/dict (`build`,
+  `run`, CLI `decisionrl run <config>`); new `config` extra.
+- **`decisionrl.tracking`** — reproducibility manifests (git SHA, library versions,
+  seed, config, metrics → JSON).
+- **`render_rgb`** on every applied environment; `bars_frame`/`line_frame` render
+  helpers; correctness tests for the applied env dynamics.
+- **Applied RL notebook** (`examples/applied_rl.ipynb`) and a multi-seed verification
+  script (`examples/verify_applied_claims.py`).
+
+### Changed
+- **Honest, multi-seed proof table.** README numbers are now mean ± std over 3 seeds
+  against the *strong* classical baseline (queue vs best value-threshold; energy vs
+  greedy price-threshold; inventory vs exact base-stock), not single-seed figures or
+  straw-man defaults. RL wins five (e.g. non-stationary inventory 278.5 ± 2.4 vs 240.7)
+  and matches the optimum on two.
+- **Real Stable-Baselines3 benchmark** numbers in `docs/benchmarks.md` (PPO CartPole
+  parity 500/500; DQN CartPole 327 ± 122 vs 96 ± 57), replacing placeholders.
+- **CI**: the slow learning job runs in parallel via `pytest-xdist`.
+
+### Added (env)
 - **`NonstationaryInventory`** environment — the "classical methods break" case: the
   demand rate switches between regimes, so no fixed base-stock is right. An adaptive
   DQN policy that reads an EWMA of recent demand beats the best fixed base-stock by
