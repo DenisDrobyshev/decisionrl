@@ -15,9 +15,67 @@ from typing import Any, Dict, Optional
 import numpy as np
 
 from ..core.env import Env
-from ..core.spaces import Box, Discrete, Space
+from ..core.spaces import Box, Discrete, Space, is_discrete
 
-__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "make_atari", "make_minigrid", "convert_space"]
+__all__ = ["GymAdapter", "make_gym", "make_gym_vec", "make_atari", "make_minigrid",
+           "convert_space", "to_gymnasium_space", "to_gymnasium", "register_envs"]
+
+
+def to_gymnasium_space(space: Space):
+    """Convert a decisionrl :class:`Space` into a ``gymnasium.spaces`` object."""
+    import gymnasium.spaces as gsp
+
+    if is_discrete(space):
+        return gsp.Discrete(int(space.n), start=int(getattr(space, "start", 0)))
+    return gsp.Box(low=np.asarray(space.low), high=np.asarray(space.high),
+                   shape=space.shape, dtype=space.dtype)
+
+
+def to_gymnasium(env: Env):
+    """Wrap a decisionrl env as a genuine ``gymnasium.Env`` (with gymnasium spaces).
+
+    The inverse of :class:`GymAdapter` — lets Gymnasium users and tooling consume
+    decisionrl's environments directly.
+    """
+    import gymnasium as gym
+
+    class _DecisionrlGymEnv(gym.Env):
+        metadata = {"render_modes": ["rgb_array"]}
+
+        def __init__(self) -> None:
+            self._env = env
+            self.observation_space = to_gymnasium_space(env.observation_space)
+            self.action_space = to_gymnasium_space(env.action_space)
+
+        def reset(self, *, seed=None, options=None):
+            return self._env.reset(seed=seed, options=options)
+
+        def step(self, action):
+            return self._env.step(action)
+
+        def render(self):
+            return self._env.render_rgb() if hasattr(self._env, "render_rgb") else None
+
+    return _DecisionrlGymEnv()
+
+
+def register_envs(prefix: str = "decisionrl", version: str = "v0") -> list:
+    """Register all built-in envs with Gymnasium (``gymnasium.make("decisionrl/Inventory-v0")``).
+
+    Returns the list of registered ids. Idempotent; requires ``gymnasium``.
+    """
+    import gymnasium as gym
+
+    from ..registry import ENVIRONMENTS
+
+    registered = []
+    for name, factory in ENVIRONMENTS.items():
+        env_id = f"{prefix}/{name}-{version}"
+        if env_id in gym.registry:
+            continue
+        gym.register(id=env_id, entry_point=lambda factory=factory, **kw: to_gymnasium(factory(**kw)))
+        registered.append(env_id)
+    return registered
 
 
 def convert_space(space) -> Space:

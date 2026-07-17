@@ -9,7 +9,16 @@ from .bitflipping import BitFlipping
 from .cartpole import CartPole
 from .energy import EnergyMicrogrid
 from .grid_world import GridWorld
-from .gym import GymAdapter, convert_space, make_atari, make_gym, make_gym_vec, make_minigrid
+from .gym import (
+    GymAdapter,
+    convert_space,
+    make_atari,
+    make_gym,
+    make_gym_vec,
+    make_minigrid,
+    register_envs,
+    to_gymnasium,
+)
 from .inventory import InventoryManagement
 from .lunar_lander import LunarLander
 from .mountain_car import MountainCar, MountainCarContinuous
@@ -56,4 +65,6 @@ __all__ = [
     "make_atari",
     "make_minigrid",
     "convert_space",
+    "to_gymnasium",
+    "register_envs",
 ]
