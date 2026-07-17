@@ -48,6 +48,8 @@ def learned_over_seeds(agent_cls, env_fn, steps, seeds, **kw):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", type=int, default=3)
+    ap.add_argument("--check", action="store_true",
+                    help="exit non-zero if any 'RL wins' claim regressed below its baseline")
     args = ap.parse_args()
     torch.set_num_threads(1)
     seeds = list(range(args.seeds))
@@ -110,6 +112,14 @@ def main() -> None:
                             "baseline": bname, "baseline_value": bval, "seed_values": vals})
     Path("verify_applied_claims.json").write_text(json.dumps(out, indent=2))
     print(f"\n{args.seeds} seeds each · reproduced on CPU in {time.time() - t0:.0f}s.")
+
+    if args.check:
+        regressed = [r["task"] for r in out["rows"]
+                     if r["group"] == "win" and r["rl_mean"] <= r["baseline_value"]]
+        if regressed:
+            print(f"\nREGRESSION: RL no longer beats the baseline on: {', '.join(regressed)}")
+            raise SystemExit(1)
+        print("\nAll 'RL wins' claims still hold.")
 
 
 if __name__ == "__main__":
