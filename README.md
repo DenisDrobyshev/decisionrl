@@ -22,9 +22,10 @@ library of 31 algorithms.
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/quickstart.ipynb)
 
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
-[![Environments](https://img.shields.io/badge/environments-19%20(7%20applied)-2ea043.svg)](docs/environments.md)
+[![Environments](https://img.shields.io/badge/environments-20%20(8%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-345-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-385-brightgreen.svg)](tests)
+[![Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![Docs site](https://img.shields.io/badge/docs-site-1f6feb.svg)](https://denisdrobyshev.github.io/decisionrl/)
 

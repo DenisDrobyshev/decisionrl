@@ -47,6 +47,7 @@ from .envs import (
     EnergyMicrogrid,
     GridWorld,
     InventoryManagement,
+    JointPricingInventory,
     LunarLander,
     MountainCar,
     MountainCarContinuous,
@@ -116,6 +117,7 @@ ENVIRONMENTS: Dict[str, Callable[..., Env]] = {
     "EnergyMicrogrid": EnergyMicrogrid,
     "SupplyChain": SupplyChain,
     "NonstationaryInventory": NonstationaryInventory,
+    "JointPricingInventory": JointPricingInventory,
 }
 
 

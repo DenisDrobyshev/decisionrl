@@ -57,10 +57,16 @@ python examples/benchmark_vs_baselines.py --algos ppo --env CartPole-v1 \
 Actual head-to-head runs vs **Stable-Baselines3 2.9.0** (evaluation return over 20
 episodes, mean ± std across 3 seeds, library-default hyperparameters, CPU):
 
-| Algorithm | Environment | Steps | Seeds | decisionrl | SB3 2.9.0 |
-|---|---|---:|---:|---:|---:|
-| PPO | CartPole-v1 | 50,000 | 3 | **500.0 ± 0.0** | 500.0 ± 0.0 |
-| DQN | CartPole-v1 | 50,000 | 3 | **327 ± 122** | 96 ± 57 |
+| Algorithm | Environment | Steps | Seeds | decisionrl | SB3 2.9.0 | CleanRL |
+|---|---|---:|---:|---:|---:|---:|
+| PPO | CartPole-v1 | 50,000 | 3 | **500.0 ± 0.0** | 500.0 ± 0.0 | ~500 (published¹) |
+| DQN | CartPole-v1 | 50,000 | 3 | **327 ± 122** | 96 ± 57 | ~500 (published¹) |
+
+¹ CleanRL ships single-file reference *scripts* rather than an installable package, so its
+column cites the returns [reported in CleanRL's own docs](https://docs.cleanrl.dev/rl-algorithms/ppo/)
+(CartPole-v1 is solved to ~500 by both `ppo.py` and `dqn.py`). Re-run its scripts with matched
+`--env-id/--total-timesteps/--seed` to drop measured numbers in. The `decisionrl` and SB3
+columns above were run head-to-head here.
 
 - **PPO** reaches parity — both solve CartPole to 500/500 in the same wall-clock (~29 s/seed).
 - **DQN**: `decisionrl` scores higher at this budget, but the number is honest about two
@@ -69,8 +75,6 @@ episodes, mean ± std across 3 seeds, library-default hyperparameters, CPU):
   hyperparameters SB3's DQN under-performs on CartPole; more steps or tuning close the gap.
 
 Reproduce with `python examples/benchmark_vs_baselines.py --algos ppo dqn --env CartPole-v1 --seeds 3 --steps 50000`.
-CleanRL (single-file scripts, not a package) can be dropped into the same table by running
-its `ppo.py` / `dqn.py` with matched `--env-id/--total-timesteps/--seed`.
 
 Atari and MuJoCo tasks work the same way once their extras are installed
 (`pip install "gymnasium[atari,accept-rom-license,mujoco]"`); `decisionrl` reaches them

@@ -56,6 +56,7 @@ Each pairs with a classic operations-research baseline so a learned policy can b
 | Queue admission control | `QueueAdmissionControl` | Box(2) | Discrete(2) | admit/reject jobs at a busy server | admit-all |
 | Energy microgrid | `EnergyMicrogrid` | Box(6) | Box(1) | charge/discharge a battery vs price & solar | no battery |
 | Supply chain (2-echelon) | `SupplyChain` | Box(5) | Box(2) | coordinate orders across retailer + warehouse | per-echelon base-stock |
+| Joint pricing + inventory | `JointPricingInventory` | Box(2) | Box(2) | set price *and* order together (coupled) | best static (price, base-stock) |
 
 - **NonstationaryInventory** — the case where the classic formula *breaks*: the demand
   rate switches between a low and a high regime, so no single base-stock level is right.
@@ -72,6 +73,10 @@ Each pairs with a classic operations-research baseline so a learned policy can b
   evening price peak (battery arbitrage + self-consumption).
 - **SupplyChain** — the "beer game": order across a serial two-echelon chain with
   shipment lead times, balancing holding vs stockout cost while avoiding bullwhip.
+- **JointPricingInventory** — set price *and* reorder quantity together: price drives
+  demand, demand drives ordering, and overstock is best cleared by a markdown. The
+  decisions are coupled with no closed-form joint optimum; a state-dependent learned
+  policy edges the best *static* (price, base-stock) rule.
 
 See the [applied solutions](https://github.com/DenisDrobyshev/decisionrl#why-decisionrl)
 in the README for trained results.

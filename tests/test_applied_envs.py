@@ -6,6 +6,7 @@ import pytest
 from decisionrl.envs import (
     DynamicPricing,
     EnergyMicrogrid,
+    JointPricingInventory,
     NonstationaryInventory,
     QueueAdmissionControl,
     SupplyChain,
@@ -13,9 +14,9 @@ from decisionrl.envs import (
 from decisionrl.registry import make_env
 
 APPLIED = [DynamicPricing, QueueAdmissionControl, EnergyMicrogrid, SupplyChain,
-           NonstationaryInventory]
+           NonstationaryInventory, JointPricingInventory]
 APPLIED_NAMES = ["DynamicPricing", "QueueAdmissionControl", "EnergyMicrogrid",
-                 "SupplyChain", "NonstationaryInventory"]
+                 "SupplyChain", "NonstationaryInventory", "JointPricingInventory"]
 
 
 @pytest.mark.parametrize("cls", APPLIED)

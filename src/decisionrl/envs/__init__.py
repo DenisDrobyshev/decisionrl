@@ -20,6 +20,7 @@ from .gym import (
     to_gymnasium,
 )
 from .inventory import InventoryManagement
+from .joint_pricing_inventory import JointPricingInventory
 from .lunar_lander import LunarLander
 from .mountain_car import MountainCar, MountainCarContinuous
 from .navigation import Navigation2D
@@ -58,6 +59,7 @@ __all__ = [
     "EnergyMicrogrid",
     "SupplyChain",
     "NonstationaryInventory",
+    "JointPricingInventory",
     # gymnasium interop
     "GymAdapter",
     "make_gym",

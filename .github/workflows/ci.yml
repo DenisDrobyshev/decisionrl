@@ -30,7 +30,7 @@ jobs:
       - name: Mypy
         run: mypy
       - name: Fast tests
-        run: pytest -m "not slow" -q
+        run: pytest -m "not slow" -q --cov=decisionrl --cov-report=term-missing
 
   learning-tests:
     name: learning / integration tests

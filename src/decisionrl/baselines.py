@@ -37,6 +37,8 @@ __all__ = [
     "order_nothing",
     "supply_base_stock",
     "best_supply_base_stock",
+    "static_price_order",
+    "best_static_price_order",
 ]
 
 Policy = Callable[[Env, np.ndarray], object]
@@ -206,3 +208,31 @@ def supply_base_stock(level: float) -> Policy:
 def best_supply_base_stock(env_fn: Callable[[], Env], s_range: Iterable[float] = range(8, 22),
                            episodes: int = 40, seed: int = 1) -> Tuple[float, float]:
     return best_of(env_fn, supply_base_stock, s_range, episodes=episodes, seed=seed)
+
+
+# --------------------------------------------------------------------------- #
+# joint pricing + inventory (continuous [price, order]) -- the DECOUPLED baseline
+# --------------------------------------------------------------------------- #
+def static_price_order(price: float, level: float) -> Policy:
+    """Best *static* rule: a fixed price plus base-stock ordering (no coupling)."""
+    def policy(env: Env, obs: np.ndarray) -> np.ndarray:
+        inv = obs[0] * env.max_inventory
+        order = np.clip(round(level - inv), 0, env.max_order)
+        a0 = 2.0 * (price - env.price_min) / (env.price_max - env.price_min) - 1.0
+        a1 = 2.0 * order / env.max_order - 1.0
+        return np.array([a0, a1], dtype=np.float32)
+    return policy
+
+
+def best_static_price_order(env_fn: Callable[[], Env], n_prices: int = 8,
+                            episodes: int = 30, seed: int = 1) -> Tuple[float, float]:
+    """Grid-search the best fixed (price, base-stock level); returns (best_return, 0)."""
+    probe = env_fn()
+    prices = np.linspace(probe.price_min, probe.price_max, n_prices)
+    levels = range(0, probe.max_inventory + 1, 2)
+    best = -np.inf
+    for p in prices:
+        for lv in levels:
+            best = max(best, rollout_return(env_fn, static_price_order(float(p), float(lv)),
+                                            episodes=episodes, seed=seed))
+    return float(best), 0.0
