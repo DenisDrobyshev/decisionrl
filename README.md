@@ -145,7 +145,9 @@ decisions**, each shipped with the classic operations-research baseline so a
 learned policy can be *proved* better (or honestly shown to match). Train them and
 print the proof table with
 [`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py); the two figures
-below come from [`python examples/applied_demo.py`](examples/applied_demo.py).
+below come from [`python examples/applied_demo.py`](examples/applied_demo.py). New to
+this? Start with the notebook: [**Applied RL in 15 minutes**](examples/applied_rl.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/applied_rl.ipynb).
 
 | Applied task | What the agent decides | Baseline |
 |---|---|---|
