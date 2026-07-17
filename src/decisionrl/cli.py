@@ -136,6 +136,20 @@ def _cmd_dashboard(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_run(args) -> int:
+    from .config import run
+
+    result = run(args.config, total_steps=args.steps)
+    if "mean" in result:
+        print(f"eval return = {result['mean']:.1f} +/- {result['std']:.1f}")
+    else:
+        print(f"trained for {result['total_steps']} steps")
+    if args.save:
+        result["agent"].save(args.save)
+        print(f"saved to {args.save}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="decisionrl", description="Reinforcement learning CLI")
     parser.add_argument("--version", action="version", version=f"decisionrl {__version__}")
@@ -182,6 +196,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_dash.add_argument("--port", type=int, default=8050)
     p_dash.add_argument("--interval", type=int, default=2000, help="refresh interval in ms")
     p_dash.set_defaults(func=_cmd_dashboard)
+
+    p_run = sub.add_parser("run", help="run an experiment from a YAML/JSON config")
+    p_run.add_argument("config", help="path to a .yaml/.yml/.json config")
+    p_run.add_argument("--steps", type=int, default=None, help="override total_steps")
+    p_run.add_argument("--save", type=str, default=None, help="path to save the trained agent")
+    p_run.set_defaults(func=_cmd_run)
 
     return parser
 

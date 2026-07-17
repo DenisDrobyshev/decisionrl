@@ -1,0 +1,7 @@
+{
+  "env": {"name": "GridWorld", "rows": 5, "cols": 5, "one_hot": true},
+  "algo": {"name": "dqn", "learning_rate": 0.001, "double_q": true, "dueling": true},
+  "seed": 0,
+  "total_steps": 20000,
+  "eval_episodes": 20
+}

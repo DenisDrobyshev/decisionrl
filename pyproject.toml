@@ -42,12 +42,15 @@ dependencies = [
 
 [project.optional-dependencies]
 gym = ["gymnasium>=0.29"]
+config = ["pyyaml>=6.0"]
 logging = ["tensorboard>=2.10"]
 serve = ["onnx>=1.14", "onnxruntime>=1.16", "fastapi>=0.100", "uvicorn>=0.23"]
 dashboard = ["flask>=2.0", "plotly>=5.0"]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "pytest-xdist>=3.0",
+    "pyyaml>=6.0",
     "ruff>=0.1",
     "gymnasium[classic-control]>=0.29",
     "matplotlib>=3.5",
