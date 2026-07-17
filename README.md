@@ -159,6 +159,7 @@ print the proof table with
 below come from [`python examples/applied_demo.py`](examples/applied_demo.py). New to
 this? Start with the notebook: [**Applied RL in 15 minutes**](examples/applied_rl.ipynb)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/applied_rl.ipynb).
+▶ **[Live browser demo](https://denisdrobyshev.github.io/decisionrl/demo/inventory.html)** — watch the learned policy beat the fixed base-stock on drifting demand, running entirely in your browser (no server).
 
 | Applied task | What the agent decides | Baseline |
 |---|---|---|
