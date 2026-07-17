@@ -57,8 +57,14 @@ baseline (not a straw man), 3 seeds, mean ± std:
 
 | Applied task | Learned (RL) | Optimal baseline |
 |---|---:|---:|
-| 📦 Inventory (stationary demand) | 193.3 ± 5.3 profit | 199.4 · base-stock *(provably optimal)* |
+| 📦 Inventory (stationary demand) | 193.3 ± 5.3 profit | 196.1 · **exact DP optimum** *(value iteration)* |
 | 🏷️ Dynamic pricing | 25.3 ± 0.0 revenue | 25.5 · best fixed price |
+
+For the stationary inventory MDP the true optimum is computable exactly by value
+iteration (`decisionrl.solvers`) — RL lands within a few percent of it *from scratch*.
+That is the honest boundary of the classical approach: the moment the problem stops
+being a small stationary MDP (drifting demand, partial observability, coupled
+decisions), the solver no longer applies and the top table takes over.
 
 The point isn't "RL beats operations research" — often it can't, and the README says
 so (bottom table). The point is the **top table**: when demand drifts or decisions
