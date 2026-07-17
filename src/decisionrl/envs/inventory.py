@@ -77,3 +77,8 @@ class InventoryManagement(Env):
         truncated = self._steps >= self.horizon
         info = {"demand": demand, "sales": sales, "lost_sales": lost, "order": order}
         return self._obs(), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        return bars_frame(["inventory"], [self._inventory], self.max_inventory,
+                          title="inventory level")

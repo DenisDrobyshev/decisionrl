@@ -73,3 +73,8 @@ class QueueAdmissionControl(Env):
         truncated = self._steps >= self.horizon
         info = {"queue": self._queue, "admitted": admitted}
         return self._obs(), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        return bars_frame(["queue"], [self._queue], self.buffer_size,
+                          title=f"incoming value {self._incoming:.2f}")

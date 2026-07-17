@@ -56,6 +56,17 @@ def test_registered_in_make_env(name):
     assert env.observation_space is not None and env.action_space is not None
 
 
+@pytest.mark.parametrize("cls", APPLIED)
+def test_render_rgb_returns_valid_frame(cls):
+    pytest.importorskip("matplotlib")
+    env = cls()
+    env.reset(seed=0)
+    for _ in range(3):
+        env.step(env.action_space.sample())
+    frame = env.render_rgb()
+    assert frame.ndim == 3 and frame.shape[2] == 3 and frame.dtype == np.uint8
+
+
 # --- slow: the learned policy must beat the naive operational baseline --------
 
 def _baseline_return(env_cls, policy, episodes=30, seed=1):

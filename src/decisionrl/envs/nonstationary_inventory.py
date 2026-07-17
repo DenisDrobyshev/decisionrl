@@ -109,3 +109,10 @@ class NonstationaryInventory(Env):
         info = {"demand": demand, "sales": sales, "lost_sales": lost, "order": order,
                 "regime": "high" if self._high else "low"}
         return self._obs(), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        color = "#ef4444" if self._high else "#2563eb"
+        regime = "high" if self._high else "low"
+        return bars_frame(["inventory"], [self._inventory], self.max_inventory,
+                          colors=[color], title=f"demand regime: {regime}")

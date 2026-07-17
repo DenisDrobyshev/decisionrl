@@ -101,3 +101,8 @@ class EnergyMicrogrid(Env):
         truncated = self._steps >= self.horizon
         info = {"price": price, "generation": gen, "load": load, "soc": self._soc, "grid": grid}
         return self._obs(price, gen, load), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        return bars_frame(["battery SoC"], [self._soc], self.capacity,
+                          colors=["#16a34a"], title="microgrid battery")

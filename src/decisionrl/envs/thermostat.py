@@ -86,3 +86,11 @@ class Thermostat(Env):
         truncated = self._steps >= self.horizon
         info = {"indoor": self._indoor, "outdoor": outdoor, "power": power}
         return self._obs(self._outdoor_now), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        err = self._indoor - self.setpoint
+        ok = abs(err) <= 1.0
+        return bars_frame(["indoor - setpoint"], [err], 8.0, ymin=-8.0,
+                          colors=["#16a34a" if ok else "#ef4444"],
+                          title=f"indoor {self._indoor:.1f}C / set {self.setpoint:.0f}C")

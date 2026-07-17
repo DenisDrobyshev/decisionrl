@@ -106,3 +106,8 @@ class SupplyChain(Env):
             "warehouse_inv": self._wh_inv,
         }
         return self._obs(), float(reward), False, truncated, info
+
+    def render_rgb(self):
+        from ..utils.render import bars_frame
+        return bars_frame(["retailer", "warehouse"], [self._retail_inv, self._wh_inv],
+                          self._scale, colors=["#2563eb", "#f59e0b"], title="supply chain")

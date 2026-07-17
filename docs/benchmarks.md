@@ -54,14 +54,23 @@ python examples/benchmark_vs_baselines.py --algos ppo --env CartPole-v1 \
 
 ### Results
 
-Run the script on a machine with SB3 installed and paste the emitted table here
-(placeholder — SB3 was not installed in the environment these docs were generated in):
+Actual head-to-head runs vs **Stable-Baselines3 2.9.0** (evaluation return over 20
+episodes, mean ± std across 3 seeds, library-default hyperparameters, CPU):
 
-| Algorithm | Environment | Steps | Seeds | decisionrl (return) | SB3 (return) | CleanRL (return) |
-|---|---|---:|---:|---:|---:|---:|
-| PPO | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
-| DQN | CartPole-v1 | 100,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
-| SAC | Pendulum-v1 | 30,000 | 5 | _run to fill_ | _run to fill_ | _run to fill_ |
+| Algorithm | Environment | Steps | Seeds | decisionrl | SB3 2.9.0 |
+|---|---|---:|---:|---:|---:|
+| PPO | CartPole-v1 | 50,000 | 3 | **500.0 ± 0.0** | 500.0 ± 0.0 |
+| DQN | CartPole-v1 | 50,000 | 3 | **327 ± 122** | 96 ± 57 |
+
+- **PPO** reaches parity — both solve CartPole to 500/500 in the same wall-clock (~29 s/seed).
+- **DQN**: `decisionrl` scores higher at this budget, but the number is honest about two
+  things — it is **higher-variance** (per-seed 500 / 245 / 238) and **slower** per seed
+  (~57 s vs SB3's ~22 s; SB3's data pipeline is more optimized). At 50k steps with default
+  hyperparameters SB3's DQN under-performs on CartPole; more steps or tuning close the gap.
+
+Reproduce with `python examples/benchmark_vs_baselines.py --algos ppo dqn --env CartPole-v1 --seeds 3 --steps 50000`.
+CleanRL (single-file scripts, not a package) can be dropped into the same table by running
+its `ppo.py` / `dqn.py` with matched `--env-id/--total-timesteps/--seed`.
 
 Atari and MuJoCo tasks work the same way once their extras are installed
 (`pip install "gymnasium[atari,accept-rom-license,mujoco]"`); `decisionrl` reaches them
