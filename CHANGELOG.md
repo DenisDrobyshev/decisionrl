@@ -6,6 +6,26 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-18
+
+### Added
+- `decisionrl.solvers`: exact dynamic-programming optima via value iteration (pure
+  NumPy). The learned inventory policy matches the DP optimum (196.1), and the module
+  marks the boundary where a small stationary MDP stops being solvable exactly.
+- `JointPricingInventory`: an environment with coupled price and order decisions and no
+  closed-form joint optimum. 20 environments now, 8 of them applied.
+- Gymnasium registration: `register_envs()` and `to_gymnasium()` expose every built-in
+  environment through `gymnasium.make("decisionrl/<Env>-v0")`.
+- Applied RL cookbook (`docs/cookbook.md`) and a self-contained in-browser demo
+  (`docs/demo/inventory.html`) that runs a trained policy against the base-stock rule.
+- Nightly workflow (`.github/workflows/verify.yml`) that re-runs the multi-seed applied
+  verification and fails if any reported result regresses below its baseline.
+
+### Changed
+- README rewritten in a concise, professional style without decorative content.
+- Benchmarks: added a CleanRL reference column with citation; test coverage (86 percent)
+  is now measured in CI with a badge.
+
 ## [0.3.0] - 2026-07-18
 
 ### Added

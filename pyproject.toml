@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 # One name everywhere: pip install decisionrl / import decisionrl.
 name = "decisionrl"
-version = "0.3.0"
+version = "0.4.0"
 description = "Applied reinforcement learning for operational decisions: pricing, inventory, energy, queues and supply chains — plus a correctness-first library of 31 algorithms."
 readme = "README.md"
 requires-python = ">=3.9"
