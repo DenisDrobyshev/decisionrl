@@ -122,6 +122,29 @@ disable_error_code = [
     "assignment",
 ]
 
+# Pure, framework-agnostic modules are held to the full strict rule set: the six
+# categories muted globally (for PyTorch / duck-typed env false positives) are turned
+# back on here, so these modules are checked with everything enabled. Adding a module
+# to this list is a commitment that it stays clean under strict typing.
+[[tool.mypy.overrides]]
+module = [
+    "decisionrl.config",
+    "decisionrl.tracking",
+    "decisionrl.registry",
+    "decisionrl.evaluation",
+    "decisionrl.core.env",
+    "decisionrl.core.types",
+    "decisionrl.utils.seeding",
+]
+enable_error_code = [
+    "arg-type",
+    "attr-defined",
+    "override",
+    "operator",
+    "index",
+    "assignment",
+]
+
 # Don't analyze NumPy's stubs: their version resolved on Python 3.12 uses the
 # PEP 695 `type` statement (unparseable under python_version 3.9) and NumPy 2.x
 # shape typing is over-strict. Treat NumPy as Any so mypy is version-stable.
