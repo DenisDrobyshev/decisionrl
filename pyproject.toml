@@ -45,6 +45,7 @@ gym = ["gymnasium>=0.29"]
 config = ["pyyaml>=6.0"]
 logging = ["tensorboard>=2.10"]
 serve = ["onnx>=1.14", "onnxruntime>=1.16", "fastapi>=0.100", "uvicorn>=0.23"]
+hub = ["huggingface_hub>=0.20", "onnx>=1.14", "onnxruntime>=1.16"]
 dashboard = ["flask>=2.0", "plotly>=5.0"]
 dev = [
     "pytest>=7.0",
@@ -150,5 +151,14 @@ enable_error_code = [
 # shape typing is over-strict. Treat NumPy as Any so mypy is version-stable.
 [[tool.mypy.overrides]]
 module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
+
+# Optional third-party integrations are treated as Any: we don't type-check their
+# internals, and their sources may use syntax newer than our python_version floor
+# (e.g. bokeh, pulled in transitively by huggingface_hub, uses 3.10 match statements).
+# On CI these are simply not installed; skipping keeps local and CI results identical.
+[[tool.mypy.overrides]]
+module = ["huggingface_hub", "huggingface_hub.*", "bokeh", "bokeh.*"]
 follow_imports = "skip"
 ignore_missing_imports = true
