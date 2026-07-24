@@ -36,6 +36,7 @@ nav:
   - Migrating from SB3/CleanRL: migration.md
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md
+  - Performance: performance.md
   - Environments: environments.md
   - Multi-agent: multiagent.md
   - AlphaZero: alphazero.md
