@@ -11,6 +11,7 @@ import numpy as np
 from decisionrl import baselines as B
 from decisionrl.envs import (
     BernoulliBandit,
+    DatasetDemandInventory,
     DynamicPricing,
     EnergyMicrogrid,
     InventoryManagement,
@@ -74,6 +75,60 @@ def test_nonstationary_ewma_tracks_regime():
         if trunc:
             obs, _ = env.reset()
     assert np.mean(high_ewma) > np.mean(low_ewma) + 0.1
+
+
+def test_dataset_demand_rescales_series_to_configured_range():
+    # The empirical series is min-max rescaled: its extremes map to [demand_low, demand_high].
+    env = DatasetDemandInventory(demand_series=[10.0, 20.0, 30.0, 40.0],
+                                 demand_low=3.0, demand_high=15.0)
+    assert np.isclose(env.demand.min(), 3.0) and np.isclose(env.demand.max(), 15.0)
+    # Order is preserved and the midpoint lands in between.
+    assert np.all(np.diff(env.demand) > 0)
+
+
+def test_dataset_demand_reward_accounting_is_consistent():
+    # Every step's reward must equal the stated economics from its own info dict.
+    env = DatasetDemandInventory(demand_series=[5.0, 8.0, 12.0, 6.0, 9.0], horizon=50)
+    obs, _ = env.reset(seed=3)
+    for _ in range(50):
+        prev_inv = env._inventory
+        _, reward, _, trunc, info = env.step(env.action_space.sample())
+        expected = (env.price * info["sales"] - env.unit_cost * info["order"]
+                    - env.holding_cost * env._inventory - env.stockout_penalty * info["lost_sales"])
+        assert np.isclose(reward, expected)
+        assert info["sales"] + info["lost_sales"] == info["demand"]  # conservation
+        assert env._inventory <= env.max_inventory
+        assert prev_inv >= 0
+        if trunc:
+            obs, _ = env.reset()
+
+
+def test_dataset_demand_seed_is_deterministic():
+    s = [4.0, 7.0, 11.0, 5.0, 9.0, 13.0]
+    a = DatasetDemandInventory(demand_series=s)
+    b = DatasetDemandInventory(demand_series=s)
+    oa, _ = a.reset(seed=7)
+    ob, _ = b.reset(seed=7)
+    assert np.allclose(oa, ob)
+    for _ in range(30):
+        ra = a.step(2)
+        rb = b.step(2)
+        assert np.allclose(ra[0], rb[0]) and ra[1] == rb[1]
+
+
+def test_dataset_demand_arrivals_track_series_level():
+    # Poisson arrivals should average to the (rescaled) empirical level at each index.
+    env = DatasetDemandInventory(demand_series=[10.0, 40.0], demand_low=4.0, demand_high=16.0)
+    env.reset(seed=0)
+    low, high = [], []
+    for _ in range(3000):
+        env._idx = 0  # pin to the low level (10.0 rescaled to 4.0)
+        low.append(env.step(0)[4]["demand"])
+    for _ in range(3000):
+        env._idx = 1  # pin to the high level (40.0 rescaled to 16.0)
+        high.append(env.step(0)[4]["demand"])
+    assert abs(np.mean(low) - 4.0) < 0.4
+    assert abs(np.mean(high) - 16.0) < 0.6
 
 
 def test_energy_soc_stays_within_battery_bounds():

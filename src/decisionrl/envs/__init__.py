@@ -19,6 +19,7 @@ from .gym import (
     register_envs,
     to_gymnasium,
 )
+from .dataset_demand_inventory import DatasetDemandInventory
 from .inventory import InventoryManagement
 from .joint_pricing_inventory import JointPricingInventory
 from .lunar_lander import LunarLander
@@ -52,6 +53,7 @@ __all__ = [
     "LunarLander",
     "PortfolioAllocation",
     # applied (operational / business decisions)
+    "DatasetDemandInventory",
     "InventoryManagement",
     "Thermostat",
     "DynamicPricing",
