@@ -24,7 +24,7 @@ import statistics
 import time
 from pathlib import Path
 
-from decisionrl.algorithms import DQN
+from decisionrl.algorithms import PPO
 from decisionrl.baselines import best_base_stock
 from decisionrl.envs import DatasetDemandInventory
 from decisionrl.evaluation import bootstrap_ci, iqm
@@ -42,8 +42,10 @@ def load_demand_series(path: Path = DATA):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", type=int, default=5)
-    ap.add_argument("--steps", type=int, default=100_000)
+    ap.add_argument("--steps", type=int, default=150_000)
     ap.add_argument("--device", default="auto")
+    ap.add_argument("--horizon", type=int, default=200,
+                    help="episode length; long enough to traverse the demand growth")
     args = ap.parse_args()
 
     series = load_demand_series()
@@ -51,7 +53,7 @@ def main() -> None:
           f"({min(series):.0f}..{max(series):.0f}), rescaled to product demand")
 
     def make_env():
-        return DatasetDemandInventory(demand_series=series)
+        return DatasetDemandInventory(demand_series=series, horizon=args.horizon)
 
     level, base_value = best_base_stock(make_env, seed=100)
     print(f"best fixed base-stock: order up to {level:.0f}  ->  {base_value:.1f} return")
@@ -60,9 +62,8 @@ def main() -> None:
     scores = []
     for s in range(args.seeds):
         set_seed(s)
-        agent = DQN(make_env(), seed=s, logger=Logger(verbose=0), device=args.device,
-                    learning_rate=5e-4, buffer_size=50_000, learning_starts=1000,
-                    target_update_interval=500)
+        agent = PPO(make_env(), seed=s, logger=Logger(verbose=0), device=args.device,
+                    n_steps=2048, batch_size=128, n_epochs=10, gamma=0.995, ent_coef=0.01)
         agent.learn(args.steps)
         score = evaluate_policy(agent, make_env(), n_episodes=50, seed=100)[0]
         scores.append(score)

@@ -29,7 +29,7 @@ import time
 from pathlib import Path
 
 OUT_PATH = Path("verify_applied_claims.json")
-RETRIES = 15
+RETRIES = 4
 
 
 def _build():
@@ -75,8 +75,8 @@ def _build():
                       dict(n_steps=1024, batch_size=64, n_epochs=10, ent_coef=0.01),
                       "base-stock (optimal)",
                       lambda: B.best_base_stock(InventoryManagement, seed=100)[1]),
-        "pricing": ("match", "Dynamic pricing", PPO, DynamicPricing, 60_000,
-                    dict(n_steps=1024, batch_size=64, n_epochs=10, ent_coef=0.01),
+        "pricing": ("match", "Dynamic pricing", PPO, DynamicPricing, 100_000,
+                    dict(n_steps=1024, batch_size=64, n_epochs=10, ent_coef=0.005),
                     "best fixed price",
                     lambda: B.best_fixed_action(DynamicPricing, seed=100)[1]),
     }
@@ -85,7 +85,7 @@ def _build():
 ORDER = ["nonstat", "supply", "queue", "energy", "thermostat", "inventory", "pricing"]
 
 
-def run_worker(key: str, seed: int) -> None:
+def run_worker(key: str, seed: int, device: str) -> None:
     """Train one seed of one task and print the evaluation return as ``RESULT <float>``."""
     import torch
 
@@ -95,15 +95,16 @@ def run_worker(key: str, seed: int) -> None:
     torch.set_num_threads(1)
     _, _, agent_cls, env_fn, steps, kw, _, _ = _build()[key]
     set_seed(seed)
-    agent = agent_cls(env_fn(), seed=seed, logger=Logger(verbose=0), **kw)
+    agent = agent_cls(env_fn(), seed=seed, logger=Logger(verbose=0), device=device, **kw)
     agent.learn(steps)
     score = evaluate_policy(agent, env_fn(), n_episodes=20, seed=100)[0]
     print(f"RESULT {score:.6f}", flush=True)
 
 
-def train_one(key: str, seed: int) -> float:
+def train_one(key: str, seed: int, device: str) -> float:
     """Spawn a fresh subprocess for a single (task, seed); retry on a native crash."""
-    cmd = [sys.executable, __file__, "--worker", "--task", key, "--seed", str(seed)]
+    cmd = [sys.executable, __file__, "--worker", "--task", key, "--seed", str(seed),
+           "--device", device]
     for attempt in range(1, RETRIES + 1):
         proc = subprocess.run(cmd, capture_output=True, text=True)
         for line in proc.stdout.splitlines():
@@ -125,7 +126,7 @@ def load_checkpoint(n_seeds: int) -> dict:
     return {"seeds": n_seeds, "seed_values": {}, "rows": []}
 
 
-def driver(n_seeds: int, check: bool) -> None:
+def driver(n_seeds: int, check: bool, device: str) -> None:
     from decisionrl.evaluation import bootstrap_ci, iqm
 
     specs = _build()
@@ -133,6 +134,7 @@ def driver(n_seeds: int, check: bool) -> None:
     t0 = time.time()
     out = load_checkpoint(n_seeds)
     sv = out["seed_values"]
+    print(f"training on device: {device}", flush=True)
 
     for key in ORDER:
         group, label, _, _, _, _, bname, baseline_fn = specs[key]
@@ -140,7 +142,7 @@ def driver(n_seeds: int, check: bool) -> None:
         for s in seeds:
             if str(s) in got:
                 continue
-            got[str(s)] = train_one(key, s)
+            got[str(s)] = train_one(key, s, device)
             OUT_PATH.write_text(json.dumps(out, indent=2))  # checkpoint per seed
             print(f"  {label} seed {s}: {got[str(s)]:.1f}", flush=True)
         vals = [got[str(s)] for s in seeds]
@@ -176,19 +178,31 @@ def driver(n_seeds: int, check: bool) -> None:
         print("\nAll 'RL wins' claims still hold.")
 
 
+def _default_device() -> str:
+    try:
+        import torch
+
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    except ImportError:
+        return "cpu"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", type=int, default=5)
     ap.add_argument("--check", action="store_true",
                     help="exit non-zero if any 'RL wins' claim regressed below its baseline")
+    ap.add_argument("--device", default=None,
+                    help="torch device for training (default: cuda if available, else cpu)")
     ap.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--task", help=argparse.SUPPRESS)
     ap.add_argument("--seed", type=int, help=argparse.SUPPRESS)
     args = ap.parse_args()
+    device = args.device or _default_device()
     if args.worker:
-        run_worker(args.task, args.seed)
+        run_worker(args.task, args.seed, device)
     else:
-        driver(args.seeds, args.check)
+        driver(args.seeds, args.check, device)
 
 
 if __name__ == "__main__":

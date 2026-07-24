@@ -15,9 +15,9 @@ Reinforcement learning for operational decisions.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
-[![Environments](https://img.shields.io/badge/environments-20%20(8%20applied)-2ea043.svg)](docs/environments.md)
+[![Environments](https://img.shields.io/badge/environments-21%20(9%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-385-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-391-brightgreen.svg)](tests)
 [![Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 
@@ -42,31 +42,38 @@ pip install decisionrl
 ## Results
 
 The tables below compare a trained policy against the strongest classical baseline for
-each task. Numbers are the mean and standard deviation of the evaluation return over 3
-seeds, reproduced on CPU by [`examples/verify_applied_claims.py`](examples/verify_applied_claims.py).
+each task. Numbers are the interquartile mean (IQM) of the evaluation return with a 95%
+bootstrap confidence interval over 5 seeds, produced by
+[`examples/verify_applied_claims.py`](examples/verify_applied_claims.py).
 
 Tasks where the classical assumptions break and the learned policy is better:
 
-| Applied task | Learned policy | Classical baseline |
+| Applied task | Learned policy (IQM [95% CI]) | Classical baseline |
 |---|---:|---:|
-| Non-stationary inventory (drifting demand) | **278.5 ± 2.4** profit | 240.7 (best fixed base-stock) |
-| Energy microgrid (battery) | **20.3 ± 0.3** return | 16.7 (greedy price-threshold) |
-| Supply chain (2-echelon) | **-31.1 ± 0.3** cost | -35.3 (per-echelon base-stock) |
-| Queue admission control | **24.7 ± 0.2** value | 23.0 (best value threshold) |
-| Thermostat / HVAC | **-40 ± 18** return | -305 (bang-bang) |
+| Non-stationary inventory (drifting demand) | **274.0** [247.3, 280.4] profit | 240.7 (best fixed base-stock) |
+| Energy microgrid (battery) | **20.4** [20.1, 20.5] return | 16.7 (greedy price-threshold) |
+| Supply chain (2-echelon) | **-30.0** [-30.5, -29.8] cost | -35.3 (per-echelon base-stock) |
+| Queue admission control | **24.8** [24.6, 24.9] value | 23.0 (best value threshold) |
+| Thermostat / HVAC | **-62.8** [-122.3, -24.7] return | -305.4 (bang-bang) |
 
 Tasks where the classical method is already optimal and the learned policy matches it:
 
-| Applied task | Learned policy | Optimal baseline |
+| Applied task | Learned policy (IQM [95% CI]) | Optimal baseline |
 |---|---:|---:|
-| Inventory (stationary demand) | 193.3 ± 5.3 profit | 196.1 (exact DP optimum, value iteration) |
-| Dynamic pricing | 25.3 ± 0.0 revenue | 25.5 (best fixed price) |
+| Inventory (stationary demand) | 195.7 [191.2, 198.3] profit | 196.1 (exact DP optimum, value iteration) |
+| Dynamic pricing | 25.1 [23.9, 25.6] revenue | 25.5 (best fixed price) |
 
 For a stationary inventory MDP the optimum is computable exactly by value iteration
 (`decisionrl.solvers`), and the learned policy lands within a few percent of it. When
 the problem stops being a small stationary MDP (drifting demand, partial observability,
 coupled decisions) the solver no longer applies, which is the case the first table
 covers. The comparison is always against the best fixed rule, not a naive default.
+
+The same pattern holds on real data: a
+[case study](https://denisdrobyshev.github.io/decisionrl/case-study/) drives the inventory
+environment with quarterly US real consumption (1959-2009) and a learned policy improves
+on the best fixed base-stock, because real demand trends and no single order-up-to level
+fits every era.
 
 ## Why RL and not a solver
 
@@ -349,6 +356,12 @@ normalization, save/load round-trips) and learning behaviour (tabular methods re
 optimal GridWorld policy; DQN and PPO learn CartPole; SAC, TD3, and DDPG solve the
 PointMass task). A scheduled workflow re-runs the multi-seed applied verification nightly
 and fails if any reported result regresses below its baseline.
+
+Computational throughput (env, training, and inference steps per second) is separate from
+learning quality and is measured by
+[`examples/benchmark_throughput.py`](examples/benchmark_throughput.py); see the
+[performance guide](https://denisdrobyshev.github.io/decisionrl/performance/) for measured
+numbers and how to choose a device.
 
 ## Design notes
 

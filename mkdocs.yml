@@ -33,6 +33,7 @@ nav:
   - Home: index.md
   - Getting started: getting-started.md
   - Applied RL cookbook: cookbook.md
+  - Case study (real data): case-study.md
   - Migrating from SB3/CleanRL: migration.md
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md

@@ -56,3 +56,4 @@ tensorboard/
 .DS_Store
 Thumbs.db
 verify_applied_claims.json
+real_data_case_study.json
