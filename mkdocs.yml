@@ -34,6 +34,7 @@ nav:
   - Getting started: getting-started.md
   - Applied RL cookbook: cookbook.md
   - Case study (real data): case-study.md
+  - Interpreting a policy: interpretability.md
   - Migrating from SB3/CleanRL: migration.md
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md

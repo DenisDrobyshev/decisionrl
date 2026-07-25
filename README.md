@@ -17,7 +17,7 @@ Reinforcement learning for operational decisions.
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
 [![Environments](https://img.shields.io/badge/environments-22%20(9%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-398-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-400-brightgreen.svg)](tests)
 [![Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 
@@ -77,7 +77,11 @@ The same pattern holds on real data: a
 [case study](https://denisdrobyshev.github.io/decisionrl/case-study/) drives the inventory
 environment with quarterly US real consumption (1959-2009) and a learned policy improves
 on the best fixed base-stock, because real demand trends and no single order-up-to level
-fits every era.
+fits every era. The learned rule is
+[inspectable](https://denisdrobyshev.github.io/decisionrl/interpretability/) (it visibly
+tracks recent demand) and can be
+[stress-tested](https://denisdrobyshev.github.io/decisionrl/robustness/) under
+distribution shift.
 
 ## Why RL and not a solver
 
