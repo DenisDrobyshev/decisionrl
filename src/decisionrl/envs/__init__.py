@@ -7,6 +7,7 @@ from .acrobot import Acrobot
 from .bandit import BernoulliBandit, MultiArmedBandit
 from .bitflipping import BitFlipping
 from .cartpole import CartPole
+from .dataset_demand_inventory import DatasetDemandInventory
 from .energy import EnergyMicrogrid
 from .grid_world import GridWorld
 from .gym import (
@@ -19,7 +20,6 @@ from .gym import (
     register_envs,
     to_gymnasium,
 )
-from .dataset_demand_inventory import DatasetDemandInventory
 from .inventory import InventoryManagement
 from .joint_pricing_inventory import JointPricingInventory
 from .lunar_lander import LunarLander
