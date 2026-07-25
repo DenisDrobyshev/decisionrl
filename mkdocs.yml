@@ -38,6 +38,7 @@ nav:
   - Algorithms: algorithms.md
   - Benchmarks: benchmarks.md
   - Performance: performance.md
+  - Robustness: robustness.md
   - Environments: environments.md
   - Multi-agent: multiagent.md
   - AlphaZero: alphazero.md

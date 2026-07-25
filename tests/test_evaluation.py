@@ -2,8 +2,9 @@
 
 import numpy as np
 
+from decisionrl import baselines as B
 from decisionrl.algorithms import QLearning
-from decisionrl.envs import GridWorld
+from decisionrl.envs import GridWorld, NonstationaryInventory
 from decisionrl.evaluation import (
     aggregate_metrics,
     bootstrap_ci,
@@ -11,7 +12,29 @@ from decisionrl.evaluation import (
     performance_profile,
     probability_of_improvement,
     run_seeds,
+    stress_test,
 )
+
+
+def test_stress_test_reports_every_variant():
+    variants = {
+        "nominal": NonstationaryInventory,
+        "demand_spike": lambda: NonstationaryInventory(demand_low=8.0, demand_high=24.0),
+    }
+    result = stress_test(B.base_stock(10), variants, episodes=8)
+    assert set(result) == {"nominal", "demand_spike"}
+    assert all(isinstance(v, float) for v in result.values())
+
+
+def test_adaptive_policy_is_more_robust_to_demand_spike():
+    # A fixed base-stock tuned to nominal demand cannot serve a demand spike; the adaptive
+    # tracking policy reads recent demand and keeps up, so it degrades far less.
+    level, _ = B.best_base_stock(NonstationaryInventory, seed=0)
+    safety, _ = B.best_tracking_base_stock(NonstationaryInventory, seed=0)
+    spike = {"spike": lambda: NonstationaryInventory(demand_low=8.0, demand_high=24.0)}
+    fixed = stress_test(B.base_stock(level), spike, episodes=30)["spike"]
+    tracking = stress_test(B.tracking_base_stock(safety), spike, episodes=30)["spike"]
+    assert tracking > fixed, f"tracking {tracking:.1f} should beat fixed {fixed:.1f} under a spike"
 
 
 def test_iqm_ignores_tails():

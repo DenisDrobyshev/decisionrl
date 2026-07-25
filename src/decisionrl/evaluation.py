@@ -22,6 +22,7 @@ __all__ = [
     "performance_profile",
     "probability_of_improvement",
     "run_seeds",
+    "stress_test",
 ]
 
 
@@ -103,3 +104,33 @@ def run_seeds(
         mean_return, _ = evaluate_policy(agent, env_fn(), n_episodes=eval_episodes, seed=eval_seed)
         results.append(mean_return)
     return np.asarray(results, dtype=np.float64)
+
+
+def stress_test(
+    policy_fn: Callable,
+    variants: Dict[str, Callable],
+    episodes: int = 30,
+    seed: int = 0,
+) -> Dict[str, float]:
+    """Mean return of a ``(env, obs) -> action`` policy across environment variants.
+
+    ``variants`` maps a name to a zero-argument environment factory, each a perturbation
+    of the nominal problem (a demand spike, a regime shift, a cost shock). The result
+    shows how the policy holds up under distribution shift, so a robust policy and a
+    brittle one can be told apart rather than judged only on the setting they were tuned
+    for. To stress-test a trained agent, pass ``lambda env, obs: agent.predict(obs)``.
+    """
+    results: Dict[str, float] = {}
+    for name, env_fn in variants.items():
+        returns = []
+        for ep in range(episodes):
+            env = env_fn()
+            obs, _ = env.reset(seed=seed + ep)
+            done, total = False, 0.0
+            while not done:
+                obs, reward, terminated, truncated, _ = env.step(policy_fn(env, obs))
+                total += float(reward)
+                done = terminated or truncated
+            returns.append(total)
+        results[name] = float(np.mean(returns))
+    return results
