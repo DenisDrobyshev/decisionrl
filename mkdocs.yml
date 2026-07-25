@@ -42,6 +42,7 @@ nav:
   - Multi-agent: multiagent.md
   - AlphaZero: alphazero.md
   - Meta-RL (RL²): meta.md
+  - Contextual bandits: bandits.md
   - Imitation learning: imitation.md
   - LLM alignment (RLHF): text.md
   - Evolution & swarm: evolution.md

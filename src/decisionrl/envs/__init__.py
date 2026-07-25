@@ -7,6 +7,7 @@ from .acrobot import Acrobot
 from .bandit import BernoulliBandit, MultiArmedBandit
 from .bitflipping import BitFlipping
 from .cartpole import CartPole
+from .contextual_bandit import ContextualBandit
 from .dataset_demand_inventory import DatasetDemandInventory
 from .energy import EnergyMicrogrid
 from .grid_world import GridWorld
@@ -41,6 +42,7 @@ __all__ = [
     "BitFlipping",
     "MultiArmedBandit",
     "BernoulliBandit",
+    "ContextualBandit",
     "CartPole",
     "Pendulum",
     "PointMass",

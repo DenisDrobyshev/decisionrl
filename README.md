@@ -15,9 +15,9 @@ Reinforcement learning for operational decisions.
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue.svg)](https://mypy-lang.org/)
 
 [![Algorithms](https://img.shields.io/badge/algorithms-31-8A2BE2.svg)](docs/algorithms.md)
-[![Environments](https://img.shields.io/badge/environments-21%20(9%20applied)-2ea043.svg)](docs/environments.md)
+[![Environments](https://img.shields.io/badge/environments-22%20(9%20applied)-2ea043.svg)](docs/environments.md)
 [![Optimizers](https://img.shields.io/badge/gradient--free%20optimizers-12-9333ea.svg)](docs/evolution.md)
-[![Tests](https://img.shields.io/badge/tests-391-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-398-brightgreen.svg)](tests)
 [![Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](tests)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org)
 
@@ -318,6 +318,9 @@ part of the package and are covered by the test suite; they are useful when an
 operational problem needs them and serve as evidence that the core is implemented
 correctly.
 
+- Contextual bandits for one-shot decisions such as pricing and recommendation: LinUCB,
+  linear Thompson sampling, and an epsilon-greedy baseline, with exact regret tracking
+  (`decisionrl.bandits`).
 - Preference-based RLHF and DPO on control tasks (`decisionrl.rlhf`).
 - RLHF on a character-level GPT (`decisionrl.text`): supervised pre-training, then
   reward fine-tuning with a KL penalty to the reference model.
