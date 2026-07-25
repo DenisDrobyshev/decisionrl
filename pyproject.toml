@@ -107,7 +107,9 @@ ignore = ["E501", "B008", "C401", "C408"]
 known-first-party = ["decisionrl"]
 
 [tool.mypy]
-python_version = "3.9"
+# Analysis target: recent mypy no longer supports a 3.9 target. Runtime support for
+# Python 3.9 is unchanged and is exercised by the 3.9 test job in CI.
+python_version = "3.10"
 files = ["src/decisionrl"]
 ignore_missing_imports = true
 implicit_optional = true

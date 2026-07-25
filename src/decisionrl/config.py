@@ -98,7 +98,7 @@ def run(config: ConfigLike, total_steps: int = None) -> Dict[str, Any]:
     manifest_path = cfg.get("manifest")
     if manifest_path:
         from .tracking import run_manifest, save_manifest
-        metrics = {k: result[k] for k in ("mean", "std") if k in result}
+        metrics: Dict[str, Any] = {k: result[k] for k in ("mean", "std") if k in result}
         metrics["total_steps"] = steps
         save_manifest(run_manifest(cfg, metrics=metrics, seed=cfg.get("seed")), manifest_path)
         result["manifest"] = manifest_path
