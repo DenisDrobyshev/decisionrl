@@ -25,6 +25,8 @@ __all__ = [
     "base_stock",
     "analytic_base_stock_level",
     "best_base_stock",
+    "tracking_base_stock",
+    "best_tracking_base_stock",
     "fixed_action",
     "best_fixed_action",
     "admit_all",
@@ -116,6 +118,31 @@ def best_base_stock(env_fn: Callable[[], Env], s_range: Iterable[float] = None,
     if s_range is None:
         s_range = range(0, env_fn().max_inventory + 1)
     return best_of(env_fn, base_stock, s_range, episodes=episodes, seed=seed)
+
+
+def tracking_base_stock(safety: float) -> Policy:
+    """Adaptive order-up-to that tracks recent demand plus a fixed safety buffer.
+
+    A fixed base-stock commits to one order-up-to level; this one reads the recent
+    demand signal (``obs[1]``, the EWMA of demand scaled by ``max_order``) and orders
+    up to ``recent_demand + safety``, so the level moves with the demand era. On a
+    non-stationary series it beats any fixed level; on a stationary one it matches the
+    fixed base-stock, since there is only one era to track. Requires an environment
+    whose observation exposes recent demand in ``obs[1]`` (the applied inventory envs).
+    """
+    def policy(env: Env, obs: np.ndarray) -> int:
+        inv = obs[0] * env.max_inventory
+        recent_demand = obs[1] * env.max_order
+        return int(np.clip(round(recent_demand + safety - inv), 0, env.max_order))
+    return policy
+
+
+def best_tracking_base_stock(env_fn: Callable[[], Env], safety_range: Iterable[float] = None,
+                             episodes: int = 40, seed: int = 1) -> Tuple[float, float]:
+    """Grid-search the safety buffer of the adaptive :func:`tracking_base_stock` policy."""
+    if safety_range is None:
+        safety_range = range(-3, 13)
+    return best_of(env_fn, tracking_base_stock, safety_range, episodes=episodes, seed=seed)
 
 
 # --------------------------------------------------------------------------- #

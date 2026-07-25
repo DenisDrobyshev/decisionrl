@@ -35,18 +35,26 @@ mean with a 95% bootstrap confidence interval over 5 seeds.
 
 | Policy | Return (IQM [95% CI]) |
 |---|---:|
-| Best fixed base-stock (exhaustive) | 705.0 |
+| Fixed base-stock (exhaustive) | 705.0 |
 | Learned policy (PPO) | 744.6 [671.0, 792.0] |
+| Adaptive tracking base-stock | 841.6 |
 
-The learned policy improves on the best fixed base-stock by about 6% on real demand. The
-gain is genuine but modest: the confidence interval reaches just below the baseline,
-because one of the five seeds does not clear it, so this is a central-tendency
-improvement rather than a guaranteed win on every run. A hand-written demand-tracking
-heuristic (order up to a smoothed estimate of recent demand) does better still on this
-environment, which says the learned policy captures part, not all, of the gap that
-adaptation opens up. That is the honest shape of the result: when real demand trends,
-reading recent demand beats committing to a single order-up-to level, and how much you
-gain depends on how well the policy tracks.
+Three tiers, and the ordering is the honest point of the study. The learned policy
+improves on the best fixed base-stock by about 6%. That gain is genuine but modest: the
+confidence interval reaches just below the baseline, because one of the five seeds does
+not clear it, so this is a central-tendency improvement rather than a guaranteed win on
+every run.
+
+Above both sits a hand-written adaptive rule
+([`tracking_base_stock`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/baselines.py)):
+order up to the recent demand (the EWMA the environment exposes) plus a small safety
+buffer. It reaches 841.6, clearly ahead of the learned policy. This is worth stating
+plainly: when the structure of the problem is known, a simple heuristic that encodes it
+can beat a policy learned from scratch. Reinforcement learning earns its place when that
+structure is not known in advance, or is too complex to hand-code; here, where the
+structure is exactly "track recent demand", the explicit rule wins. Both, in turn, beat
+the fixed base-stock, because on real trending demand no single order-up-to level fits
+every era.
 
 ## Reproduce
 

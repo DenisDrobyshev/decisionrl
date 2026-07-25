@@ -50,6 +50,24 @@ def test_analytic_base_stock_is_near_optimal_on_stationary_inventory():
     assert analytic > random
 
 
+def test_tracking_base_stock_beats_fixed_on_nonstationary():
+    # The adaptive order-up-to reads recent demand, so on a drifting-demand series it
+    # should beat the best single fixed base-stock; a fixed level cannot fit every era.
+    _, fixed = B.best_base_stock(NonstationaryInventory, seed=0)
+    _, tracking = B.best_tracking_base_stock(NonstationaryInventory, seed=0)
+    assert tracking > fixed, f"tracking {tracking:.1f} should beat fixed {fixed:.1f}"
+
+
+def test_tracking_base_stock_orders_up_to_recent_demand():
+    # With zero safety the target inventory equals the recent-demand signal (obs[1]).
+    env = NonstationaryInventory()
+    obs, _ = env.reset(seed=0)
+    order = B.tracking_base_stock(0.0)(env, obs)
+    expected = int(np.clip(round(obs[1] * env.max_order - obs[0] * env.max_inventory),
+                           0, env.max_order))
+    assert order == expected
+
+
 def test_nonstationary_regime_switches_at_configured_rate():
     env = NonstationaryInventory(switch_prob=0.1)
     env.reset(seed=0)

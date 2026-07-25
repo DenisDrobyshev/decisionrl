@@ -41,10 +41,14 @@ pip install decisionrl
 
 ## Results
 
-The tables below compare a trained policy against the strongest classical baseline for
-each task. Numbers are the interquartile mean (IQM) of the evaluation return with a 95%
-bootstrap confidence interval over 5 seeds, produced by
-[`examples/verify_applied_claims.py`](examples/verify_applied_claims.py).
+The tables below compare a trained policy against the standard classical policy for each
+task, which is the best fixed rule of its class (found by search, not a naive default).
+Numbers are the interquartile mean (IQM) of the evaluation return with a 95% bootstrap
+confidence interval over 5 seeds, produced by
+[`examples/verify_applied_claims.py`](examples/verify_applied_claims.py). A stronger
+*adaptive* heuristic can do better still on the non-stationary tasks; the
+[case study](https://denisdrobyshev.github.io/decisionrl/case-study/) shows that
+three-way comparison in full.
 
 Tasks where the classical assumptions break and the learned policy is better:
 

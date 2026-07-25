@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 
 from decisionrl.algorithms import PPO
-from decisionrl.baselines import best_base_stock
+from decisionrl.baselines import best_base_stock, best_tracking_base_stock
 from decisionrl.envs import DatasetDemandInventory
 from decisionrl.evaluation import bootstrap_ci, iqm
 from decisionrl.training import evaluate_policy
@@ -56,7 +56,9 @@ def main() -> None:
         return DatasetDemandInventory(demand_series=series, horizon=args.horizon)
 
     level, base_value = best_base_stock(make_env, seed=100)
-    print(f"best fixed base-stock: order up to {level:.0f}  ->  {base_value:.1f} return")
+    print(f"best fixed base-stock:   order up to {level:.0f}  ->  {base_value:.1f} return")
+    safety, track_value = best_tracking_base_stock(make_env, seed=100)
+    print(f"adaptive tracking rule:  recent demand +{safety:.0f}  ->  {track_value:.1f} return")
 
     t0 = time.time()
     scores = []
@@ -71,13 +73,16 @@ def main() -> None:
 
     point, lo, hi = bootstrap_ci(scores, aggregate=iqm, reps=5000, seed=0)
     lift = 100.0 * (point - base_value) / abs(base_value)
-    print(f"\nlearned policy IQM {point:.1f} [95% CI {lo:.1f}, {hi:.1f}]  "
-          f"vs base-stock {base_value:.1f}  ({lift:+.0f}%)")
+    print("\nthree-tier comparison (return):")
+    print(f"  fixed base-stock       {base_value:7.1f}")
+    print(f"  learned policy (PPO)   {point:7.1f}  [95% CI {lo:.1f}, {hi:.1f}]  ({lift:+.0f}% vs fixed)")
+    print(f"  adaptive tracking rule {track_value:7.1f}")
     print(f"{args.seeds} seeds, {args.steps} steps each, {time.time() - t0:.0f}s")
 
     out = {"dataset": "US real personal consumption expenditure (statsmodels macrodata)",
            "n_quarters": len(series), "base_stock_level": level,
-           "base_stock_value": base_value, "rl_iqm": point, "ci_low": lo, "ci_high": hi,
+           "base_stock_value": base_value, "tracking_safety": safety,
+           "tracking_value": track_value, "rl_iqm": point, "ci_low": lo, "ci_high": hi,
            "rl_mean": statistics.mean(scores), "seed_values": scores,
            "seeds": args.seeds, "steps": args.steps}
     Path("real_data_case_study.json").write_text(json.dumps(out, indent=2))
