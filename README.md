@@ -345,6 +345,21 @@ correctly.
 Usage for each is documented at
 [denisdrobyshev.github.io/decisionrl](https://denisdrobyshev.github.io/decisionrl/).
 
+## Deployment
+
+A trained policy exports to ONNX and serves over HTTP behind a small container that needs
+neither PyTorch nor the training package, only onnxruntime and FastAPI. The image is built
+and smoke-tested on every push by the `docker-serve` job in CI, so the deployment path is
+verified, not assumed.
+
+```bash
+docker build -f deploy/Dockerfile -t decisionrl-serve .
+docker run -p 8000:8000 decisionrl-serve
+curl -X POST localhost:8000/predict -H 'content-type: application/json' \
+     -d '{"observation": [0, 0, 0, 0]}'
+# -> {"action": 1}
+```
+
 ## Reproducibility and testing
 
 ```python

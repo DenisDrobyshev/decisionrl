@@ -48,9 +48,14 @@ app = create_app("policy.onnx")
 
 ## Docker
 
-`deploy/Dockerfile` builds a slim image (onnxruntime + FastAPI, no torch):
+`deploy/Dockerfile` builds a slim image (onnxruntime + FastAPI, no torch and no decisionrl
+package) around the standalone `deploy/serve.py` entrypoint. It bakes in a default policy at
+`/models/policy.onnx`; override `DECISIONRL_MODEL` to serve your own. The image is built and
+smoke-tested on every push by the `docker-serve` CI job.
 
 ```bash
 docker build -f deploy/Dockerfile -t decisionrl-serve .
-docker run -p 8000:8000 -e DECISIONRL_MODEL=/models/policy.onnx decisionrl-serve
+docker run -p 8000:8000 decisionrl-serve
+curl -X POST localhost:8000/predict -H 'content-type: application/json' \
+     -d '{"observation": [0, 0, 0, 0]}'
 ```

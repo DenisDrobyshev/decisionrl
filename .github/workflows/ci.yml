@@ -53,3 +53,33 @@ jobs:
         env:
           OMP_NUM_THREADS: "1"
         run: pytest -m "slow" -q -n auto -p no:cacheprovider
+
+  docker-serve:
+    name: docker serving image (build + smoke test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the serving image
+        run: docker build -f deploy/Dockerfile -t decisionrl-serve .
+      - name: Run the container
+        run: docker run -d -p 8000:8000 --name serve decisionrl-serve
+      - name: Wait for /health
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf localhost:8000/health; then echo " -> up"; exit 0; fi
+            sleep 1
+          done
+          echo "server did not become healthy"; docker logs serve; exit 1
+      - name: Smoke-test /info and /predict
+        run: |
+          set -euo pipefail
+          curl -sf localhost:8000/info
+          action=$(curl -sf -X POST localhost:8000/predict \
+            -H 'content-type: application/json' -d '{"observation": [0, 0, 0, 0]}')
+          echo "predict -> $action"
+          echo "$action" | grep -q '"action"' || { echo "no action in response"; exit 1; }
+      - name: Report image size
+        run: docker image inspect decisionrl-serve --format 'serving image size {{.Size}} bytes'
+      - name: Stop the container
+        if: always()
+        run: docker rm -f serve || true
