@@ -84,7 +84,7 @@ class DiffusionPolicy(BaseAgent):
 
         losses: deque = deque(maxlen=100)
         for it in range(n_iters):
-            batch = dataset.sample(batch_size)
+            batch = dataset.sample(batch_size).to(self.device)
             obs, a0 = batch.obs, batch.actions.reshape(batch_size, self.act_dim)
             t = torch.randint(0, self.T, (batch_size,), device=self.device)
             noise = torch.randn_like(a0)

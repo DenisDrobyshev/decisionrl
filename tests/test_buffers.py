@@ -12,6 +12,22 @@ def make_replay(cls=ReplayBuffer, capacity=100, **kw):
     return cls(capacity, obs_space, act_space, seed=0, **kw)
 
 
+def test_replay_batch_to_moves_tensors_and_keeps_indices():
+    buf = make_replay(capacity=20)
+    for i in range(20):
+        buf.add(np.full(3, i, np.float32), i % 4, float(i), np.full(3, i + 1, np.float32), False)
+    batch = buf.sample(8)
+    moved = batch.to("cpu")
+    # Every tensor field lands on the requested device; a fresh object is returned.
+    assert moved is not batch
+    assert moved.obs.device.type == "cpu"
+    assert moved.actions.device.type == "cpu"
+    assert moved.rewards.device.type == "cpu"
+    assert torch.equal(moved.obs, batch.obs)
+    # Idempotent for a batch already on the target device.
+    assert torch.equal(moved.to("cpu").next_obs, batch.next_obs)
+
+
 def test_replay_add_and_len_ring():
     buf = make_replay(capacity=5)
     for i in range(7):

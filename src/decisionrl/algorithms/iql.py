@@ -132,7 +132,7 @@ class IQL(BaseAgent):
             callback.on_training_start(self)
         losses: deque = deque(maxlen=100)
         for _ in range(total_steps):
-            batch = dataset.sample(self.batch_size)
+            batch = dataset.sample(self.batch_size).to(self.device)
             metrics = self._offline_update(batch)
             losses.append(metrics["q_loss"])
             self.num_timesteps += 1

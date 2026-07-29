@@ -31,6 +31,23 @@ class ReplayBatch:
     weights: Optional[torch.Tensor] = None  # importance weights (PER)
     indices: Optional[np.ndarray] = None  # sampled indices (PER)
 
+    def to(self, device) -> "ReplayBatch":
+        """Return a copy with every tensor moved to ``device`` (indices left as NumPy).
+
+        Lets an agent train from a dataset stored on a different device (for example a
+        CPU-collected offline dataset feeding a CUDA agent) without a device mismatch.
+        """
+        dev = torch.device(device)
+
+        def move(t: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
+            return t.to(dev) if isinstance(t, torch.Tensor) else t
+
+        return ReplayBatch(
+            obs=move(self.obs), actions=move(self.actions), rewards=move(self.rewards),
+            next_obs=move(self.next_obs), dones=move(self.dones),
+            discounts=move(self.discounts), weights=move(self.weights), indices=self.indices,
+        )
+
 
 def _shape(space: Space):
     return space.shape if space.shape is not None else ()
