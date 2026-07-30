@@ -176,8 +176,9 @@ walkthrough is in the notebook
 [Applied RL in 15 minutes](examples/applied_rl.ipynb)
 ([Colab](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/applied_rl.ipynb)),
 and there is a self-contained
-[browser demo](https://denisdrobyshev.github.io/decisionrl/demo/inventory.html) that runs
-a trained policy against the base-stock rule with no server.
+[decision cockpit](https://denisdrobyshev.github.io/decisionrl/demo/inventory.html) that
+races a learned policy, an adaptive tracking rule, and the fixed base-stock on the same
+drifting demand, with switchable scenarios and no server.
 
 | Applied task | Decision | Baseline | Result |
 |---|---|---|---|
