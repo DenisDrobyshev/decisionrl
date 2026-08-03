@@ -1,0 +1,48 @@
+version: 2
+
+updates:
+  # Actions are the highest-value thing to keep current: a stale third-party
+  # action is a supply-chain risk in every workflow that uses it.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "deps"
+    # One PR for the dev toolchain, separate PRs for anything an algorithm runs
+    # on: a ruff bump needs a glance, a NumPy or PyTorch bump can move a
+    # learning curve.
+    groups:
+      dev-tooling:
+        patterns: ["ruff", "mypy", "pytest*", "pre-commit", "build", "twine", "mkdocs*"]
+        dependency-type: development
+    ignore:
+      # The published results are measured on specific versions and re-verified
+      # by examples/verify_applied_claims.py. These move when someone re-runs
+      # that script, not because a scheduled PR was green.
+      - dependency-name: torch
+      - dependency-name: numpy
+        update-types: ["version-update:semver-major"]
+      - dependency-name: gymnasium
+        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: docker
+    directory: "/deploy"
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "docker"
