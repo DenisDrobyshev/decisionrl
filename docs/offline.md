@@ -6,7 +6,7 @@ time. Offline reinforcement learning trains a policy from that fixed log alone, 
 further interaction, which is what makes it deployable where online exploration is
 expensive or unsafe.
 
-[`examples/offline_rl_case_study.py`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/offline_rl_case_study.py)
+[`examples/offline_rl_case_study.py`](https://github.com/DrobyshevDev/decisionrl/blob/main/examples/offline_rl_case_study.py)
 demonstrates this on the [`EnergyMicrogrid`](environments.md) battery-control task:
 
 1. A mediocre controller runs the battery: the best greedy price-threshold rule with
