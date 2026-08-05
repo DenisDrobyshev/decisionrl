@@ -10,9 +10,9 @@ name: Dependabot auto-merge
 # so it keeps a human. Auto-merge is queued, not immediate: GitHub still waits
 # for the required checks to pass, and a red build leaves the PR open.
 #
-# torch, numpy and gymnasium never reach this workflow at all — dependabot.yml
-# ignores them, because a bump there is a claim about the reproduced benchmark
-# numbers rather than a routine update.
+# torch never reaches this workflow, and neither do NumPy or Gymnasium majors:
+# `.github/dependabot.yml` ignores them, because a bump there is a claim about
+# the published results rather than a routine update.
 
 on: pull_request_target
 
