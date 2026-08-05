@@ -1,7 +1,7 @@
 # Robustness and stress testing
 
 A policy that looks good on the environment it was tuned for can fail once the world
-shifts. [`stress_test`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/evaluation.py)
+shifts. [`stress_test`](https://github.com/DrobyshevDev/decisionrl/blob/main/src/decisionrl/evaluation.py)
 evaluates a policy across a set of perturbed environments and reports the mean return on
 each, so a robust policy and a brittle one can be told apart.
 
