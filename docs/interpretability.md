@@ -5,7 +5,7 @@ decision rule lives in a small, interpretable state space, so it can be drawn. T
 it possible to check *what* the agent learned, not just that its return went up.
 
 The figure below trains a DQN on
-[`NonstationaryInventory`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/envs/nonstationary_inventory.py)
+[`NonstationaryInventory`](https://github.com/DrobyshevDev/decisionrl/blob/main/src/decisionrl/envs/nonstationary_inventory.py)
 and plots the order quantity it chooses at every state (inventory on hand against recent
 demand), next to the two classical rules on the same grid. Reproduce it with:
 

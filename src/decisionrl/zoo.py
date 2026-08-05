@@ -86,7 +86,7 @@ tags:
 # {repo_id}
 
 A deterministic control policy exported from
-[decisionrl](https://github.com/DenisDrobyshev/decisionrl) to ONNX. It runs with
+[decisionrl](https://github.com/DrobyshevDev/decisionrl) to ONNX. It runs with
 `onnxruntime` alone; PyTorch is not required for inference.
 
 ## Policy

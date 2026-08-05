@@ -6,7 +6,7 @@ welcome — bug reports, new algorithms, environments, docs and tests.
 ## Development setup
 
 ```bash
-git clone https://github.com/DenisDrobyshev/decisionrl.git
+git clone https://github.com/DrobyshevDev/decisionrl.git
 cd decisionrl
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"

@@ -6,7 +6,7 @@
 
 Reinforcement learning for operational decisions.
 
-[![CI](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml)
+[![CI](https://github.com/DrobyshevDev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DrobyshevDev/decisionrl/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/decisionrl.svg)](https://pypi.org/project/decisionrl/)
 [![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/decisionrl/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
@@ -108,10 +108,10 @@ pip install decisionrl
 pip install "decisionrl[gym]"
 
 # latest from source
-pip install git+https://github.com/DenisDrobyshev/decisionrl.git
+pip install git+https://github.com/DrobyshevDev/decisionrl.git
 
 # local development install
-git clone https://github.com/DenisDrobyshev/decisionrl.git
+git clone https://github.com/DrobyshevDev/decisionrl.git
 cd decisionrl
 pip install -e ".[dev]"
 ```
@@ -174,7 +174,7 @@ classical operations-research baseline. Train all of them and print the comparis
 with [`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py). A short
 walkthrough is in the notebook
 [Applied RL in 15 minutes](examples/applied_rl.ipynb)
-([Colab](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/applied_rl.ipynb)),
+([Colab](https://colab.research.google.com/github/DrobyshevDev/decisionrl/blob/main/examples/applied_rl.ipynb)),
 and there is a self-contained
 [decision cockpit](https://denisdrobyshev.github.io/decisionrl/demo/inventory.html) that
 races a learned policy, an adaptive tracking rule, and the fixed base-stock on the same
