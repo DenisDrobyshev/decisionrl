@@ -2,8 +2,8 @@ name: Dependabot auto-merge
 
 # What this does and does not do:
 #
-#   auto-merged  - GitHub Actions bumps, and patch-level bumps of anything else
-#   left for you - every minor and major bump of a runtime dependency
+#   auto-merged  - GitHub Actions bumps, and patch bumps of anything else
+#   left for you - anything with a minor or major in it
 #
 # A patch release and an action bump are the updates that pile up unread until
 # the queue is too long to review honestly. A minor bump can change behaviour,
@@ -11,8 +11,8 @@ name: Dependabot auto-merge
 # for the required checks to pass, and a red build leaves the PR open.
 #
 # torch never reaches this workflow, and neither do NumPy or Gymnasium majors:
-# `.github/dependabot.yml` ignores them, because a bump there is a claim about
-# the published results rather than a routine update.
+# dependabot.yml ignores them, because a bump there is a claim about the
+# published benchmark numbers rather than a routine update.
 
 on: pull_request_target
 
@@ -27,27 +27,74 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      # Reads the update type from the PR that Dependabot opened. Nothing from
-      # the branch is checked out or executed, which is what makes
+      # Reads the update metadata from the PR that Dependabot opened. Nothing
+      # from the branch is checked out or executed, which is what makes
       # pull_request_target safe to use here.
       - id: metadata
         uses: dependabot/fetch-metadata@v2
 
+      - id: verdict
+        name: Decide whether this one can merge itself
+        env:
+          ECOSYSTEM: ${{ steps.metadata.outputs.package-ecosystem }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          UPDATED: ${{ steps.metadata.outputs.updated-dependencies-json }}
+        # A grouped pull request has no single update type: fetch-metadata
+        # leaves `update-type` empty and puts one entry per dependency in
+        # `updated-dependencies-json`. Reading only `update-type` sent every
+        # grouped bump to a human, including a group where all seven were
+        # patches - which is exactly the group worth merging unattended, and the
+        # reason the groups exist at all.
+        run: |
+          PATCH="version-update:semver-patch"
+
+          if [ "$ECOSYSTEM" = "github_actions" ]; then
+            echo "auto=true" >> "$GITHUB_OUTPUT"
+            echo "reason=an actions bump" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -n "$UPDATE_TYPE" ] && [ "$UPDATE_TYPE" != "null" ]; then
+            if [ "$UPDATE_TYPE" = "$PATCH" ]; then
+              echo "auto=true" >> "$GITHUB_OUTPUT"
+              echo "reason=a patch bump" >> "$GITHUB_OUTPUT"
+            else
+              echo "auto=false" >> "$GITHUB_OUTPUT"
+              echo "reason=${UPDATE_TYPE#version-update:semver-} is not a patch" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
+
+          total=$(jq 'length' <<<"$UPDATED")
+          if [ "$total" -eq 0 ]; then
+            # No metadata to read. Refusing is the only safe reading of silence.
+            echo "auto=false" >> "$GITHUB_OUTPUT"
+            echo "reason=no update metadata to read" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          patches=$(jq --arg p "$PATCH" '[.[] | select(.updateType == $p)] | length' <<<"$UPDATED")
+          if [ "$total" -eq "$patches" ]; then
+            echo "auto=true" >> "$GITHUB_OUTPUT"
+            echo "reason=a group of $total, every one a patch" >> "$GITHUB_OUTPUT"
+          else
+            echo "auto=false" >> "$GITHUB_OUTPUT"
+            echo "reason=a group of $total, $((total - patches)) beyond patch" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Approve and queue the merge
-        if: >-
-          steps.metadata.outputs.package-ecosystem == 'github_actions' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        if: steps.verdict.outputs.auto == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.html_url }}
+          REASON: ${{ steps.verdict.outputs.reason }}
         run: |
+          echo "auto-merging: $REASON"
           gh pr review --approve "$PR"
           gh pr merge --auto --squash "$PR"
 
       - name: Explain why this one was left alone
-        if: >-
-          steps.metadata.outputs.package-ecosystem != 'github_actions' &&
-          steps.metadata.outputs.update-type != 'version-update:semver-patch'
+        if: steps.verdict.outputs.auto != 'true'
         env:
-          TYPE: ${{ steps.metadata.outputs.update-type }}
-        run: echo "$TYPE is not auto-merged; this pull request needs a human."
+          REASON: ${{ steps.verdict.outputs.reason }}
+        run: echo "not auto-merged ($REASON); this pull request needs a human."
