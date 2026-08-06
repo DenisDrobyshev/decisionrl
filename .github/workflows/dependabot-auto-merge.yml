@@ -1,0 +1,53 @@
+name: Dependabot auto-merge
+
+# What this does and does not do:
+#
+#   auto-merged  - GitHub Actions bumps, and patch-level bumps of anything else
+#   left for you - every minor and major bump of a runtime dependency
+#
+# A patch release and an action bump are the updates that pile up unread until
+# the queue is too long to review honestly. A minor bump can change behaviour,
+# so it keeps a human. Auto-merge is queued, not immediate: GitHub still waits
+# for the required checks to pass, and a red build leaves the PR open.
+#
+# torch never reaches this workflow, and neither do NumPy or Gymnasium majors:
+# `.github/dependabot.yml` ignores them, because a bump there is a claim about
+# the published results rather than a routine update.
+
+on: pull_request_target
+
+permissions:
+  contents: read
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Reads the update type from the PR that Dependabot opened. Nothing from
+      # the branch is checked out or executed, which is what makes
+      # pull_request_target safe to use here.
+      - id: metadata
+        uses: dependabot/fetch-metadata@v2
+
+      - name: Approve and queue the merge
+        if: >-
+          steps.metadata.outputs.package-ecosystem == 'github_actions' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr review --approve "$PR"
+          gh pr merge --auto --squash "$PR"
+
+      - name: Explain why this one was left alone
+        if: >-
+          steps.metadata.outputs.package-ecosystem != 'github_actions' &&
+          steps.metadata.outputs.update-type != 'version-update:semver-patch'
+        env:
+          TYPE: ${{ steps.metadata.outputs.update-type }}
+        run: echo "$TYPE is not auto-merged; this pull request needs a human."
