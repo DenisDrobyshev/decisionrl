@@ -82,15 +82,26 @@ jobs:
             echo "reason=a group of $total, $((total - patches)) beyond patch" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Approve and queue the merge
+      - name: Queue the merge
         if: steps.verdict.outputs.auto == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.html_url }}
           REASON: ${{ steps.verdict.outputs.reason }}
+        # No `gh pr review --approve`. This organisation does not permit Actions
+        # to approve pull requests, so that call fails with
+        #
+        #   GitHub Actions is not permitted to approve pull requests
+        #
+        # and under `bash -e` it took the whole step down before the merge was
+        # ever queued - which is how auto-merge came to be broken in every
+        # repository at once.
+        #
+        # The approval was never needed: branch protection here requires the CI
+        # check and no reviews. If a review requirement is ever added, this needs
+        # a token that is not GITHUB_TOKEN, not a retry.
         run: |
           echo "auto-merging: $REASON"
-          gh pr review --approve "$PR"
           gh pr merge --auto --squash "$PR"
 
       - name: Explain why this one was left alone
