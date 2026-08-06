@@ -21,7 +21,12 @@ permissions:
 
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]'
+    # Who opened the pull request, not who triggered the event. `github.actor`
+    # is whoever caused this run, so the moment a person touches a Dependabot
+    # pull request - reopening it, or nudging it after a base change - the job
+    # skips and the update sits there looking merged-ready and never merging.
+    # The author never changes, which is the thing actually being asserted.
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
