@@ -78,7 +78,7 @@ Each pairs with a classic operations-research baseline so a learned policy can b
   decisions are coupled with no closed-form joint optimum; a state-dependent learned
   policy edges the best *static* (price, base-stock) rule.
 
-See the [applied solutions](https://github.com/DenisDrobyshev/decisionrl#why-decisionrl)
+See the [applied solutions](https://github.com/DrobyshevDev/decisionrl#why-decisionrl)
 in the README for trained results.
 
 ## Gymnasium interop (optional)

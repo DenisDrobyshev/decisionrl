@@ -8,12 +8,12 @@ learned policy beat the best classical rule, and if so, why.
 
 The demand series is quarterly US real personal consumption expenditure (PCE) from 1959
 to 2009, a genuine aggregate demand quantity shipped with statsmodels and saved to
-[`examples/data/us_consumption.csv`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/data/us_consumption.csv).
+[`examples/data/us_consumption.csv`](https://github.com/DrobyshevDev/decisionrl/blob/main/examples/data/us_consumption.csv).
 Real consumption grows roughly five-fold across the five decades and is punctuated by
 recessions, so the series has a strong trend and repeated shocks rather than a fixed
 mean.
 
-[`DatasetDemandInventory`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/envs/dataset_demand_inventory.py)
+[`DatasetDemandInventory`](https://github.com/DrobyshevDev/decisionrl/blob/main/src/decisionrl/envs/dataset_demand_inventory.py)
 rescales the series onto a single product's demand range and replays it: each episode
 starts at a random offset and steps forward, drawing Poisson arrivals around the
 empirical level at each point.
@@ -46,7 +46,7 @@ not clear it, so this is a central-tendency improvement rather than a guaranteed
 every run.
 
 Above both sits a hand-written adaptive rule
-([`tracking_base_stock`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/baselines.py)):
+([`tracking_base_stock`](https://github.com/DrobyshevDev/decisionrl/blob/main/src/decisionrl/baselines.py)):
 order up to the recent demand (the EWMA the environment exposes) plus a small safety
 buffer. It reaches 841.6, clearly ahead of the learned policy. This is worth stating
 plainly: when the structure of the problem is known, a simple heuristic that encodes it

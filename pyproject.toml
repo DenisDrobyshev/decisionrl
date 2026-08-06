@@ -73,9 +73,9 @@ dev = [
 decisionrl = "decisionrl.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/DenisDrobyshev/decisionrl"
-Repository = "https://github.com/DenisDrobyshev/decisionrl"
-Issues = "https://github.com/DenisDrobyshev/decisionrl/issues"
+Homepage = "https://github.com/DrobyshevDev/decisionrl"
+Repository = "https://github.com/DrobyshevDev/decisionrl"
+Issues = "https://github.com/DrobyshevDev/decisionrl/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/decisionrl"]

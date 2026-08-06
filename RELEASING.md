@@ -15,7 +15,7 @@ the project name is still unclaimed ("pending publisher"):
    **Add a pending publisher**.
 2. Fill in exactly:
    - **PyPI Project Name:** `decisionrl`
-   - **Owner:** `DenisDrobyshev`
+   - **Owner:** `DrobyshevDev`
    - **Repository name:** `decisionrl`
    - **Workflow name:** `publish.yml`
    - **Environment name:** `pypi`

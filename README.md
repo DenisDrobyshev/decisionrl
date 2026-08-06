@@ -6,9 +6,9 @@
 
 Reinforcement learning for operational decisions.
 
-[![CI](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/decisionrl/actions/workflows/ci.yml)
+[![CI](https://github.com/DrobyshevDev/decisionrl/actions/workflows/ci.yml/badge.svg)](https://github.com/DrobyshevDev/decisionrl/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/decisionrl.svg)](https://pypi.org/project/decisionrl/)
-[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://denisdrobyshev.github.io/decisionrl/)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue.svg)](https://drobyshevdev.github.io/decisionrl/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/lint-ruff-orange.svg)](https://github.com/astral-sh/ruff)
@@ -47,7 +47,7 @@ Numbers are the interquartile mean (IQM) of the evaluation return with a 95% boo
 confidence interval over 5 seeds, produced by
 [`examples/verify_applied_claims.py`](examples/verify_applied_claims.py). A stronger
 *adaptive* heuristic can do better still on the non-stationary tasks; the
-[case study](https://denisdrobyshev.github.io/decisionrl/case-study/) shows that
+[case study](https://drobyshevdev.github.io/decisionrl/case-study/) shows that
 three-way comparison in full.
 
 Tasks where the classical assumptions break and the learned policy is better:
@@ -74,13 +74,13 @@ coupled decisions) the solver no longer applies, which is the case the first tab
 covers. The comparison is always against the best fixed rule, not a naive default.
 
 The same pattern holds on real data: a
-[case study](https://denisdrobyshev.github.io/decisionrl/case-study/) drives the inventory
+[case study](https://drobyshevdev.github.io/decisionrl/case-study/) drives the inventory
 environment with quarterly US real consumption (1959-2009) and a learned policy improves
 on the best fixed base-stock, because real demand trends and no single order-up-to level
 fits every era. The learned rule is
-[inspectable](https://denisdrobyshev.github.io/decisionrl/interpretability/) (it visibly
+[inspectable](https://drobyshevdev.github.io/decisionrl/interpretability/) (it visibly
 tracks recent demand) and can be
-[stress-tested](https://denisdrobyshev.github.io/decisionrl/robustness/) under
+[stress-tested](https://drobyshevdev.github.io/decisionrl/robustness/) under
 distribution shift.
 
 ## Why RL and not a solver
@@ -108,10 +108,10 @@ pip install decisionrl
 pip install "decisionrl[gym]"
 
 # latest from source
-pip install git+https://github.com/DenisDrobyshev/decisionrl.git
+pip install git+https://github.com/DrobyshevDev/decisionrl.git
 
 # local development install
-git clone https://github.com/DenisDrobyshev/decisionrl.git
+git clone https://github.com/DrobyshevDev/decisionrl.git
 cd decisionrl
 pip install -e ".[dev]"
 ```
@@ -174,9 +174,9 @@ classical operations-research baseline. Train all of them and print the comparis
 with [`python examples/applied_rl_demo.py`](examples/applied_rl_demo.py). A short
 walkthrough is in the notebook
 [Applied RL in 15 minutes](examples/applied_rl.ipynb)
-([Colab](https://colab.research.google.com/github/DenisDrobyshev/decisionrl/blob/main/examples/applied_rl.ipynb)),
+([Colab](https://colab.research.google.com/github/DrobyshevDev/decisionrl/blob/main/examples/applied_rl.ipynb)),
 and there is a self-contained
-[decision cockpit](https://denisdrobyshev.github.io/decisionrl/demo/inventory.html) that
+[decision cockpit](https://drobyshevdev.github.io/decisionrl/demo/inventory.html) that
 races a learned policy, an adaptive tracking rule, and the fixed base-stock on the same
 drifting demand, with switchable scenarios and no server.
 
@@ -344,7 +344,7 @@ correctly.
   (`decisionrl.serving`), plus a model zoo and browser export.
 
 Usage for each is documented at
-[denisdrobyshev.github.io/decisionrl](https://denisdrobyshev.github.io/decisionrl/).
+[drobyshevdev.github.io/decisionrl](https://drobyshevdev.github.io/decisionrl/).
 
 ## Deployment
 
@@ -387,7 +387,7 @@ and fails if any reported result regresses below its baseline.
 Computational throughput (env, training, and inference steps per second) is separate from
 learning quality and is measured by
 [`examples/benchmark_throughput.py`](examples/benchmark_throughput.py); see the
-[performance guide](https://denisdrobyshev.github.io/decisionrl/performance/) for measured
+[performance guide](https://drobyshevdev.github.io/decisionrl/performance/) for measured
 numbers and how to choose a device.
 
 ## Design notes

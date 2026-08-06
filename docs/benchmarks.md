@@ -1,6 +1,6 @@
 # Benchmarks
 
-Reproduced scores from [`examples/benchmark_scores.py`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_scores.py),
+Reproduced scores from [`examples/benchmark_scores.py`](https://github.com/DrobyshevDev/decisionrl/blob/main/examples/benchmark_scores.py),
 single seed (0), CPU. Return is the mean +/- std of the final deterministic policy over
 evaluation episodes; **random** is a uniform-random policy on the same task for reference.
 
@@ -28,7 +28,7 @@ _Total wall-clock: 1119s. GridWorld optimal ≈ 0.95; CartPole max = 500; Pendul
 
 The scores above are on the built-in environments. To compare `decisionrl` head-to-head
 against established libraries on the *same* Gymnasium tasks, use
-[`examples/benchmark_vs_baselines.py`](https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_vs_baselines.py).
+[`examples/benchmark_vs_baselines.py`](https://github.com/DrobyshevDev/decisionrl/blob/main/examples/benchmark_vs_baselines.py).
 It trains matched algorithms on the same env, over several seeds and an identical step
 budget, and reports mean ± std return and wall-clock side by side (results saved to JSON).
 

@@ -84,7 +84,7 @@ place when those assumptions break:
 - **coupled decisions** with no closed form (e.g. joint pricing + inventory),
 - dynamics you **can't write as a clean LP/DP**.
 
-That's the boundary the [proof table](https://github.com/DenisDrobyshev/decisionrl#why-decisionrl)
+That's the boundary the [proof table](https://github.com/DrobyshevDev/decisionrl#why-decisionrl)
 draws.
 
 ## Worked example: inventory in ~20 lines

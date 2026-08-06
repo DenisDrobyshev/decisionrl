@@ -17,7 +17,7 @@ per-arm ridge-regression statistics. They differ only in how they act on those e
 
 ## Environment
 
-[`ContextualBandit`](https://github.com/DenisDrobyshev/decisionrl/blob/main/src/decisionrl/envs/contextual_bandit.py)
+[`ContextualBandit`](https://github.com/DrobyshevDev/decisionrl/blob/main/src/decisionrl/envs/contextual_bandit.py)
 is the canonical linear testbed: each round draws a context vector, every arm has an
 unknown linear value, and the best arm depends on the context. The step `info` reports the
 exact regret (the gap to the optimal arm), so cumulative regret can be measured directly.
