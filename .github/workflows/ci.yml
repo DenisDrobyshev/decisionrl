@@ -5,6 +5,16 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Read-only by default. A job that needs more asks for it itself, so a
+# compromised dependency in one step cannot push to the repository.
+permissions:
+  contents: read
 
 jobs:
   lint-and-test:
@@ -15,8 +25,8 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -37,8 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
           cache: pip
@@ -58,7 +68,7 @@ jobs:
     name: docker serving image (build + smoke test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build the serving image
         run: docker build -f deploy/Dockerfile -t decisionrl-serve .
       - name: Run the container
@@ -83,3 +93,20 @@ jobs:
       - name: Stop the container
         if: always()
         run: docker rm -f serve || true
+
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [lint-and-test, learning-tests, docker-serve]
+    steps:
+      # One aggregate check to require in branch protection. Without it, adding
+      # a Python version to the matrix silently leaves it unrequired, and a red
+      # job stops blocking merges.
+      - name: Fail if any job did not succeed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "One or more jobs failed:"
+          echo '${{ toJSON(needs) }}'
+          exit 1
+      - run: echo "All checks passed."

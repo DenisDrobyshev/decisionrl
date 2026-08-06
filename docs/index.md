@@ -26,9 +26,9 @@ so it runs the moment you `pip install` it.
 ## Install
 
 ```bash
-pip install git+https://github.com/DenisDrobyshev/decisionrl.git
+pip install git+https://github.com/DrobyshevDev/decisionrl.git
 # with Gymnasium environments:
-pip install "decisionrl[gym] @ git+https://github.com/DenisDrobyshev/decisionrl.git"
+pip install "decisionrl[gym] @ git+https://github.com/DrobyshevDev/decisionrl.git"
 ```
 
 See [Getting started](getting-started.md) for a first training run.

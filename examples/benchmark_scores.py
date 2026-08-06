@@ -155,7 +155,7 @@ def _write_table(total_time: float) -> None:
         "",
         "Reproduced scores from "
         "[`examples/benchmark_scores.py`]"
-        "(https://github.com/DenisDrobyshev/decisionrl/blob/main/examples/benchmark_scores.py),",
+        "(https://github.com/DrobyshevDev/decisionrl/blob/main/examples/benchmark_scores.py),",
         "single seed (0), CPU. Return is the mean +/- std of the final deterministic policy over",
         "evaluation episodes; **random** is a uniform-random policy on the same task for reference.",
         "",
